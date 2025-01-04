@@ -19,3 +19,5 @@ services:
       - .:/srv/jekyll
     environment:
       - JEKYLL_ENV=development
+      - HTTP_PROXY=http://host.docker.internal:7890
+      - HTTPS_PROXY=http://host.docker.internal:7890
