@@ -6,10 +6,10 @@
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.nju.edu.cn/rocker-org/devcontainer-features/apt-packages:1": {
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
       "packages": "build-essential,imagemagick,inotify-tools,jupyter-nbconvert,procps,ruby-full,zlib1g-dev"
     },
-    "ghcr.nju.edu.cn/devcontainers-contrib/features/prettier:1": {}
+    "ghcr.io/devcontainers-contrib/features/prettier:1": {}
   },
 
   // Optionally: run jekyll serve automatically on container entering using the Docker entrypoint
