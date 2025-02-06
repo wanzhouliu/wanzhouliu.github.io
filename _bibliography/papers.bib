@@ -1,115 +1,44 @@
 ---
+https://github.com/alshedivat/al-folio/blob/main/CUSTOMIZE.md#adding-a-new-publication
 ---
 
-@string{aps = {American Physical Society,}}
+@string{cvpr = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}}
+@string{iccvid = {IEEE/CVF International Conference on Computer Vision (ICCV)}}
+@string{eccv = {European Conference on Computer Vision (ECCV)}}
 
-@book{einstein1920relativity,
-  title={Relativity: the Special and General Theory},
-  author={Einstein, Albert},
-  year={1920},
-  publisher={Methuen & Co Ltd},
-  html={relativity.html}
+
+@inproceedings{passingdriving,
+  title={Is LLM a Good Driver?},
+  author={Wei*, Maolin and Liu*, Wanzhou and Ohn-Bar, Eshed},
+  abstract={Existing research in multimodal large language models (MLLMs) has focused on understanding spatial relationships in images, but there is less emphasis on understanding model reasoning over actions to take in real-world scenarios, such as following traffic rules and regulations in autonomous driving. In this paper, we evaluate LLMs and MLLMs for this novel task to assess their understanding and application of traffic rules, decision-making, and right-of-way in various scenarios. Using a newly developed dataset tailored for these challenges, we conduct a thorough examination of state-of-the-art LLMs and MLLMs, focusing on their ability to answer complex, context-specific questions related to traffic situations. Our findings show that while these models can handle basic questions effectively, they struggle with more nuanced decision-making tasks that require integrating both visual and textual information. This reveals critical limitations in their capability to handle real-world traffic scenarios accurately. To promote further research, we will make our dataset, code, and models publicly available. We hope this work inspires progress in developing more reliable AI systems for autonomous driving and robotics.},
+  booktitle={Under review},
+  year={2024},
+  preview={passingdriving.png},
+  selected={true}
 }
 
-@book{einstein1956investigations,
-  bibtex_show={true},
-  title={Investigations on the Theory of the Brownian Movement},
-  author={Einstein, Albert},
-  year={1956},
-  publisher={Courier Corporation},
-  preview={brownian-motion.gif}
+@inproceedings{declutternerf,
+  title={DeclutterNeRF: Generative-Free 3D Scene Recovery for Occlusion Removal},
+  author={Liu, Wanzhou and Xiong, Zhexiao and Li, Xinyu and Jacobs, Nathan},
+  abstract={Neural Radiance Fields (NeRF) have gained significant attention due to their high-quality rendering and accurate scene reconstruction. The ability to flexibly remove occlusions while preserving the details of the remaining scene can greatly enhance NeRF’s robustness and applicability. However, rendering a scene after occlusion removal introduces a fundamental challenge: reconstructing 3D structures from incomplete image information. Existing approaches typically rely on generative priors to complete missing regions, introducing additional computational complexity and potential artifacts. In this paper, we propose DeclutterNeRF, a novel approach for occlusion removal and scene reconstruction that operates without generative priors or significant computational overhead. Our method achieves state-of-the-art performance in occlusion-free scene reconstruction, offering a more lightweight and interpretable alternative to existing generative-based solutions. Additionally, we highlight key challenges in occlusion and object removal tasks and introduce a new occlusion dataset, which can serve as a benchmark for future research. We hope this work prompts a rethinking of NeRF's approach in today's landscape where its originally concise and neat functionality and structure are becoming complex and unwieldy.},
+  booktitle={Under review, coming soon!},
+  year={2024},
+  preview={declutternerf.png},
+  selected={true}
 }
 
-@article{einstein1950meaning,
-  abbr={AJP},
-  bibtex_show={true},
-  title={The meaning of relativity},
-  author={Einstein, Albert and Taub, AH},
-  journal={American Journal of Physics},
-  volume={18},
-  number={6},
-  pages={403--404},
-  year={1950},
-  publisher={American Association of Physics Teachers}
-}
-
-@article{PhysRev.47.777,
-  abbr={PhysRev},
-  title={Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?},
-  author={Einstein*†, A. and Podolsky*, B. and Rosen*, N.},
-  abstract={In a complete theory there is an element corresponding to each element of reality. A sufficient condition for the reality of a physical quantity is the possibility of predicting it with certainty, without disturbing the system. In quantum mechanics in the case of two physical quantities described by non-commuting operators, the knowledge of one precludes the knowledge of the other. Then either (1) the description of reality given by the wave function in quantum mechanics is not complete or (2) these two quantities cannot have simultaneous reality. Consideration of the problem of making predictions concerning a system on the basis of measurements made on another system that had previously interacted with it leads to the result that if (1) is false then (2) is also false. One is thus led to conclude that the description of reality as given by a wave function is not complete.},
-  journal={Phys. Rev.},
-  location={New Jersey},
-  volume={47},
-  issue={10},
-  pages={777--780},
-  numpages={0},
-  year={1935},
-  month={May},
-  publisher=aps,
-  doi={10.1103/PhysRev.47.777},
-  url={http://link.aps.org/doi/10.1103/PhysRev.47.777},
-  html={https://journals.aps.org/pr/abstract/10.1103/PhysRev.47.777},
-  pdf={example_pdf.pdf},
-  altmetric={248277},
-  dimensions={true},
-  google_scholar_id={qyhmnyLat1gC},
-  video={https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ},
-  additional_info={. *More Information* can be [found here](https://github.com/alshedivat/al-folio/)},
-  annotation={* Example use of superscripts<br>† Albert Einstein},
-  selected={true},
-  inspirehep_id = {3255}
-}
-
-@article{einstein1905molekularkinetischen,
-  title={{\"U}ber die von der molekularkinetischen Theorie der W{\"a}rme geforderte Bewegung von in ruhenden Fl{\"u}ssigkeiten suspendierten Teilchen},
-  author={Einstein, A.},
-  journal={Annalen der physik},
-  volume={322},
-  number={8},
-  pages={549--560},
-  year={1905},
-  publisher={Wiley Online Library}
-}
-
-@article{einstein1905movement,
-  abbr={Ann. Phys.},
-  title={Un the movement of small particles suspended in statiunary liquids required by the molecular-kinetic theory 0f heat},
-  author={Einstein, A.},
-  journal={Ann. Phys.},
-  volume={17},
-  pages={549--560},
-  year={1905}
-}
-
-@article{einstein1905electrodynamics,
-  title={On the electrodynamics of moving bodies},
-  author={Einstein, A.},
-  year={1905}
-}
-
-@Article{einstein1905photoelectriceffect,
-  bibtex_show={true},
-  abbr={Ann. Phys.},
-  title="{{\"U}ber einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt}",
-  author={Albert Einstein},
-  abstract={This is the abstract text.},
-  journal={Ann. Phys.},
-  volume={322},
-  number={6},
-  pages={132--148},
-  year={1905},
-  doi={10.1002/andp.19053220607},
-  award={Albert Einstein receveid the **Nobel Prize in Physics** 1921 *for his services to Theoretical Physics, and especially for his discovery of the law of the photoelectric effect*},
-  award_name={Nobel Prize}
-}
-
-@book{przibram1967letters,
-  bibtex_show={true},
-  title={Letters on wave mechanics},
-  author={Einstein, Albert and Schrödinger, Erwin and Planck, Max and Lorentz, Hendrik Antoon and Przibram, Karl},
-  year={1967},
-  publisher={Vision},
-  preview={wave-mechanics.gif},
-  abbr={Vision}
+@inproceedings{liu2022time,
+  abbr={ICCAID},
+  title={As Time Goes By: Dynamic Face Aging Method Using CycleGAN},
+  author={Liu, Wanzhou},
+  abstract={Image-to-image style transfer using generative adversarial networks (GANs) has been extensively studied in computer vision, with numerous models proposed to enhance output performance. However, existing research predominantly focuses on improving model architecture and output quality, while the intermediate transformation process during style transfer remains underexplored. In this paper, we investigate the intermediate feature representations in style transfer based on CycleGAN and propose a novel approach to dynamically generate facial aging images by leveraging intermediate-layer gradients. Specifically, we utilize PyTorch's autograd mechanism to compute and extract the gradients of non-leaf nodes within the network, facilitating a more interpretable and controllable style transition process. Experimental results on the AGFW-v2 dataset demonstrate the feasibility of our approach, revealing progressive changes in facial aging stages. Furthermore, the insights gained from processing intermediate-layer features can be extended to other tasks, such as photo enhancement and image dehazing, offering a new perspective for improving the controllability of generative models.},
+  booktitle={International Conference on Computer Graphics, Artificial Intelligence, and Data Processing (ICCAID)},
+  volume={12168},
+  pages={290--296},
+  year={2022},
+  organization={SPIE},
+  preview={cyclegan.png},
+  pdf={121681C.pdf},
+  website={https://www.spiedigitallibrary.org/conference-proceedings-of-spie/12168/121681C/As-time-goes-by--dynamic-face-aging-method-using/10.1117/12.2631420.full},
+  selected={true}
 }
