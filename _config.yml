@@ -50,7 +50,7 @@ rss_icon: false
 
 navbar_fixed: true
 footer_fixed: false
-search_enabled: false
+search_enabled: true
 socials_in_search: true
 bib_search: true
 
@@ -66,7 +66,7 @@ max_width: 930px
 # see https://schema.org/docs/faq.html for more information
 serve_og_meta: true # Include Open Graph meta tags in the HTML head
 serve_schema_org: true # Include Schema.org in the HTML head
-og_image: # The site-wide (default for all links) Open Graph preview image
+og_image: prof_pic.jpg # The site-wide (default for all links) Open Graph preview image
 
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
