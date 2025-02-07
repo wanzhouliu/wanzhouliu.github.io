@@ -2,7 +2,7 @@
 layout: page
 permalink: /publications/
 title: Publications
-description:
+description: Symbol * or † represents equal contribution or advising.
 nav: true
 nav_order: 2
 ---
