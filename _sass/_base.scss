@@ -1347,3 +1347,9 @@ ninja-keys::part(ninja-input-wrapper) {
   background-color: var(--global-theme-color);
   color: var(--global-text-color);
 }
+
+// set the font size and 段间距 of the main content of the about page
+.clearfix {
+  font-size: 15px;
+  line-height: 1.25;
+}

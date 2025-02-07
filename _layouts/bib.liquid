@@ -77,12 +77,10 @@
           {%- if forloop.last %}and&nbsp;{% endif -%}
         {% endif %}
         {%- if author_is_self -%}
-          <em>
-            <strong>
-              {{- author.first }}
-              {{ author_last_html -}}
-            </strong>
-          </em>
+          <strong>
+            {{- author.first }}
+            {{ author_last_html -}}
+          </strong>
         {%- else -%}
           {%- if coauthor_url -%}
             <a href="{{ coauthor_url }}">
