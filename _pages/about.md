@@ -27,4 +27,4 @@ I am intrigued by cutting-edge computer vision techniques, including computation
 
 [Prof. Jeremy Howard](https://jeremy.fast.ai/) is my philosophical mentor, and my ultimate dream is to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai). However, the more practical way for me before that is to help others as much as possible. If you have any questions or collaborations in mind, please feel free to reach out!
 
-Aside from research, I have a few personal interests—literature, photography. You can find some of my photos tucked away in a quiet corner of this web. :)
+Aside from research, I find great joy in literature and photography. You can find some of my photos tucked away in a quiet corner of this web. :)
