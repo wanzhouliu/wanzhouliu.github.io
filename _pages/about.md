@@ -25,6 +25,6 @@ Welcome to my website! I am currently a master's student in Computer Science at 
 
 I am intrigued by cutting-edge computer vision techniques, including computational photography, 3D spatiotemporal visual perception, multimodal language models, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research.
 
-[Prof. Jeremy Howard](https://jeremy.fast.ai/) is my philosophical mentor, and my ultimate dream is to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai). However, the more practical way for me before that is to help others as much as possible. If you have any questions or collaborations in mind, please feel free to reach out!
+I look up to [Prof. Jeremy Howard](https://jeremy.fast.ai/) as my philosophical mentor, and my ultimate dream is to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai). However, the more practical way for me before that is to help others as much as possible. If you have any questions or collaborations in mind, please feel free to reach out!
 
 Aside from research, I find great joy in literature and photography. You can find some of my photos tucked away in a quiet corner of this web. :)
