@@ -15,6 +15,8 @@ Organize your courses by years, topics, or universities, however you like! -->
 
 - CSE 523S Systems Security, Washington University in St. Louis - 2024 Fall
 
+---
+
 #### Internship
 
 - Artificial Intelligence Intern, Semiconductor Manufacturing International Corporation (SMIC) - 2022 Spring

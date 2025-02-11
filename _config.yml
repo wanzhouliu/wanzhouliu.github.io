@@ -50,7 +50,7 @@ rss_icon: false
 
 navbar_fixed: true
 footer_fixed: false
-search_enabled: false
+search_enabled: false # show search manu bar
 socials_in_search: true
 bib_search: true
 
