@@ -7,11 +7,20 @@ https://github.com/alshedivat/al-folio/blob/main/CUSTOMIZE.md#adding-a-new-publi
 @string{eccv = {European Conference on Computer Vision (ECCV)}}
 
 
+@inproceedings{passingdriving,
+  title={[A Project on LLM for Autonomous Driving]},
+  author={Wei*, Maolin and Liu*, Wanzhou and Ohn-Bar, Eshed},
+  booktitle={Under review},
+  year={2024},
+  preview={passingdriving.png},
+  selected={true}
+}
+
 @inproceedings{declutternerf,
-  title={DeclutterNeRF: Generative-Free 3D Scene Recovery for Occlusion Removal},
+  title={[A Project on NeRF Editing]},
   author={Liu, Wanzhou and Xiong, Zhexiao and Li, Xinyu and Jacobs, Nathan},
-  abstract={Neural Radiance Fields (NeRF) have gained significant attention due to their high-quality rendering and accurate scene reconstruction. The ability to flexibly remove occlusions while preserving the details of the remaining scene can greatly enhance NeRF’s robustness and applicability. However, rendering a scene after occlusion removal introduces a fundamental challenge: reconstructing 3D structures from incomplete image information. Existing approaches typically rely on generative priors to complete missing regions, introducing additional computational complexity and potential artifacts. In this paper, we propose DeclutterNeRF, a novel approach for occlusion removal and scene reconstruction that operates without generative priors or significant computational overhead. Our method achieves state-of-the-art performance in occlusion-free scene reconstruction, offering a more lightweight and interpretable alternative to existing generative-based solutions. Additionally, we highlight key challenges in occlusion and object removal tasks and introduce a new occlusion dataset, which can serve as a benchmark for future research. We hope this work prompts a rethinking of NeRF's approach in today's landscape where its originally concise and neat functionality and structure are becoming complex and unwieldy.},
-  booktitle={Under review, coming soon!},
+  abstract={Neural Radiance Fields (NeRF) have greatly advanced 3D reconstruction with high-quality rendering and realistic detail recovery. Effectively removing occlusions while preserving scene details can further enhance NeRF’s robustness and applicability. However, existing approaches for object and occlusion removal predominantly rely on generative priors, which, despite filling the resulting holes, introduce new artifacts and blurriness. Moreover, existing benchmark datasets for evaluating occlusion removal methods lack realistic complexity and viewpoint variations. To address these issues, we introduce DeclutterSet, a novel dataset featuring diverse scenes with significant occlusions across foreground, midground, and background objects that vary distinctly with viewpoints. We further introduce DeclutterNeRF, an occlusion removal method free from generative priors. DeclutterNeRF introduces joint multiview optimization of learnable camera parameters, occlusion annealing regularization, and employs an explainable stochastic structural similarity loss, ensuring highquality, artifact-free reconstructions from incomplete imagery. Experiments demonstrate that DeclutterNeRF significantly outperforms state-of-the-art methods on our proposed DeclutterSet, establishing a strong baseline for future research. All the code and data will be released.},
+  booktitle={Under review},
   year={2024},
   preview={declutternerf.png},
   selected={true}

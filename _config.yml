@@ -2,6 +2,26 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
+# @inproceedings{passingdriving,
+#   title={Is LLM a Good Driver?},
+#   author={Wei*, Maolin and Liu*, Wanzhou and Ohn-Bar, Eshed},
+#   abstract={Existing research in multimodal large language models (MLLMs) has focused on understanding spatial relationships in images, but there is less emphasis on understanding model reasoning over actions to take in real-world scenarios, such as following traffic rules and regulations in autonomous driving. In this paper, we evaluate LLMs and MLLMs for this novel task to assess their understanding and application of traffic rules, decision-making, and right-of-way in various scenarios. Using a newly developed dataset tailored for these challenges, we conduct a thorough examination of state-of-the-art LLMs and MLLMs, focusing on their ability to answer complex, context-specific questions related to traffic situations. Our findings show that while these models can handle basic questions effectively, they struggle with more nuanced decision-making tasks that require integrating both visual and textual information. This reveals critical limitations in their capability to handle real-world traffic scenarios accurately. To promote further research, we will make our dataset, code, and models publicly available. We hope this work inspires progress in developing more reliable AI systems for autonomous driving and robotics.},
+#   booktitle={Under review},
+#   year={2024},
+#   preview={passingdriving.png},
+#   selected={true}
+# }
+
+# @inproceedings{declutternerf,
+#   title={DeclutterNeRF: Generative-Free 3D Scene Recovery for Occlusion Removal},
+#   author={Liu, Wanzhou and Xiong, Zhexiao and Li, Xinyu and Jacobs, Nathan},
+#   abstract={Neural Radiance Fields (NeRF) have gained significant attention due to their high-quality rendering and accurate scene reconstruction. The ability to flexibly remove occlusions while preserving the details of the remaining scene can greatly enhance NeRF’s robustness and applicability. However, rendering a scene after occlusion removal introduces a fundamental challenge: reconstructing 3D structures from incomplete image information. Existing approaches typically rely on generative priors to complete missing regions, introducing additional computational complexity and potential artifacts. In this paper, we propose DeclutterNeRF, a novel approach for occlusion removal and scene reconstruction that operates without generative priors or significant computational overhead. Our method achieves state-of-the-art performance in occlusion-free scene reconstruction, offering a more lightweight and interpretable alternative to existing generative-based solutions. Additionally, we highlight key challenges in occlusion and object removal tasks and introduce a new occlusion dataset, which can serve as a benchmark for future research. We hope this work prompts a rethinking of NeRF's approach in today's landscape where its originally concise and neat functionality and structure are becoming complex and unwieldy.},
+#   booktitle={Under review, coming soon!},
+#   year={2024},
+#   preview={declutternerf.png},
+#   selected={true}
+# }
+
 title: Wanzhou Liu / 刘万洲 # the website title (if blank, full name will be used instead)
 first_name: Wanzhou
 middle_name:
