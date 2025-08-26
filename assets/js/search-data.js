@@ -382,11 +382,11 @@ ninja.data = [{
           window.location.href = "/blog/2015/formatting-and-links/";
         
       },
-    },{id: "news-started-my-academic-journey-at-washu",
-          title: 'Started my academic journey at WashU.',
+    },{id: "news-our-driveqa-was-accepted-to-iccv-2025",
+          title: 'Our DriveQA was accepted to ICCV 2025!',
           description: "",
-          section: "News",},{id: "news-joined-human-to-everything-h2x-lab-in-boston-as-a-visiting-scholar",
-          title: 'Joined Human-to-Everything (H2X) lab in Boston as a visiting scholar.',
+          section: "News",},{id: "news-fomally-joined-university-of-pittsburgh-as-a-phd-student",
+          title: 'Fomally joined University of Pittsburgh as a PhD student!',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
