@@ -2,7 +2,7 @@
 layout: about
 title: About
 permalink: /
-subtitle: MSCS Student at <a href='https://washu.edu/'>WashU</a>.
+subtitle: CS PhD student at <a href='https://www.pitt.edu/'>Pitt</a>.
 
 profile:
   align: right
@@ -21,9 +21,9 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
 
-Welcome to my website! I am currently a master's student in Computer Science at [WashU](https://washu.edu/), and am grateful to become a member of [MVRL](https://mvrl.cse.wustl.edu/), supervised by [Prof. Nathan Jacobs](https://engineering.washu.edu/faculty/Nathan-Jacobs.html). I am also fortunate to collaborate with [Prof. Eshed Ohn-Bar](https://www.bu.edu/eng/profile/ohn-bar-eshed/) at [Boston University](https://www.bu.edu/). Previously, I received my BEng from [Qingdao University](https://www.qdu.edu.cn/).
+Welcome to my website! I am currently a first-year CS PhD student at [Pitt](https://www.pitt.edu/), advised by [Prof. Adriana Kovashka](https://people.cs.pitt.edu/~kovashka/). Previously, I was a master student at [WashU](https://washu.edu/), where I luckily worked with [Prof. Nathan Jacobs](https://jacobsn.github.io/). I was also fortunate to collaborate with [Prof. Eshed Ohn-Bar](https://eshed1.github.io/) at [Boston University](https://www.bu.edu/). I received my BEng from [Qingdao University](https://www.qdu.edu.cn/).
 
-I am intrigued by cutting-edge computer vision techniques, including computational photography, 3D spatiotemporal visual perception, multimodal language models, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research.
+I am intrigued by cutting-edge computer vision techniques, including multimodal language models, 3D spatiotemporal visual perception, computational photography, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research.
 
 I look up to [Prof. Jeremy Howard](https://jeremy.fast.ai/) as my philosophical mentor, and my ultimate dream is to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai). However, the more practical way for me before that is to help others as much as possible. If you have any questions or collaborations in mind, please feel free to reach out!
 

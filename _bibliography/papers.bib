@@ -3,34 +3,38 @@ https://github.com/alshedivat/al-folio/blob/main/CUSTOMIZE.md#adding-a-new-publi
 ---
 
 @string{cvpr = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}}
-@string{iccvid = {IEEE/CVF International Conference on Computer Vision (ICCV)}}
+@string{iccv = {IEEE/CVF International Conference on Computer Vision (ICCV)}}
 @string{eccv = {European Conference on Computer Vision (ECCV)}}
 
 
 @inproceedings{passingdriving,
-  title={[A Project on LLM for Autonomous Driving]},
+  abbr={ICCV},
+  title={DriveQA: Passing the Driving Knowledge Test},
   author={Wei*, Maolin and Liu*, Wanzhou and Ohn-Bar, Eshed},
-  booktitle={Under review},
-  year={2024},
+  booktitle=iccv,
+  year={2025},
   preview={passingdriving.png},
-  selected={true}
+  website={https://driveqaiccv.github.io/},
+  selected={true},
+  bibtex_show = {true}
 }
 
 @inproceedings{declutternerf,
-  title={[A Project on NeRF Editing]},
+  abbr={CVPRW},
+  title={DeclutterNeRF: Generative-Free 3D Scene Recovery for Occlusion Removal},
   author={Liu, Wanzhou and Xiong, Zhexiao and Li, Xinyu and Jacobs, Nathan},
-  abstract={Neural Radiance Fields (NeRF) have greatly advanced 3D reconstruction with high-quality rendering and realistic detail recovery. Effectively removing occlusions while preserving scene details can further enhance NeRF’s robustness and applicability. However, existing approaches for object and occlusion removal predominantly rely on generative priors, which, despite filling the resulting holes, introduce new artifacts and blurriness. Moreover, existing benchmark datasets for evaluating occlusion removal methods lack realistic complexity and viewpoint variations. To address these issues, we introduce DeclutterSet, a novel dataset featuring diverse scenes with significant occlusions across foreground, midground, and background objects that vary distinctly with viewpoints. We further introduce DeclutterNeRF, an occlusion removal method free from generative priors. DeclutterNeRF introduces joint multiview optimization of learnable camera parameters, occlusion annealing regularization, and employs an explainable stochastic structural similarity loss, ensuring highquality, artifact-free reconstructions from incomplete imagery. Experiments demonstrate that DeclutterNeRF significantly outperforms state-of-the-art methods on our proposed DeclutterSet, establishing a strong baseline for future research. All the code and data will be released.},
-  booktitle={Under review},
-  year={2024},
+  booktitle={IEEE/CVF CVPR 2025 CV4Metaverse Workshop (CVPRW)},
+  year={2025},
   preview={declutternerf.png},
-  selected={true}
+  arxiv={2504.04679},
+  selected={true},
+  bibtex_show = {true}
 }
 
 @inproceedings{liu2022time,
   abbr={ICCAID},
   title={As Time Goes By: Dynamic Face Aging Method Using CycleGAN},
   author={Liu, Wanzhou},
-  abstract={Image-to-image style transfer using generative adversarial networks (GANs) has been extensively studied in computer vision, with numerous models proposed to enhance output performance. However, existing research predominantly focuses on improving model architecture and output quality, while the intermediate transformation process during style transfer remains underexplored. In this paper, we investigate the intermediate feature representations in style transfer based on CycleGAN and propose a novel approach to dynamically generate facial aging images by leveraging intermediate-layer gradients. Specifically, we utilize PyTorch's autograd mechanism to compute and extract the gradients of non-leaf nodes within the network, facilitating a more interpretable and controllable style transition process. Experimental results on the AGFW-v2 dataset demonstrate the feasibility of our approach, revealing progressive changes in facial aging stages. Furthermore, the insights gained from processing intermediate-layer features can be extended to other tasks, such as photo enhancement and image dehazing, offering a new perspective for improving the controllability of generative models.},
   booktitle={International Conference on Computer Graphics, Artificial Intelligence, and Data Processing (ICCAID)},
   volume={12168},
   pages={290--296},
@@ -39,5 +43,6 @@ https://github.com/alshedivat/al-folio/blob/main/CUSTOMIZE.md#adding-a-new-publi
   preview={cyclegan.png},
   pdf={121681C.pdf},
   website={https://www.spiedigitallibrary.org/conference-proceedings-of-spie/12168/121681C/As-time-goes-by--dynamic-face-aging-method-using/10.1117/12.2631420.full},
-  selected={true}
+  selected={true},
+  bibtex_show = {true}
 }
