@@ -25,6 +25,6 @@ Welcome to my website! I am currently a first-year CS PhD student at [Pitt](http
 
 I am intrigued by cutting-edge computer vision techniques, including multimodal large language models, 3D spatiotemporal perception, computational photography, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research.
 
-Deeply inspired by the spirit of [Prof. Jeremy Howard](https://jeremy.fast.ai/), I have an ultimate dream to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai). I believe this journey begins with a commitment to helping others and fostering collaboration. If you have any questions or ideas in mind, please feel free to reach out!
+Deeply inspired by [Prof. Jeremy Howard](https://jeremy.fast.ai/), I have an ultimate dream to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai), which actually launched my journey into machine learning. I believe this journey begins with a commitment to helping others and fostering collaboration. If you have any questions or ideas in mind, please feel free to reach out!
 
 Aside from research, I find great joy in literature and photography. You can find some of my photos tucked away in a quiet corner of this web. :)
