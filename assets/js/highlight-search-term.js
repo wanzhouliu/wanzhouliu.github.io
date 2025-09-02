@@ -39,9 +39,9 @@
  *   highlightSearchTerm({ search: search.value, selector: ".content" });
  * });
  */
-const highlightSearchTerm = ({ search, selector, customHighlightName = "search" }) => {
+const highlightSearchTerm = ({ search, selector, customHighlightName = 'search' }) => {
   if (!selector) {
-    throw new Error("The selector argument is required");
+    throw new Error('The selector argument is required');
   }
 
   if (!CSS.highlights) return; // disable feature on Firefox as it does not support CSS Custom Highlight API
@@ -93,7 +93,7 @@ const getTextNodesInElementContainingText = (element, text) => {
 // Fix: We changed this function to work on the node directly, rather than on its parent element.
 const getRangesForSearchTermInNode = (node, search) => {
   const ranges = [];
-  const text = (node.textContent ? node.textContent.toLowerCase() : "") || "";
+  const text = (node.textContent ? node.textContent.toLowerCase() : '') || '';
 
   let start = 0;
   let index;

@@ -1,6 +1,6 @@
 name: 🐛 Report a bug
 description: Any errors.
-labels: ["needs triage", "bug"]
+labels: ['needs triage', 'bug']
 body:
   - type: markdown
     attributes:
@@ -52,7 +52,7 @@ body:
       label: Error messages and logs
       description: >
         Provide any error messages and/or logs
-      placeholder: "Copy the complete error messages and logs"
+      placeholder: 'Copy the complete error messages and logs'
       value: |
         ```
         The error message you got, with the full traceback if available. Please paste it between these triple backticks.
@@ -81,10 +81,10 @@ body:
       description: select all environments where you have experienced this issue
       multiple: true
       options:
-        - "Running locally with Docker (docker compose)"
-        - "Running locally with Docker (devcontainer)"
-        - "Running locally without Docker"
-        - "Deployed site"
+        - 'Running locally with Docker (docker compose)'
+        - 'Running locally with Docker (devcontainer)'
+        - 'Running locally without Docker'
+        - 'Deployed site'
     validations:
       required: true
 
@@ -99,4 +99,4 @@ body:
 
   - type: markdown
     attributes:
-      value: "**Happy coding!**"
+      value: '**Happy coding!**'

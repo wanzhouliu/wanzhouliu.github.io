@@ -1,13 +1,13 @@
 (function (global, factory) {
-  typeof exports === "object" && typeof module !== "undefined"
-    ? factory(exports, require("fs"))
-    : typeof define === "function" && define.amd
-      ? define(["exports", "fs"], factory)
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports, require('fs'))
+    : typeof define === 'function' && define.amd
+      ? define(['exports', 'fs'], factory)
       : ((global = global || self), factory((global.dl = {}), global.fs));
 })(this, function (exports, fs) {
-  "use strict";
+  'use strict';
 
-  fs = fs && Object.prototype.hasOwnProperty.call(fs, "default") ? fs["default"] : fs;
+  fs = fs && Object.prototype.hasOwnProperty.call(fs, 'default') ? fs['default'] : fs;
 
   // Copyright 2018 The Distill Template Authors
   //
@@ -23,9 +23,22 @@
   // See the License for the specific language governing permissions and
   // limitations under the License.
 
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const months = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
-  const zeroPad = (n) => (n < 10 ? "0" + n : n);
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const months = [
+    'Jan.',
+    'Feb.',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'Aug.',
+    'Sept.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ];
+  const zeroPad = (n) => (n < 10 ? '0' + n : n);
 
   const RFC = function (date) {
     const day = days[date.getDay()].substring(0, 3);
@@ -74,13 +87,13 @@
 
     // 'Chris'
     get firstName() {
-      const names = this.name.split(" ");
-      return names.slice(0, names.length - 1).join(" ");
+      const names = this.name.split(' ');
+      return names.slice(0, names.length - 1).join(' ');
     }
 
     // 'Olah'
     get lastName() {
-      const names = this.name.split(" ");
+      const names = this.name.split(' ');
       return names[names.length - 1];
     }
   }
@@ -114,8 +127,8 @@
 
   class FrontMatter {
     constructor() {
-      this.title = "unnamed article"; // 'Attention and Augmented Recurrent Neural Networks'
-      this.description = ""; // 'A visual overview of neural attention...'
+      this.title = 'unnamed article'; // 'Attention and Augmented Recurrent Neural Networks'
+      this.description = ''; // 'A visual overview of neural attention...'
       this.authors = []; // Array of Author(s)
 
       this.bibliography = new Map();
@@ -200,7 +213,7 @@
       if (this._url) {
         return this._url;
       } else if (this.distillPath && this.journal.url) {
-        return this.journal.url + "/" + this.distillPath;
+        return this.journal.url + '/' + this.distillPath;
       } else if (this.journal.url) {
         return this.journal.url;
       }
@@ -209,7 +222,7 @@
     // 'https://github.com/distillpub/post--augmented-rnns',
     get githubUrl() {
       if (this.githubPath) {
-        return "https://github.com/" + this.githubPath;
+        return 'https://github.com/' + this.githubPath;
       } else {
         return undefined;
       }
@@ -221,7 +234,7 @@
       this._previewURL = value;
     }
     get previewURL() {
-      return this._previewURL ? this._previewURL : this.url + "/thumbnail.jpg";
+      return this._previewURL ? this._previewURL : this.url + '/thumbnail.jpg';
     }
 
     // 'Thu, 08 Sep 2016 00:00:00 -0700',
@@ -260,13 +273,13 @@
     }
 
     get publishedISODateOnly() {
-      return this.publishedDate.toISOString().split("T")[0];
+      return this.publishedDate.toISOString().split('T')[0];
     }
 
     get volume() {
       const volume = this.publishedYear - 2015;
       if (volume < 1) {
-        throw new Error("Invalid publish date detected during computing volume");
+        throw new Error('Invalid publish date detected during computing volume');
       }
       return volume;
     }
@@ -278,9 +291,9 @@
     // 'Olah & Carter',
     get concatenatedAuthors() {
       if (this.authors.length > 2) {
-        return this.authors[0].lastName + ", et al.";
+        return this.authors[0].lastName + ', et al.';
       } else if (this.authors.length === 2) {
-        return this.authors[0].lastName + " & " + this.authors[1].lastName;
+        return this.authors[0].lastName + ' & ' + this.authors[1].lastName;
       } else if (this.authors.length === 1) {
         return this.authors[0].lastName;
       }
@@ -290,20 +303,20 @@
     get bibtexAuthors() {
       return this.authors
         .map((author) => {
-          return author.lastName + ", " + author.firstName;
+          return author.lastName + ', ' + author.firstName;
         })
-        .join(" and ");
+        .join(' and ');
     }
 
     // 'olah2016attention'
     get slug() {
-      let slug = "";
+      let slug = '';
       if (this.authors.length) {
         slug += this.authors[0].lastName.toLowerCase();
         slug += this.publishedYear;
-        slug += this.title.split(" ")[0].toLowerCase();
+        slug += this.title.split(' ')[0].toLowerCase();
       }
-      return slug || "Untitled";
+      return slug || 'Untitled';
     }
 
     get bibliographyEntries() {
@@ -318,7 +331,7 @@
     set bibliography(bibliography) {
       if (bibliography instanceof Map) {
         this._bibliography = bibliography;
-      } else if (typeof bibliography === "object") {
+      } else if (typeof bibliography === 'object') {
         this._bibliography = mapFromObject(bibliography);
       }
     }
@@ -399,17 +412,17 @@
   function parseFrontmatter(element) {
     const scriptTag = element.firstElementChild;
     if (scriptTag) {
-      const type = scriptTag.getAttribute("type");
-      if (type.split("/")[1] == "json") {
+      const type = scriptTag.getAttribute('type');
+      if (type.split('/')[1] == 'json') {
         const content = scriptTag.textContent;
         const parsed = JSON.parse(content);
         return _moveLegacyAffiliationFormatIntoArray(parsed);
       } else {
-        console.error("Distill only supports JSON frontmatter tags anymore; no more YAML.");
+        console.error('Distill only supports JSON frontmatter tags anymore; no more YAML.');
       }
     } else {
       console.error(
-        "You added a frontmatter tag but did not provide a script tag with front matter data in it. Please take a look at our templates."
+        'You added a frontmatter tag but did not provide a script tag with front matter data in it. Please take a look at our templates.'
       );
     }
     return {};
@@ -418,9 +431,9 @@
   // Copyright 2018 The Distill Template Authors
 
   function ExtractFrontmatter(dom, data) {
-    const frontMatterTag = dom.querySelector("d-front-matter");
+    const frontMatterTag = dom.querySelector('d-front-matter');
     if (!frontMatterTag) {
-      console.warn("No front matter tag found!");
+      console.warn('No front matter tag found!');
       return;
     }
     const extractedData = parseFrontmatter(frontMatterTag);
@@ -428,15 +441,17 @@
   }
 
   function commonjsRequire() {
-    throw new Error("Dynamic requires are not currently supported by rollup-plugin-commonjs");
+    throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
   }
 
   function unwrapExports(x) {
-    return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+    return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default')
+      ? x['default']
+      : x;
   }
 
   function createCommonjsModule(fn, module) {
-    return (module = { exports: {} }), fn(module, module.exports), module.exports;
+    return ((module = { exports: {} }), fn(module, module.exports), module.exports);
   }
 
   var bibtexParse = createCommonjsModule(function (module, exports) {
@@ -465,13 +480,26 @@
     //value_braces -> '{' .*? '"'; // not quite
     (function (exports) {
       function BibtexParser() {
-        this.months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-        this.notKey = [",", "{", "}", " ", "="];
+        this.months = [
+          'jan',
+          'feb',
+          'mar',
+          'apr',
+          'may',
+          'jun',
+          'jul',
+          'aug',
+          'sep',
+          'oct',
+          'nov',
+          'dec',
+        ];
+        this.notKey = [',', '{', '}', ' ', '='];
         this.pos = 0;
-        this.input = "";
+        this.input = '';
         this.entries = new Array();
 
-        this.currentEntry = "";
+        this.currentEntry = '';
 
         this.setInput = function (t) {
           this.input = t;
@@ -482,7 +510,7 @@
         };
 
         this.isWhitespace = function (s) {
-          return s == " " || s == "\r" || s == "\t" || s == "\n";
+          return s == ' ' || s == '\r' || s == '\t' || s == '\n';
         };
 
         this.match = function (s, canCommentOut) {
@@ -491,7 +519,7 @@
           if (this.input.substring(this.pos, this.pos + s.length) == s) {
             this.pos += s.length;
           } else {
-            throw "Token mismatch, expected " + s + ", found " + this.input.substring(this.pos);
+            throw 'Token mismatch, expected ' + s + ', found ' + this.input.substring(this.pos);
           }
           this.skipWhitespace(canCommentOut);
         };
@@ -508,10 +536,10 @@
 
         /* when search for a match all text can be ignored, not just white space */
         this.matchAt = function () {
-          while (this.input.length > this.pos && this.input[this.pos] != "@") {
+          while (this.input.length > this.pos && this.input[this.pos] != '@') {
             this.pos++;
           }
-          if (this.input[this.pos] == "@") {
+          if (this.input[this.pos] == '@') {
             return true;
           }
           return false;
@@ -521,8 +549,8 @@
           while (this.isWhitespace(this.input[this.pos])) {
             this.pos++;
           }
-          if (this.input[this.pos] == "%" && canCommentOut == true) {
-            while (this.input[this.pos] != "\n") {
+          if (this.input[this.pos] == '%' && canCommentOut == true) {
+            while (this.input[this.pos] != '\n') {
               this.pos++;
             }
             this.skipWhitespace(canCommentOut);
@@ -531,40 +559,40 @@
 
         this.value_braces = function () {
           var bracecount = 0;
-          this.match("{", false);
+          this.match('{', false);
           var start = this.pos;
           var escaped = false;
           while (true) {
             if (!escaped) {
-              if (this.input[this.pos] == "}") {
+              if (this.input[this.pos] == '}') {
                 if (bracecount > 0) {
                   bracecount--;
                 } else {
                   var end = this.pos;
-                  this.match("}", false);
+                  this.match('}', false);
                   return this.input.substring(start, end);
                 }
-              } else if (this.input[this.pos] == "{") {
+              } else if (this.input[this.pos] == '{') {
                 bracecount++;
               } else if (this.pos >= this.input.length - 1) {
-                throw "Unterminated value";
+                throw 'Unterminated value';
               }
             }
-            if (this.input[this.pos] == "\\" && escaped == false) escaped = true;
+            if (this.input[this.pos] == '\\' && escaped == false) escaped = true;
             else escaped = false;
             this.pos++;
           }
         };
 
         this.value_comment = function () {
-          var str = "";
+          var str = '';
           var brcktCnt = 0;
-          while (!(this.tryMatch("}", false) && brcktCnt == 0)) {
+          while (!(this.tryMatch('}', false) && brcktCnt == 0)) {
             str = str + this.input[this.pos];
-            if (this.input[this.pos] == "{") brcktCnt++;
-            if (this.input[this.pos] == "}") brcktCnt--;
+            if (this.input[this.pos] == '{') brcktCnt++;
+            if (this.input[this.pos] == '}') brcktCnt--;
             if (this.pos >= this.input.length - 1) {
-              throw "Unterminated value:" + this.input.substring(start);
+              throw 'Unterminated value:' + this.input.substring(start);
             }
             this.pos++;
           }
@@ -582,10 +610,10 @@
                 this.match('"', false);
                 return this.input.substring(start, end);
               } else if (this.pos >= this.input.length - 1) {
-                throw "Unterminated value:" + this.input.substring(start);
+                throw 'Unterminated value:' + this.input.substring(start);
               }
             }
-            if (this.input[this.pos] == "\\" && escaped == false) escaped = true;
+            if (this.input[this.pos] == '\\' && escaped == false) escaped = true;
             else escaped = false;
             this.pos++;
           }
@@ -593,33 +621,33 @@
 
         this.single_value = function () {
           var start = this.pos;
-          if (this.tryMatch("{")) {
+          if (this.tryMatch('{')) {
             return this.value_braces();
           } else if (this.tryMatch('"')) {
             return this.value_quotes();
           } else {
             var k = this.key();
-            if (k.match("^[0-9]+$")) return k;
+            if (k.match('^[0-9]+$')) return k;
             else if (this.months.indexOf(k.toLowerCase()) >= 0) return k.toLowerCase();
-            else throw "Value expected:" + this.input.substring(start) + " for key: " + k;
+            else throw 'Value expected:' + this.input.substring(start) + ' for key: ' + k;
           }
         };
 
         this.value = function () {
           var values = [];
           values.push(this.single_value());
-          while (this.tryMatch("#")) {
-            this.match("#");
+          while (this.tryMatch('#')) {
+            this.match('#');
             values.push(this.single_value());
           }
-          return values.join("");
+          return values.join('');
         };
 
         this.key = function () {
           var start = this.pos;
           while (true) {
             if (this.pos >= this.input.length) {
-              throw "Runaway key";
+              throw 'Runaway key';
             } // а-яА-Я is Cyrillic
             //console.log(this.input[this.pos]);
             if (this.notKey.indexOf(this.input[this.pos]) >= 0) {
@@ -632,55 +660,55 @@
 
         this.key_equals_value = function () {
           var key = this.key();
-          if (this.tryMatch("=")) {
-            this.match("=");
+          if (this.tryMatch('=')) {
+            this.match('=');
             var val = this.value();
             return [key, val];
           } else {
-            throw "... = value expected, equals sign missing:" + this.input.substring(this.pos);
+            throw '... = value expected, equals sign missing:' + this.input.substring(this.pos);
           }
         };
 
         this.key_value_list = function () {
           var kv = this.key_equals_value();
-          this.currentEntry["entryTags"] = {};
-          this.currentEntry["entryTags"][kv[0]] = kv[1];
-          while (this.tryMatch(",")) {
-            this.match(",");
+          this.currentEntry['entryTags'] = {};
+          this.currentEntry['entryTags'][kv[0]] = kv[1];
+          while (this.tryMatch(',')) {
+            this.match(',');
             // fixes problems with commas at the end of a list
-            if (this.tryMatch("}")) {
+            if (this.tryMatch('}')) {
               break;
             }
             kv = this.key_equals_value();
-            this.currentEntry["entryTags"][kv[0]] = kv[1];
+            this.currentEntry['entryTags'][kv[0]] = kv[1];
           }
         };
 
         this.entry_body = function (d) {
           this.currentEntry = {};
-          this.currentEntry["citationKey"] = this.key();
-          this.currentEntry["entryType"] = d.substring(1);
-          this.match(",");
+          this.currentEntry['citationKey'] = this.key();
+          this.currentEntry['entryType'] = d.substring(1);
+          this.match(',');
           this.key_value_list();
           this.entries.push(this.currentEntry);
         };
 
         this.directive = function () {
-          this.match("@");
-          return "@" + this.key();
+          this.match('@');
+          return '@' + this.key();
         };
 
         this.preamble = function () {
           this.currentEntry = {};
-          this.currentEntry["entryType"] = "PREAMBLE";
-          this.currentEntry["entry"] = this.value_comment();
+          this.currentEntry['entryType'] = 'PREAMBLE';
+          this.currentEntry['entry'] = this.value_comment();
           this.entries.push(this.currentEntry);
         };
 
         this.comment = function () {
           this.currentEntry = {};
-          this.currentEntry["entryType"] = "COMMENT";
-          this.currentEntry["entry"] = this.value_comment();
+          this.currentEntry['entryType'] = 'COMMENT';
+          this.currentEntry['entry'] = this.value_comment();
           this.entries.push(this.currentEntry);
         };
 
@@ -691,17 +719,17 @@
         this.bibtex = function () {
           while (this.matchAt()) {
             var d = this.directive();
-            this.match("{");
-            if (d == "@STRING") {
+            this.match('{');
+            if (d == '@STRING') {
               this.string();
-            } else if (d == "@PREAMBLE") {
+            } else if (d == '@PREAMBLE') {
               this.preamble();
-            } else if (d == "@COMMENT") {
+            } else if (d == '@COMMENT') {
               this.comment();
             } else {
               this.entry(d);
             }
-            this.match("}");
+            this.match('}');
           }
         };
       }
@@ -714,21 +742,21 @@
 
       /* added during hackathon don't hate on me */
       exports.toBibtex = function (json) {
-        var out = "";
+        var out = '';
         for (var i in json) {
-          out += "@" + json[i].entryType;
-          out += "{";
-          if (json[i].citationKey) out += json[i].citationKey + ", ";
+          out += '@' + json[i].entryType;
+          out += '{';
+          if (json[i].citationKey) out += json[i].citationKey + ', ';
           if (json[i].entry) out += json[i].entry;
           if (json[i].entryTags) {
-            var tags = "";
+            var tags = '';
             for (var jdx in json[i].entryTags) {
-              if (tags.length != 0) tags += ", ";
-              tags += jdx + "= {" + json[i].entryTags[jdx] + "}";
+              if (tags.length != 0) tags += ', ';
+              tags += jdx + '= {' + json[i].entryTags[jdx] + '}';
             }
             out += tags;
           }
-          out += "}\n\n";
+          out += '}\n\n';
         }
         return out;
       };
@@ -741,7 +769,7 @@
 
   function normalizeTag(string) {
     return string
-      .replace(/[\t\n ]+/g, " ")
+      .replace(/[\t\n ]+/g, ' ')
       .replace(/{\\["^`.'acu~Hvs]( )?([a-zA-Z])}/g, (full, x, char) => char)
       .replace(/{\\([a-zA-Z])}/g, (full, char) => char);
   }
@@ -776,39 +804,39 @@
 
   function parseBibliography(element) {
     const scriptTag = element.firstElementChild;
-    if (scriptTag && scriptTag.tagName === "SCRIPT") {
-      if (scriptTag.type == "text/bibtex") {
+    if (scriptTag && scriptTag.tagName === 'SCRIPT') {
+      if (scriptTag.type == 'text/bibtex') {
         const bibtex = element.firstElementChild.textContent;
         return parseBibtex(bibtex);
-      } else if (scriptTag.type == "text/json") {
+      } else if (scriptTag.type == 'text/json') {
         return new Map(JSON.parse(scriptTag.textContent));
       } else {
-        console.warn("Unsupported bibliography script tag type: " + scriptTag.type);
+        console.warn('Unsupported bibliography script tag type: ' + scriptTag.type);
       }
     } else {
-      console.warn("Bibliography did not have any script tag.");
+      console.warn('Bibliography did not have any script tag.');
     }
   }
 
   // Copyright 2018 The Distill Template Authors
 
   function ExtractBibliography(dom, data) {
-    const bibliographyTag = dom.querySelector("d-bibliography");
+    const bibliographyTag = dom.querySelector('d-bibliography');
     if (!bibliographyTag) {
-      console.warn("No bibliography tag found!");
+      console.warn('No bibliography tag found!');
       return;
     }
 
-    const src = bibliographyTag.getAttribute("src");
+    const src = bibliographyTag.getAttribute('src');
     if (src) {
-      const path = data.inputDirectory + "/" + src;
-      const text = fs.readFileSync(path, "utf-8");
+      const path = data.inputDirectory + '/' + src;
+      const text = fs.readFileSync(path, 'utf-8');
       const bibliography = parseBibtex(text);
-      const scriptTag = dom.createElement("script");
-      scriptTag.type = "text/json";
+      const scriptTag = dom.createElement('script');
+      scriptTag.type = 'text/json';
       scriptTag.textContent = JSON.stringify([...bibliography]);
       bibliographyTag.appendChild(scriptTag);
-      bibliographyTag.removeAttribute("src");
+      bibliographyTag.removeAttribute('src');
     }
 
     data.bibliography = parseBibliography(bibliographyTag);
@@ -830,10 +858,10 @@
 
   function collect_citations(dom = document) {
     const citations = new Set();
-    const citeTags = dom.querySelectorAll("d-cite");
+    const citeTags = dom.querySelectorAll('d-cite');
     for (const tag of citeTags) {
-      const keyString = tag.getAttribute("key") || tag.getAttribute("bibtex-key");
-      const keys = keyString.split(",").map((k) => k.trim());
+      const keyString = tag.getAttribute('key') || tag.getAttribute('bibtex-key');
+      const keys = keyString.split(',').map((k) => k.trim());
       for (const key of keys) {
         citations.add(key);
       }
@@ -843,29 +871,33 @@
 
   function author_string(ent, template, sep, finalSep) {
     if (ent.author == null) {
-      return "";
+      return '';
     }
-    var names = ent.author.split(" and ");
+    var names = ent.author.split(' and ');
     let name_strings = names.map((name) => {
       name = name.trim();
-      if (name.indexOf(",") != -1) {
-        var last = name.split(",")[0].trim();
-        var firsts = name.split(",")[1];
-      } else if (name.indexOf(" ") != -1) {
-        var last = name.split(" ").slice(-1)[0].trim();
-        var firsts = name.split(" ").slice(0, -1).join(" ");
+      if (name.indexOf(',') != -1) {
+        var last = name.split(',')[0].trim();
+        var firsts = name.split(',')[1];
+      } else if (name.indexOf(' ') != -1) {
+        var last = name.split(' ').slice(-1)[0].trim();
+        var firsts = name.split(' ').slice(0, -1).join(' ');
       } else {
         var last = name.trim();
       }
-      var initials = "";
+      var initials = '';
       if (firsts != undefined) {
         initials = firsts
           .trim()
-          .split(" ")
+          .split(' ')
           .map((s) => s.trim()[0]);
-        initials = initials.join(".") + ".";
+        initials = initials.join('.') + '.';
       }
-      return template.replace("${F}", firsts).replace("${L}", last).replace("${I}", initials).trim(); // in case one of first or last was empty
+      return template
+        .replace('${F}', firsts)
+        .replace('${L}', last)
+        .replace('${I}', initials)
+        .trim(); // in case one of first or last was empty
     });
     if (names.length > 1) {
       var str = name_strings.slice(0, names.length - 1).join(sep);
@@ -877,69 +909,69 @@
   }
 
   function venue_string(ent) {
-    var cite = ent.journal || ent.booktitle || "";
-    if ("volume" in ent) {
+    var cite = ent.journal || ent.booktitle || '';
+    if ('volume' in ent) {
       var issue = ent.issue || ent.number;
-      issue = issue != undefined ? "(" + issue + ")" : "";
-      cite += ", Vol " + ent.volume + issue;
+      issue = issue != undefined ? '(' + issue + ')' : '';
+      cite += ', Vol ' + ent.volume + issue;
     }
-    if ("pages" in ent) {
-      cite += ", pp. " + ent.pages;
+    if ('pages' in ent) {
+      cite += ', pp. ' + ent.pages;
     }
-    if (cite != "") cite += ". ";
-    if ("publisher" in ent) {
+    if (cite != '') cite += '. ';
+    if ('publisher' in ent) {
       cite += ent.publisher;
-      if (cite[cite.length - 1] != ".") cite += ".";
+      if (cite[cite.length - 1] != '.') cite += '.';
     }
     return cite;
   }
 
   function link_string(ent) {
-    if ("url" in ent) {
+    if ('url' in ent) {
       var url = ent.url;
       var arxiv_match = /arxiv\.org\/abs\/([0-9\.]*)/.exec(url);
       if (arxiv_match != null) {
         url = `http://arxiv.org/pdf/${arxiv_match[1]}.pdf`;
       }
 
-      if (url.slice(-4) == ".pdf") {
-        var label = "PDF";
-      } else if (url.slice(-5) == ".html") {
-        var label = "HTML";
+      if (url.slice(-4) == '.pdf') {
+        var label = 'PDF';
+      } else if (url.slice(-5) == '.html') {
+        var label = 'HTML';
       }
-      return ` &ensp;<a href="${url}">[${label || "link"}]</a>`;
+      return ` &ensp;<a href="${url}">[${label || 'link'}]</a>`;
     } /* else if ("doi" in ent){
       return ` &ensp;<a href="https://doi.org/${ent.doi}" >[DOI]</a>`;
     }*/ else {
-      return "";
+      return '';
     }
   }
   function doi_string(ent, new_line) {
-    if ("doi" in ent) {
-      return `${new_line ? "<br>" : ""} <a href="https://doi.org/${ent.doi}" style="text-decoration:inherit;">DOI: ${ent.doi}</a>`;
+    if ('doi' in ent) {
+      return `${new_line ? '<br>' : ''} <a href="https://doi.org/${ent.doi}" style="text-decoration:inherit;">DOI: ${ent.doi}</a>`;
     } else {
-      return "";
+      return '';
     }
   }
 
   function title_string(ent) {
-    return '<span class="title">' + ent.title + "</span> ";
+    return '<span class="title">' + ent.title + '</span> ';
   }
 
   function bibliography_cite(ent, fancy) {
     if (ent) {
       var cite = title_string(ent);
-      cite += link_string(ent) + "<br>";
+      cite += link_string(ent) + '<br>';
       if (ent.author) {
-        cite += author_string(ent, "${L}, ${I}", ", ", " and ");
+        cite += author_string(ent, '${L}, ${I}', ', ', ' and ');
         if (ent.year || ent.date) {
-          cite += ", ";
+          cite += ', ';
         }
       }
       if (ent.year || ent.date) {
-        cite += (ent.year || ent.date) + ". ";
+        cite += (ent.year || ent.date) + '. ';
       } else {
-        cite += ". ";
+        cite += '. ';
       }
       cite += venue_string(ent);
       cite += doi_string(ent);
@@ -956,7 +988,7 @@
       cite += link_string(ent);
       return cite*/
     } else {
-      return "?";
+      return '?';
     }
   }
 
@@ -986,25 +1018,25 @@
   // limitations under the License.
 
   function HTML(dom) {
-    const head = dom.querySelector("head");
+    const head = dom.querySelector('head');
 
     // set language to 'en'
-    if (!dom.querySelector("html").getAttribute("lang")) {
-      dom.querySelector("html").setAttribute("lang", "en");
+    if (!dom.querySelector('html').getAttribute('lang')) {
+      dom.querySelector('html').setAttribute('lang', 'en');
     }
 
     // set charset to 'utf-8'
-    if (!dom.querySelector("meta[charset]")) {
-      const meta = dom.createElement("meta");
-      meta.setAttribute("charset", "utf-8");
+    if (!dom.querySelector('meta[charset]')) {
+      const meta = dom.createElement('meta');
+      meta.setAttribute('charset', 'utf-8');
       head.appendChild(meta);
     }
 
     // set viewport
-    if (!dom.querySelector("meta[name=viewport]")) {
-      const meta = dom.createElement("meta");
-      meta.setAttribute("name", "viewport");
-      meta.setAttribute("content", "width=device-width, initial-scale=1");
+    if (!dom.querySelector('meta[name=viewport]')) {
+      const meta = dom.createElement('meta');
+      meta.setAttribute('name', 'viewport');
+      meta.setAttribute('content', 'width=device-width, initial-scale=1');
       head.appendChild(meta);
     }
   }
@@ -1050,11 +1082,11 @@
               ? `<a class="affiliation" href="${affiliation.url}">${affiliation.name}</a>`
               : `<span class="affiliation">${affiliation.name}</span>`
           )
-          .join(", ")}
+          .join(', ')}
         </p>
       `
         )
-        .join("")}
+        .join('')}
     </div>
     <div>
       <h3>Published</h3>
@@ -1073,7 +1105,7 @@
   // Copyright 2018 The Distill Template Authors
 
   function Byline(dom, data) {
-    const byline = dom.querySelector("d-byline");
+    const byline = dom.querySelector('d-byline');
     if (byline) {
       byline.innerHTML = bylineTemplate(data);
     }
@@ -1104,44 +1136,44 @@
 
   function OptionalComponents(dom, data) {
     const body = dom.body;
-    const article = body.querySelector("d-article");
+    const article = body.querySelector('d-article');
 
     // If we don't have an article tag, something weird is going on—giving up.
     if (!article) {
-      console.warn("No d-article tag found; skipping adding optional components!");
+      console.warn('No d-article tag found; skipping adding optional components!');
       return;
     }
 
-    let byline = dom.querySelector("d-byline");
+    let byline = dom.querySelector('d-byline');
     if (!byline) {
       if (data.authors) {
-        byline = dom.createElement("d-byline");
+        byline = dom.createElement('d-byline');
         body.insertBefore(byline, article);
       } else {
-        console.warn("No authors found in front matter; please add them before submission!");
+        console.warn('No authors found in front matter; please add them before submission!');
       }
     }
 
-    let title = dom.querySelector("d-title");
+    let title = dom.querySelector('d-title');
     if (!title) {
-      title = dom.createElement("d-title");
+      title = dom.createElement('d-title');
       body.insertBefore(title, byline);
     }
 
-    let h1 = title.querySelector("h1");
+    let h1 = title.querySelector('h1');
     if (!h1) {
-      h1 = dom.createElement("h1");
+      h1 = dom.createElement('h1');
       h1.textContent = data.title;
       title.insertBefore(h1, title.firstChild);
     }
 
-    const hasPassword = typeof data.password !== "undefined";
-    let interstitial = body.querySelector("d-interstitial");
+    const hasPassword = typeof data.password !== 'undefined';
+    let interstitial = body.querySelector('d-interstitial');
     if (hasPassword && !interstitial) {
-      const inBrowser = typeof window !== "undefined";
-      const onLocalhost = inBrowser && window.location.hostname.includes("localhost");
+      const inBrowser = typeof window !== 'undefined';
+      const onLocalhost = inBrowser && window.location.hostname.includes('localhost');
       if (!inBrowser || !onLocalhost) {
-        interstitial = dom.createElement("d-interstitial");
+        interstitial = dom.createElement('d-interstitial');
         interstitial.password = data.password;
         body.insertBefore(interstitial, body.firstChild);
       }
@@ -1149,21 +1181,21 @@
       interstitial.parentElement.removeChild(this);
     }
 
-    let appendix = dom.querySelector("d-appendix");
+    let appendix = dom.querySelector('d-appendix');
     if (!appendix) {
-      appendix = dom.createElement("d-appendix");
+      appendix = dom.createElement('d-appendix');
       dom.body.appendChild(appendix);
     }
 
-    let footnoteList = dom.querySelector("d-footnote-list");
+    let footnoteList = dom.querySelector('d-footnote-list');
     if (!footnoteList) {
-      footnoteList = dom.createElement("d-footnote-list");
+      footnoteList = dom.createElement('d-footnote-list');
       appendix.appendChild(footnoteList);
     }
 
-    let citationList = dom.querySelector("d-citation-list");
+    let citationList = dom.querySelector('d-citation-list');
     if (!citationList) {
-      citationList = dom.createElement("d-citation-list");
+      citationList = dom.createElement('d-citation-list');
       appendix.appendChild(citationList);
     }
   }
@@ -1178,11 +1210,11 @@
         function s(o, u) {
           if (!n[o]) {
             if (!t[o]) {
-              var a = typeof commonjsRequire == "function" && commonjsRequire;
+              var a = typeof commonjsRequire == 'function' && commonjsRequire;
               if (!u && a) return a(o, !0);
               if (i) return i(o, !0);
               var f = new Error("Cannot find module '" + o + "'");
-              throw ((f.code = "MODULE_NOT_FOUND"), f);
+              throw ((f.code = 'MODULE_NOT_FOUND'), f);
             }
             var l = (n[o] = { exports: {} });
             t[o][0].call(
@@ -1201,30 +1233,30 @@
           }
           return n[o].exports;
         }
-        var i = typeof commonjsRequire == "function" && commonjsRequire;
+        var i = typeof commonjsRequire == 'function' && commonjsRequire;
         for (var o = 0; o < r.length; o++) s(r[o]);
         return s;
       })(
         {
           1: [
             function (require, module, exports) {
-              var _ParseError = require("./src/ParseError");
+              var _ParseError = require('./src/ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _Settings = require("./src/Settings");
+              var _Settings = require('./src/Settings');
 
               var _Settings2 = _interopRequireDefault(_Settings);
 
-              var _buildTree = require("./src/buildTree");
+              var _buildTree = require('./src/buildTree');
 
               var _buildTree2 = _interopRequireDefault(_buildTree);
 
-              var _parseTree = require("./src/parseTree");
+              var _parseTree = require('./src/parseTree');
 
               var _parseTree2 = _interopRequireDefault(_parseTree);
 
-              var _utils = require("./src/utils");
+              var _utils = require('./src/utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -1258,10 +1290,13 @@
                * errors in the expression, or errors in javascript handling.
                */
 
-              if (typeof document !== "undefined") {
-                if (document.compatMode !== "CSS1Compat") {
-                  typeof console !== "undefined" &&
-                    console.warn("Warning: KaTeX doesn't work in quirks mode. Make sure your " + "website has a suitable doctype.");
+              if (typeof document !== 'undefined') {
+                if (document.compatMode !== 'CSS1Compat') {
+                  typeof console !== 'undefined' &&
+                    console.warn(
+                      "Warning: KaTeX doesn't work in quirks mode. Make sure your " +
+                        'website has a suitable doctype.'
+                    );
 
                   render = function render() {
                     throw new _ParseError2.default("KaTeX doesn't work in quirks mode.");
@@ -1300,30 +1335,30 @@
               };
             },
             {
-              "./src/ParseError": 29,
-              "./src/Settings": 32,
-              "./src/buildTree": 37,
-              "./src/parseTree": 46,
-              "./src/utils": 51,
+              './src/ParseError': 29,
+              './src/Settings': 32,
+              './src/buildTree': 37,
+              './src/parseTree': 46,
+              './src/utils': 51,
             },
           ],
           2: [
             function (require, module, exports) {
               module.exports = {
-                default: require("core-js/library/fn/json/stringify"),
+                default: require('core-js/library/fn/json/stringify'),
                 __esModule: true,
               };
             },
-            { "core-js/library/fn/json/stringify": 6 },
+            { 'core-js/library/fn/json/stringify': 6 },
           ],
           3: [
             function (require, module, exports) {
               module.exports = {
-                default: require("core-js/library/fn/object/define-property"),
+                default: require('core-js/library/fn/object/define-property'),
                 __esModule: true,
               };
             },
-            { "core-js/library/fn/object/define-property": 7 },
+            { 'core-js/library/fn/object/define-property': 7 },
           ],
           4: [
             function (require, module, exports) {
@@ -1331,7 +1366,7 @@
 
               exports.default = function (instance, Constructor) {
                 if (!(instance instanceof Constructor)) {
-                  throw new TypeError("Cannot call a class as a function");
+                  throw new TypeError('Cannot call a class as a function');
                 }
               };
             },
@@ -1341,7 +1376,7 @@
             function (require, module, exports) {
               exports.__esModule = true;
 
-              var _defineProperty = require("../core-js/object/define-property");
+              var _defineProperty = require('../core-js/object/define-property');
 
               var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -1355,7 +1390,7 @@
                     var descriptor = props[i];
                     descriptor.enumerable = descriptor.enumerable || false;
                     descriptor.configurable = true;
-                    if ("value" in descriptor) descriptor.writable = true;
+                    if ('value' in descriptor) descriptor.writable = true;
                     (0, _defineProperty2.default)(target, descriptor.key, descriptor);
                   }
                 }
@@ -1367,36 +1402,36 @@
                 };
               })();
             },
-            { "../core-js/object/define-property": 3 },
+            { '../core-js/object/define-property': 3 },
           ],
           6: [
             function (require, module, exports) {
-              var core = require("../../modules/_core"),
+              var core = require('../../modules/_core'),
                 $JSON = core.JSON || (core.JSON = { stringify: JSON.stringify });
               module.exports = function stringify(it) {
                 // eslint-disable-line no-unused-vars
                 return $JSON.stringify.apply($JSON, arguments);
               };
             },
-            { "../../modules/_core": 10 },
+            { '../../modules/_core': 10 },
           ],
           7: [
             function (require, module, exports) {
-              require("../../modules/es6.object.define-property");
-              var $Object = require("../../modules/_core").Object;
+              require('../../modules/es6.object.define-property');
+              var $Object = require('../../modules/_core').Object;
               module.exports = function defineProperty(it, key, desc) {
                 return $Object.defineProperty(it, key, desc);
               };
             },
             {
-              "../../modules/_core": 10,
-              "../../modules/es6.object.define-property": 23,
+              '../../modules/_core': 10,
+              '../../modules/es6.object.define-property': 23,
             },
           ],
           8: [
             function (require, module, exports) {
               module.exports = function (it) {
-                if (typeof it != "function") throw TypeError(it + " is not a function!");
+                if (typeof it != 'function') throw TypeError(it + ' is not a function!');
                 return it;
               };
             },
@@ -1404,25 +1439,25 @@
           ],
           9: [
             function (require, module, exports) {
-              var isObject = require("./_is-object");
+              var isObject = require('./_is-object');
               module.exports = function (it) {
-                if (!isObject(it)) throw TypeError(it + " is not an object!");
+                if (!isObject(it)) throw TypeError(it + ' is not an object!');
                 return it;
               };
             },
-            { "./_is-object": 19 },
+            { './_is-object': 19 },
           ],
           10: [
             function (require, module, exports) {
-              var core = (module.exports = { version: "2.4.0" });
-              if (typeof __e == "number") __e = core; // eslint-disable-line no-undef
+              var core = (module.exports = { version: '2.4.0' });
+              if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
             },
             {},
           ],
           11: [
             function (require, module, exports) {
               // optional / simple context binding
-              var aFunction = require("./_a-function");
+              var aFunction = require('./_a-function');
               module.exports = function (fn, that, length) {
                 aFunction(fn);
                 if (that === undefined) return fn;
@@ -1445,14 +1480,14 @@
                 };
               };
             },
-            { "./_a-function": 8 },
+            { './_a-function': 8 },
           ],
           12: [
             function (require, module, exports) {
               // Thank's IE8 for his funny defineProperty
-              module.exports = !require("./_fails")(function () {
+              module.exports = !require('./_fails')(function () {
                 return (
-                  Object.defineProperty({}, "a", {
+                  Object.defineProperty({}, 'a', {
                     get: function () {
                       return 7;
                     },
@@ -1460,27 +1495,27 @@
                 );
               });
             },
-            { "./_fails": 15 },
+            { './_fails': 15 },
           ],
           13: [
             function (require, module, exports) {
-              var isObject = require("./_is-object"),
-                document = require("./_global").document,
+              var isObject = require('./_is-object'),
+                document = require('./_global').document,
                 // in old IE typeof document.createElement is 'object'
                 is = isObject(document) && isObject(document.createElement);
               module.exports = function (it) {
                 return is ? document.createElement(it) : {};
               };
             },
-            { "./_global": 16, "./_is-object": 19 },
+            { './_global': 16, './_is-object': 19 },
           ],
           14: [
             function (require, module, exports) {
-              var global = require("./_global"),
-                core = require("./_core"),
-                ctx = require("./_ctx"),
-                hide = require("./_hide"),
-                PROTOTYPE = "prototype";
+              var global = require('./_global'),
+                core = require('./_core'),
+                ctx = require('./_ctx'),
+                hide = require('./_hide'),
+                PROTOTYPE = 'prototype';
 
               var $export = function (type, name, source) {
                 var IS_FORCED = type & $export.F,
@@ -1491,7 +1526,11 @@
                   IS_WRAP = type & $export.W,
                   exports = IS_GLOBAL ? core : core[name] || (core[name] = {}),
                   expProto = exports[PROTOTYPE],
-                  target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE],
+                  target = IS_GLOBAL
+                    ? global
+                    : IS_STATIC
+                      ? global[name]
+                      : (global[name] || {})[PROTOTYPE],
                   key,
                   own,
                   out;
@@ -1504,7 +1543,7 @@
                   out = own ? target[key] : source[key];
                   // prevent global pollution for namespaces
                   exports[key] =
-                    IS_GLOBAL && typeof target[key] != "function"
+                    IS_GLOBAL && typeof target[key] != 'function'
                       ? source[key]
                       : // bind timers to global for call from export context
                         IS_BIND && own
@@ -1530,7 +1569,7 @@
                               return F;
                               // make static versions for prototype methods
                             })(out)
-                          : IS_PROTO && typeof out == "function"
+                          : IS_PROTO && typeof out == 'function'
                             ? ctx(Function.call, out)
                             : out;
                   // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
@@ -1553,10 +1592,10 @@
               module.exports = $export;
             },
             {
-              "./_core": 10,
-              "./_ctx": 11,
-              "./_global": 16,
-              "./_hide": 17,
+              './_core': 10,
+              './_ctx': 11,
+              './_global': 16,
+              './_hide': 17,
             },
           ],
           15: [
@@ -1575,20 +1614,20 @@
             function (require, module, exports) {
               // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
               var global = (module.exports =
-                typeof window != "undefined" && window.Math == Math
+                typeof window != 'undefined' && window.Math == Math
                   ? window
-                  : typeof self != "undefined" && self.Math == Math
+                  : typeof self != 'undefined' && self.Math == Math
                     ? self
-                    : Function("return this")());
-              if (typeof __g == "number") __g = global; // eslint-disable-line no-undef
+                    : Function('return this')());
+              if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
             },
             {},
           ],
           17: [
             function (require, module, exports) {
-              var dP = require("./_object-dp"),
-                createDesc = require("./_property-desc");
-              module.exports = require("./_descriptors")
+              var dP = require('./_object-dp'),
+                createDesc = require('./_property-desc');
+              module.exports = require('./_descriptors')
                 ? function (object, key, value) {
                     return dP.f(object, key, createDesc(1, value));
                   }
@@ -1598,18 +1637,18 @@
                   };
             },
             {
-              "./_descriptors": 12,
-              "./_object-dp": 20,
-              "./_property-desc": 21,
+              './_descriptors': 12,
+              './_object-dp': 20,
+              './_property-desc': 21,
             },
           ],
           18: [
             function (require, module, exports) {
               module.exports =
-                !require("./_descriptors") &&
-                !require("./_fails")(function () {
+                !require('./_descriptors') &&
+                !require('./_fails')(function () {
                   return (
-                    Object.defineProperty(require("./_dom-create")("div"), "a", {
+                    Object.defineProperty(require('./_dom-create')('div'), 'a', {
                       get: function () {
                         return 7;
                       },
@@ -1618,27 +1657,27 @@
                 });
             },
             {
-              "./_descriptors": 12,
-              "./_dom-create": 13,
-              "./_fails": 15,
+              './_descriptors': 12,
+              './_dom-create': 13,
+              './_fails': 15,
             },
           ],
           19: [
             function (require, module, exports) {
               module.exports = function (it) {
-                return typeof it === "object" ? it !== null : typeof it === "function";
+                return typeof it === 'object' ? it !== null : typeof it === 'function';
               };
             },
             {},
           ],
           20: [
             function (require, module, exports) {
-              var anObject = require("./_an-object"),
-                IE8_DOM_DEFINE = require("./_ie8-dom-define"),
-                toPrimitive = require("./_to-primitive"),
+              var anObject = require('./_an-object'),
+                IE8_DOM_DEFINE = require('./_ie8-dom-define'),
+                toPrimitive = require('./_to-primitive'),
                 dP = Object.defineProperty;
 
-              exports.f = require("./_descriptors")
+              exports.f = require('./_descriptors')
                 ? Object.defineProperty
                 : function defineProperty(O, P, Attributes) {
                     anObject(O);
@@ -1650,16 +1689,17 @@
                       } catch (e) {
                         /* empty */
                       }
-                    if ("get" in Attributes || "set" in Attributes) throw TypeError("Accessors not supported!");
-                    if ("value" in Attributes) O[P] = Attributes.value;
+                    if ('get' in Attributes || 'set' in Attributes)
+                      throw TypeError('Accessors not supported!');
+                    if ('value' in Attributes) O[P] = Attributes.value;
                     return O;
                   };
             },
             {
-              "./_an-object": 9,
-              "./_descriptors": 12,
-              "./_ie8-dom-define": 18,
-              "./_to-primitive": 22,
+              './_an-object': 9,
+              './_descriptors': 12,
+              './_ie8-dom-define': 18,
+              './_to-primitive': 22,
             },
           ],
           21: [
@@ -1678,30 +1718,35 @@
           22: [
             function (require, module, exports) {
               // 7.1.1 ToPrimitive(input [, PreferredType])
-              var isObject = require("./_is-object");
+              var isObject = require('./_is-object');
               // instead of the ES6 spec version, we didn't implement @@toPrimitive case
               // and the second argument - flag - preferred type is a string
               module.exports = function (it, S) {
                 if (!isObject(it)) return it;
                 var fn, val;
-                if (S && typeof (fn = it.toString) == "function" && !isObject((val = fn.call(it)))) return val;
-                if (typeof (fn = it.valueOf) == "function" && !isObject((val = fn.call(it)))) return val;
-                if (!S && typeof (fn = it.toString) == "function" && !isObject((val = fn.call(it)))) return val;
+                if (S && typeof (fn = it.toString) == 'function' && !isObject((val = fn.call(it))))
+                  return val;
+                if (typeof (fn = it.valueOf) == 'function' && !isObject((val = fn.call(it))))
+                  return val;
+                if (!S && typeof (fn = it.toString) == 'function' && !isObject((val = fn.call(it))))
+                  return val;
                 throw TypeError("Can't convert object to primitive value");
               };
             },
-            { "./_is-object": 19 },
+            { './_is-object': 19 },
           ],
           23: [
             function (require, module, exports) {
-              var $export = require("./_export");
+              var $export = require('./_export');
               // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
-              $export($export.S + $export.F * !require("./_descriptors"), "Object", { defineProperty: require("./_object-dp").f });
+              $export($export.S + $export.F * !require('./_descriptors'), 'Object', {
+                defineProperty: require('./_object-dp').f,
+              });
             },
             {
-              "./_descriptors": 12,
-              "./_export": 14,
-              "./_object-dp": 20,
+              './_descriptors': 12,
+              './_export': 14,
+              './_object-dp': 20,
             },
           ],
           24: [
@@ -1712,10 +1757,14 @@
                   // Disjunctions are the lowest-precedence operator, so we can make any
                   // pattern match the empty string by appending `|()` to it:
                   // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-patterns
-                  var source = re.source + "|()";
+                  var source = re.source + '|()';
 
                   // We always make the new regex global.
-                  var flags = "g" + (re.ignoreCase ? "i" : "") + (re.multiline ? "m" : "") + (re.unicode ? "u" : "");
+                  var flags =
+                    'g' +
+                    (re.ignoreCase ? 'i' : '') +
+                    (re.multiline ? 'm' : '') +
+                    (re.unicode ? 'u' : '');
                   // sticky (/.../y) doesn't make sense in conjunction with our relocation
                   // logic, so we ignore it here.
                   re.__matchAtRelocatable = new RegExp(source, flags);
@@ -1725,7 +1774,7 @@
 
               function matchAt(re, str, pos) {
                 if (re.global || re.sticky) {
-                  throw new Error("matchAt(...): Only non-global regexes are supported");
+                  throw new Error('matchAt(...): Only non-global regexes are supported');
                 }
                 var reloc = getRelocatable(re);
                 reloc.lastIndex = pos;
@@ -1753,7 +1802,7 @@
 
               function toObject(val) {
                 if (val === null || val === undefined) {
-                  throw new TypeError("Object.assign cannot be called with null or undefined");
+                  throw new TypeError('Object.assign cannot be called with null or undefined');
                 }
 
                 return Object(val);
@@ -1768,30 +1817,30 @@
                   // Detect buggy property enumeration order in older V8 versions.
 
                   // https://bugs.chromium.org/p/v8/issues/detail?id=4118
-                  var test1 = new String("abc"); // eslint-disable-line
-                  test1[5] = "de";
-                  if (Object.getOwnPropertyNames(test1)[0] === "5") {
+                  var test1 = new String('abc'); // eslint-disable-line
+                  test1[5] = 'de';
+                  if (Object.getOwnPropertyNames(test1)[0] === '5') {
                     return false;
                   }
 
                   // https://bugs.chromium.org/p/v8/issues/detail?id=3056
                   var test2 = {};
                   for (var i = 0; i < 10; i++) {
-                    test2["_" + String.fromCharCode(i)] = i;
+                    test2['_' + String.fromCharCode(i)] = i;
                   }
                   var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
                     return test2[n];
                   });
-                  if (order2.join("") !== "0123456789") {
+                  if (order2.join('') !== '0123456789') {
                     return false;
                   }
 
                   // https://bugs.chromium.org/p/v8/issues/detail?id=3056
                   var test3 = {};
-                  "abcdefghijklmnopqrst".split("").forEach(function (letter) {
+                  'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
                     test3[letter] = letter;
                   });
-                  if (Object.keys(Object.assign({}, test3)).join("") !== "abcdefghijklmnopqrst") {
+                  if (Object.keys(Object.assign({}, test3)).join('') !== 'abcdefghijklmnopqrst') {
                     return false;
                   }
 
@@ -1835,19 +1884,19 @@
           ],
           26: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _matchAt = require("match-at");
+              var _matchAt = require('match-at');
 
               var _matchAt2 = _interopRequireDefault(_matchAt);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
@@ -1907,7 +1956,7 @@
 
                 (0, _createClass3.default)(Token, [
                   {
-                    key: "range",
+                    key: 'range',
                     value: function range(endToken, text) {
                       if (endToken.lexer !== this.lexer) {
                         return new Token(text); // sorry, no position information available
@@ -1936,11 +1985,11 @@
                */
 
               var tokenRegex = new RegExp(
-                "([ \r\n\t]+)|" + // whitespace
-                  "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" + // single codepoint
-                  "|[\uD800-\uDBFF][\uDC00-\uDFFF]" + // surrogate pair
-                  "|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])" + // function name
-                  ")"
+                '([ \r\n\t]+)|' + // whitespace
+                  '([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]' + // single codepoint
+                  '|[\uD800-\uDBFF][\uDC00-\uDFFF]' + // surrogate pair
+                  '|\\\\(?:[a-zA-Z]+|[^\uD800-\uDFFF])' + // function name
+                  ')'
               );
 
               /*
@@ -1961,18 +2010,21 @@
 
                 (0, _createClass3.default)(Lexer, [
                   {
-                    key: "lex",
+                    key: 'lex',
                     value: function lex() {
                       var input = this.input;
                       var pos = this.pos;
                       if (pos === input.length) {
-                        return new Token("EOF", pos, pos, this);
+                        return new Token('EOF', pos, pos, this);
                       }
                       var match = (0, _matchAt2.default)(tokenRegex, input, pos);
                       if (match === null) {
-                        throw new _ParseError2.default("Unexpected character: '" + input[pos] + "'", new Token(input[pos], pos, pos + 1, this));
+                        throw new _ParseError2.default(
+                          "Unexpected character: '" + input[pos] + "'",
+                          new Token(input[pos], pos, pos + 1, this)
+                        );
                       }
-                      var text = match[2] || " ";
+                      var text = match[2] || ' ';
                       var start = this.pos;
                       this.pos += match[0].length;
                       var end = this.pos;
@@ -1986,35 +2038,35 @@
               module.exports = Lexer;
             },
             {
-              "./ParseError": 29,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
-              "match-at": 24,
+              './ParseError': 29,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
+              'match-at': 24,
             },
           ],
           27: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _Lexer = require("./Lexer");
+              var _Lexer = require('./Lexer');
 
               var _Lexer2 = _interopRequireDefault(_Lexer);
 
-              var _macros = require("./macros");
+              var _macros = require('./macros');
 
               var _macros2 = _interopRequireDefault(_macros);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _objectAssign = require("object-assign");
+              var _objectAssign = require('object-assign');
 
               var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
@@ -2047,7 +2099,7 @@
 
                 (0, _createClass3.default)(MacroExpander, [
                   {
-                    key: "nextToken",
+                    key: 'nextToken',
                     value: function nextToken() {
                       for (;;) {
                         if (this.stack.length === 0) {
@@ -2055,23 +2107,23 @@
                         }
                         var topToken = this.stack.pop();
                         var name = topToken.text;
-                        if (!(name.charAt(0) === "\\" && this.macros.hasOwnProperty(name))) {
+                        if (!(name.charAt(0) === '\\' && this.macros.hasOwnProperty(name))) {
                           return topToken;
                         }
                         var tok = void 0;
                         var expansion = this.macros[name];
-                        if (typeof expansion === "string") {
+                        if (typeof expansion === 'string') {
                           var numArgs = 0;
-                          if (expansion.indexOf("#") !== -1) {
-                            var stripped = expansion.replace(/##/g, "");
-                            while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
+                          if (expansion.indexOf('#') !== -1) {
+                            var stripped = expansion.replace(/##/g, '');
+                            while (stripped.indexOf('#' + (numArgs + 1)) !== -1) {
                               ++numArgs;
                             }
                           }
                           var bodyLexer = new _Lexer2.default(expansion);
                           expansion = [];
                           tok = bodyLexer.lex();
-                          while (tok.text !== "EOF") {
+                          while (tok.text !== 'EOF') {
                             expansion.push(tok);
                             tok = bodyLexer.lex();
                           }
@@ -2085,25 +2137,31 @@
                           // obtain arguments, either single token or balanced {…} group
                           for (i = 0; i < expansion.numArgs; ++i) {
                             var startOfArg = this.get(true);
-                            if (startOfArg.text === "{") {
+                            if (startOfArg.text === '{') {
                               var arg = [];
                               var depth = 1;
                               while (depth !== 0) {
                                 tok = this.get(false);
                                 arg.push(tok);
-                                if (tok.text === "{") {
+                                if (tok.text === '{') {
                                   ++depth;
-                                } else if (tok.text === "}") {
+                                } else if (tok.text === '}') {
                                   --depth;
-                                } else if (tok.text === "EOF") {
-                                  throw new _ParseError2.default("End of input in macro argument", startOfArg);
+                                } else if (tok.text === 'EOF') {
+                                  throw new _ParseError2.default(
+                                    'End of input in macro argument',
+                                    startOfArg
+                                  );
                                 }
                               }
                               arg.pop(); // remove last }
                               arg.reverse(); // like above, to fit in with stack order
                               args[i] = arg;
-                            } else if (startOfArg.text === "EOF") {
-                              throw new _ParseError2.default("End of input expecting macro argument", topToken);
+                            } else if (startOfArg.text === 'EOF') {
+                              throw new _ParseError2.default(
+                                'End of input expecting macro argument',
+                                topToken
+                              );
                             } else {
                               args[i] = [startOfArg];
                             }
@@ -2112,21 +2170,27 @@
                           expansion = expansion.slice(); // make a shallow copy
                           for (i = expansion.length - 1; i >= 0; --i) {
                             tok = expansion[i];
-                            if (tok.text === "#") {
+                            if (tok.text === '#') {
                               if (i === 0) {
-                                throw new _ParseError2.default("Incomplete placeholder at end of macro body", tok);
+                                throw new _ParseError2.default(
+                                  'Incomplete placeholder at end of macro body',
+                                  tok
+                                );
                               }
                               tok = expansion[--i]; // next token on stack
-                              if (tok.text === "#") {
+                              if (tok.text === '#') {
                                 // ## → #
                                 expansion.splice(i + 1, 1); // drop first #
                               } else if (/^[1-9]$/.test(tok.text)) {
                                 // expansion.splice(i, 2, arg[0], arg[1], …)
                                 // to replace placeholder with the indicated argument.
                                 // TODO: use spread once we move to ES2015
-                                expansion.splice.apply(expansion, [i, 2].concat(args[tok.text - 1]));
+                                expansion.splice.apply(
+                                  expansion,
+                                  [i, 2].concat(args[tok.text - 1])
+                                );
                               } else {
-                                throw new _ParseError2.default("Not a valid argument number", tok);
+                                throw new _ParseError2.default('Not a valid argument number', tok);
                               }
                             }
                           }
@@ -2136,12 +2200,12 @@
                     },
                   },
                   {
-                    key: "get",
+                    key: 'get',
                     value: function get(ignoreSpace) {
                       this.discardedWhiteSpace = [];
                       var token = this.nextToken();
                       if (ignoreSpace) {
-                        while (token.text === " ") {
+                        while (token.text === ' ') {
                           this.discardedWhiteSpace.push(token);
                           token = this.nextToken();
                         }
@@ -2158,7 +2222,7 @@
                      */
                   },
                   {
-                    key: "unget",
+                    key: 'unget',
                     value: function unget(token) {
                       this.stack.push(token);
                       while (this.discardedWhiteSpace.length !== 0) {
@@ -2173,25 +2237,25 @@
               module.exports = MacroExpander;
             },
             {
-              "./Lexer": 26,
-              "./ParseError": 29,
-              "./macros": 44,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
-              "object-assign": 25,
+              './Lexer': 26,
+              './ParseError': 29,
+              './macros': 44,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
+              'object-assign': 25,
             },
           ],
           28: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _fontMetrics2 = require("./fontMetrics");
+              var _fontMetrics2 = require('./fontMetrics');
 
               var _fontMetrics3 = _interopRequireDefault(_fontMetrics2);
 
@@ -2261,7 +2325,7 @@
 
                 (0, _createClass3.default)(Options, [
                   {
-                    key: "extend",
+                    key: 'extend',
                     value: function extend(extension) {
                       var data = {
                         style: this.style,
@@ -2287,7 +2351,7 @@
                      */
                   },
                   {
-                    key: "havingStyle",
+                    key: 'havingStyle',
                     value: function havingStyle(style) {
                       if (this.style === style) {
                         return this;
@@ -2305,7 +2369,7 @@
                      */
                   },
                   {
-                    key: "havingCrampedStyle",
+                    key: 'havingCrampedStyle',
                     value: function havingCrampedStyle() {
                       return this.havingStyle(this.style.cramp());
                     },
@@ -2316,7 +2380,7 @@
                      */
                   },
                   {
-                    key: "havingSize",
+                    key: 'havingSize',
                     value: function havingSize(size) {
                       if (this.size === size && this.textSize === size) {
                         return this;
@@ -2335,11 +2399,15 @@
                      */
                   },
                   {
-                    key: "havingBaseStyle",
+                    key: 'havingBaseStyle',
                     value: function havingBaseStyle(style) {
                       style = style || this.style.text();
                       var wantSize = sizeAtStyle(BASESIZE, style);
-                      if (this.size === wantSize && this.textSize === BASESIZE && this.style === style) {
+                      if (
+                        this.size === wantSize &&
+                        this.textSize === BASESIZE &&
+                        this.style === style
+                      ) {
                         return this;
                       } else {
                         return this.extend({
@@ -2355,7 +2423,7 @@
                      */
                   },
                   {
-                    key: "withColor",
+                    key: 'withColor',
                     value: function withColor(color) {
                       return this.extend({
                         color: color,
@@ -2367,7 +2435,7 @@
                      */
                   },
                   {
-                    key: "withPhantom",
+                    key: 'withPhantom',
                     value: function withPhantom() {
                       return this.extend({
                         phantom: true,
@@ -2379,7 +2447,7 @@
                      */
                   },
                   {
-                    key: "withFont",
+                    key: 'withFont',
                     value: function withFont(font) {
                       return this.extend({
                         font: font || this.font,
@@ -2392,10 +2460,10 @@
                      */
                   },
                   {
-                    key: "sizingClasses",
+                    key: 'sizingClasses',
                     value: function sizingClasses(oldOptions) {
                       if (oldOptions.size !== this.size) {
-                        return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
+                        return ['sizing', 'reset-size' + oldOptions.size, 'size' + this.size];
                       } else {
                         return [];
                       }
@@ -2407,10 +2475,10 @@
                      */
                   },
                   {
-                    key: "baseSizingClasses",
+                    key: 'baseSizingClasses',
                     value: function baseSizingClasses() {
                       if (this.size !== BASESIZE) {
-                        return ["sizing", "reset-size" + this.size, "size" + BASESIZE];
+                        return ['sizing', 'reset-size' + this.size, 'size' + BASESIZE];
                       } else {
                         return [];
                       }
@@ -2421,7 +2489,7 @@
                      */
                   },
                   {
-                    key: "fontMetrics",
+                    key: 'fontMetrics',
                     value: function fontMetrics() {
                       if (!this._fontMetrics) {
                         this._fontMetrics = _fontMetrics3.default.getFontMetrics(this.size);
@@ -2435,7 +2503,7 @@
                      */
                   },
                   {
-                    key: "getColor",
+                    key: 'getColor',
 
                     /**
                      * Gets the CSS color of the current options object, accounting for the
@@ -2443,7 +2511,7 @@
                      */
                     value: function getColor() {
                       if (this.phantom) {
-                        return "transparent";
+                        return 'transparent';
                       } else {
                         return Options.colorMap[this.color] || this.color;
                       }
@@ -2458,76 +2526,76 @@
                */
 
               Options.colorMap = {
-                "katex-blue": "#6495ed",
-                "katex-orange": "#ffa500",
-                "katex-pink": "#ff00af",
-                "katex-red": "#df0030",
-                "katex-green": "#28ae7b",
-                "katex-gray": "gray",
-                "katex-purple": "#9d38bd",
-                "katex-blueA": "#ccfaff",
-                "katex-blueB": "#80f6ff",
-                "katex-blueC": "#63d9ea",
-                "katex-blueD": "#11accd",
-                "katex-blueE": "#0c7f99",
-                "katex-tealA": "#94fff5",
-                "katex-tealB": "#26edd5",
-                "katex-tealC": "#01d1c1",
-                "katex-tealD": "#01a995",
-                "katex-tealE": "#208170",
-                "katex-greenA": "#b6ffb0",
-                "katex-greenB": "#8af281",
-                "katex-greenC": "#74cf70",
-                "katex-greenD": "#1fab54",
-                "katex-greenE": "#0d923f",
-                "katex-goldA": "#ffd0a9",
-                "katex-goldB": "#ffbb71",
-                "katex-goldC": "#ff9c39",
-                "katex-goldD": "#e07d10",
-                "katex-goldE": "#a75a05",
-                "katex-redA": "#fca9a9",
-                "katex-redB": "#ff8482",
-                "katex-redC": "#f9685d",
-                "katex-redD": "#e84d39",
-                "katex-redE": "#bc2612",
-                "katex-maroonA": "#ffbde0",
-                "katex-maroonB": "#ff92c6",
-                "katex-maroonC": "#ed5fa6",
-                "katex-maroonD": "#ca337c",
-                "katex-maroonE": "#9e034e",
-                "katex-purpleA": "#ddd7ff",
-                "katex-purpleB": "#c6b9fc",
-                "katex-purpleC": "#aa87ff",
-                "katex-purpleD": "#7854ab",
-                "katex-purpleE": "#543b78",
-                "katex-mintA": "#f5f9e8",
-                "katex-mintB": "#edf2df",
-                "katex-mintC": "#e0e5cc",
-                "katex-grayA": "#f6f7f7",
-                "katex-grayB": "#f0f1f2",
-                "katex-grayC": "#e3e5e6",
-                "katex-grayD": "#d6d8da",
-                "katex-grayE": "#babec2",
-                "katex-grayF": "#888d93",
-                "katex-grayG": "#626569",
-                "katex-grayH": "#3b3e40",
-                "katex-grayI": "#21242c",
-                "katex-kaBlue": "#314453",
-                "katex-kaGreen": "#71B307",
+                'katex-blue': '#6495ed',
+                'katex-orange': '#ffa500',
+                'katex-pink': '#ff00af',
+                'katex-red': '#df0030',
+                'katex-green': '#28ae7b',
+                'katex-gray': 'gray',
+                'katex-purple': '#9d38bd',
+                'katex-blueA': '#ccfaff',
+                'katex-blueB': '#80f6ff',
+                'katex-blueC': '#63d9ea',
+                'katex-blueD': '#11accd',
+                'katex-blueE': '#0c7f99',
+                'katex-tealA': '#94fff5',
+                'katex-tealB': '#26edd5',
+                'katex-tealC': '#01d1c1',
+                'katex-tealD': '#01a995',
+                'katex-tealE': '#208170',
+                'katex-greenA': '#b6ffb0',
+                'katex-greenB': '#8af281',
+                'katex-greenC': '#74cf70',
+                'katex-greenD': '#1fab54',
+                'katex-greenE': '#0d923f',
+                'katex-goldA': '#ffd0a9',
+                'katex-goldB': '#ffbb71',
+                'katex-goldC': '#ff9c39',
+                'katex-goldD': '#e07d10',
+                'katex-goldE': '#a75a05',
+                'katex-redA': '#fca9a9',
+                'katex-redB': '#ff8482',
+                'katex-redC': '#f9685d',
+                'katex-redD': '#e84d39',
+                'katex-redE': '#bc2612',
+                'katex-maroonA': '#ffbde0',
+                'katex-maroonB': '#ff92c6',
+                'katex-maroonC': '#ed5fa6',
+                'katex-maroonD': '#ca337c',
+                'katex-maroonE': '#9e034e',
+                'katex-purpleA': '#ddd7ff',
+                'katex-purpleB': '#c6b9fc',
+                'katex-purpleC': '#aa87ff',
+                'katex-purpleD': '#7854ab',
+                'katex-purpleE': '#543b78',
+                'katex-mintA': '#f5f9e8',
+                'katex-mintB': '#edf2df',
+                'katex-mintC': '#e0e5cc',
+                'katex-grayA': '#f6f7f7',
+                'katex-grayB': '#f0f1f2',
+                'katex-grayC': '#e3e5e6',
+                'katex-grayD': '#d6d8da',
+                'katex-grayE': '#babec2',
+                'katex-grayF': '#888d93',
+                'katex-grayG': '#626569',
+                'katex-grayH': '#3b3e40',
+                'katex-grayI': '#21242c',
+                'katex-kaBlue': '#314453',
+                'katex-kaGreen': '#71B307',
               };
               Options.BASESIZE = BASESIZE;
 
               module.exports = Options;
             },
             {
-              "./fontMetrics": 41,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
+              './fontMetrics': 41,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
             },
           ],
           29: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
@@ -2549,7 +2617,7 @@
               var ParseError = function ParseError(message, token) {
                 (0, _classCallCheck3.default)(this, ParseError);
 
-                var error = "KaTeX parse error: " + message;
+                var error = 'KaTeX parse error: ' + message;
                 var start = void 0;
                 var end = void 0;
 
@@ -2563,24 +2631,24 @@
                   start = token.start;
                   end = token.end;
                   if (start === input.length) {
-                    error += " at end of input: ";
+                    error += ' at end of input: ';
                   } else {
-                    error += " at position " + (start + 1) + ": ";
+                    error += ' at position ' + (start + 1) + ': ';
                   }
 
                   // Underline token in question using combining underscores
-                  var underlined = input.slice(start, end).replace(/[^]/g, "$&\u0332");
+                  var underlined = input.slice(start, end).replace(/[^]/g, '$&\u0332');
 
                   // Extract some context from the input and add it to the error
                   var left = void 0;
                   if (start > 15) {
-                    left = "…" + input.slice(start - 15, start);
+                    left = '…' + input.slice(start - 15, start);
                   } else {
                     left = input.slice(0, start);
                   }
                   var right = void 0;
                   if (end + 15 < input.length) {
-                    right = input.slice(end, end + 15) + "…";
+                    right = input.slice(end, end + 15) + '…';
                   } else {
                     right = input.slice(end);
                   }
@@ -2590,7 +2658,7 @@
                 // Some hackery to make ParseError a prototype of Error
                 // See http://stackoverflow.com/a/8460753
                 var self = new Error(error);
-                self.name = "ParseError";
+                self.name = 'ParseError';
                 self.__proto__ = ParseError.prototype;
 
                 self.position = start;
@@ -2603,15 +2671,15 @@
 
               module.exports = ParseError;
             },
-            { "babel-runtime/helpers/classCallCheck": 4 },
+            { 'babel-runtime/helpers/classCallCheck': 4 },
           ],
           30: [
             function (require, module, exports) {
-              Object.defineProperty(exports, "__esModule", {
+              Object.defineProperty(exports, '__esModule', {
                 value: true,
               });
 
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
@@ -2651,49 +2719,49 @@
 
               exports.default = ParseNode;
             },
-            { "babel-runtime/helpers/classCallCheck": 4 },
+            { 'babel-runtime/helpers/classCallCheck': 4 },
           ],
           31: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _functions = require("./functions");
+              var _functions = require('./functions');
 
               var _functions2 = _interopRequireDefault(_functions);
 
-              var _environments = require("./environments");
+              var _environments = require('./environments');
 
               var _environments2 = _interopRequireDefault(_environments);
 
-              var _MacroExpander = require("./MacroExpander");
+              var _MacroExpander = require('./MacroExpander');
 
               var _MacroExpander2 = _interopRequireDefault(_MacroExpander);
 
-              var _symbols = require("./symbols");
+              var _symbols = require('./symbols');
 
               var _symbols2 = _interopRequireDefault(_symbols);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
-              var _units = require("./units");
+              var _units = require('./units');
 
               var _units2 = _interopRequireDefault(_units);
 
-              var _unicodeRegexes = require("./unicodeRegexes");
+              var _unicodeRegexes = require('./unicodeRegexes');
 
-              var _ParseNode = require("./ParseNode");
+              var _ParseNode = require('./ParseNode');
 
               var _ParseNode2 = _interopRequireDefault(_ParseNode);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
@@ -2756,7 +2824,7 @@
                   // Use old \color behavior (same as LaTeX's \textcolor) if requested.
                   // We do this after the macros object has been copied by MacroExpander.
                   if (settings.colorIsTextColor) {
-                    this.gullet.macros["\\color"] = "\\textcolor";
+                    this.gullet.macros['\\color'] = '\\textcolor';
                   }
                   // Store the settings for use in parsing
                   this.settings = settings;
@@ -2774,10 +2842,13 @@
 
                 (0, _createClass3.default)(Parser, [
                   {
-                    key: "expect",
+                    key: 'expect',
                     value: function expect(text, consume) {
                       if (this.nextToken.text !== text) {
-                        throw new _ParseError2.default("Expected '" + text + "', got '" + this.nextToken.text + "'", this.nextToken);
+                        throw new _ParseError2.default(
+                          "Expected '" + text + "', got '" + this.nextToken.text + "'",
+                          this.nextToken
+                        );
                       }
                       if (consume !== false) {
                         this.consume();
@@ -2790,13 +2861,13 @@
                      */
                   },
                   {
-                    key: "consume",
+                    key: 'consume',
                     value: function consume() {
-                      this.nextToken = this.gullet.get(this.mode === "math");
+                      this.nextToken = this.gullet.get(this.mode === 'math');
                     },
                   },
                   {
-                    key: "switchMode",
+                    key: 'switchMode',
                     value: function switchMode(newMode) {
                       this.gullet.unget(this.nextToken);
                       this.mode = newMode;
@@ -2810,10 +2881,10 @@
                      */
                   },
                   {
-                    key: "parse",
+                    key: 'parse',
                     value: function parse() {
                       // Try to parse the input
-                      this.mode = "math";
+                      this.mode = 'math';
                       this.consume();
                       var parse = this.parseInput();
                       return parse;
@@ -2824,17 +2895,17 @@
                      */
                   },
                   {
-                    key: "parseInput",
+                    key: 'parseInput',
                     value: function parseInput() {
                       // Parse an expression
                       var expression = this.parseExpression(false);
                       // If we succeeded, make sure there's an EOF at the end
-                      this.expect("EOF", false);
+                      this.expect('EOF', false);
                       return expression;
                     },
                   },
                   {
-                    key: "parseExpression",
+                    key: 'parseExpression',
 
                     /**
                      * Parses an "expression", which is a list of atoms.
@@ -2861,12 +2932,16 @@
                         if (breakOnTokenText && lex.text === breakOnTokenText) {
                           break;
                         }
-                        if (breakOnInfix && _functions2.default[lex.text] && _functions2.default[lex.text].infix) {
+                        if (
+                          breakOnInfix &&
+                          _functions2.default[lex.text] &&
+                          _functions2.default[lex.text].infix
+                        ) {
                           break;
                         }
                         var atom = this.parseAtom();
                         if (!atom) {
-                          if (!this.settings.throwOnError && lex.text[0] === "\\") {
+                          if (!this.settings.throwOnError && lex.text[0] === '\\') {
                             var errorNode = this.handleUnsupportedCmd();
                             body.push(errorNode);
                             continue;
@@ -2890,16 +2965,19 @@
                      */
                   },
                   {
-                    key: "handleInfixNodes",
+                    key: 'handleInfixNodes',
                     value: function handleInfixNodes(body) {
                       var overIndex = -1;
                       var funcName = void 0;
 
                       for (var i = 0; i < body.length; i++) {
                         var node = body[i];
-                        if (node.type === "infix") {
+                        if (node.type === 'infix') {
                           if (overIndex !== -1) {
-                            throw new _ParseError2.default("only one infix operator per group", node.value.token);
+                            throw new _ParseError2.default(
+                              'only one infix operator per group',
+                              node.value.token
+                            );
                           }
                           overIndex = i;
                           funcName = node.value.replaceWith;
@@ -2913,16 +2991,16 @@
                         var numerBody = body.slice(0, overIndex);
                         var denomBody = body.slice(overIndex + 1);
 
-                        if (numerBody.length === 1 && numerBody[0].type === "ordgroup") {
+                        if (numerBody.length === 1 && numerBody[0].type === 'ordgroup') {
                           numerNode = numerBody[0];
                         } else {
-                          numerNode = new _ParseNode2.default("ordgroup", numerBody, this.mode);
+                          numerNode = new _ParseNode2.default('ordgroup', numerBody, this.mode);
                         }
 
-                        if (denomBody.length === 1 && denomBody[0].type === "ordgroup") {
+                        if (denomBody.length === 1 && denomBody[0].type === 'ordgroup') {
                           denomNode = denomBody[0];
                         } else {
-                          denomNode = new _ParseNode2.default("ordgroup", denomBody, this.mode);
+                          denomNode = new _ParseNode2.default('ordgroup', denomBody, this.mode);
                         }
 
                         var value = this.callFunction(funcName, [numerNode, denomNode], null);
@@ -2935,7 +3013,7 @@
                     // The greediness of a superscript or subscript
                   },
                   {
-                    key: "handleSupSubscript",
+                    key: 'handleSupSubscript',
 
                     /**
                      * Handle a subscript or superscript with nice errors.
@@ -2947,10 +3025,13 @@
                       var group = this.parseGroup();
 
                       if (!group) {
-                        if (!this.settings.throwOnError && this.nextToken.text[0] === "\\") {
+                        if (!this.settings.throwOnError && this.nextToken.text[0] === '\\') {
                           return this.handleUnsupportedCmd();
                         } else {
-                          throw new _ParseError2.default("Expected group after '" + symbol + "'", symbolToken);
+                          throw new _ParseError2.default(
+                            "Expected group after '" + symbol + "'",
+                            symbolToken
+                          );
                         }
                       } else if (group.isFunction) {
                         // ^ and _ have a greediness, so handle interactions with functions'
@@ -2959,7 +3040,10 @@
                         if (funcGreediness > Parser.SUPSUB_GREEDINESS) {
                           return this.parseFunction(group);
                         } else {
-                          throw new _ParseError2.default("Got function '" + group.result + "' with no arguments " + "as " + name, symbolToken);
+                          throw new _ParseError2.default(
+                            "Got function '" + group.result + "' with no arguments " + 'as ' + name,
+                            symbolToken
+                          );
                         }
                       } else {
                         return group.result;
@@ -2972,30 +3056,30 @@
                      */
                   },
                   {
-                    key: "handleUnsupportedCmd",
+                    key: 'handleUnsupportedCmd',
                     value: function handleUnsupportedCmd() {
                       var text = this.nextToken.text;
                       var textordArray = [];
 
                       for (var i = 0; i < text.length; i++) {
-                        textordArray.push(new _ParseNode2.default("textord", text[i], "text"));
+                        textordArray.push(new _ParseNode2.default('textord', text[i], 'text'));
                       }
 
                       var textNode = new _ParseNode2.default(
-                        "text",
+                        'text',
                         {
                           body: textordArray,
-                          type: "text",
+                          type: 'text',
                         },
                         this.mode
                       );
 
                       var colorNode = new _ParseNode2.default(
-                        "color",
+                        'color',
                         {
                           color: this.settings.errorColor,
                           value: [textNode],
-                          type: "color",
+                          type: 'color',
                         },
                         this.mode
                       );
@@ -3011,14 +3095,14 @@
                      */
                   },
                   {
-                    key: "parseAtom",
+                    key: 'parseAtom',
                     value: function parseAtom() {
                       // The body of an atom is an implicit group, so that things like
                       // \left(x\right)^2 work correctly.
                       var base = this.parseImplicitGroup();
 
                       // In text mode, we don't have superscripts or subscripts
-                      if (this.mode === "text") {
+                      if (this.mode === 'text') {
                         return base;
                       }
 
@@ -3030,34 +3114,37 @@
                         // Lex the first token
                         var lex = this.nextToken;
 
-                        if (lex.text === "\\limits" || lex.text === "\\nolimits") {
+                        if (lex.text === '\\limits' || lex.text === '\\nolimits') {
                           // We got a limit control
-                          if (!base || base.type !== "op") {
-                            throw new _ParseError2.default("Limit controls must follow a math operator", lex);
+                          if (!base || base.type !== 'op') {
+                            throw new _ParseError2.default(
+                              'Limit controls must follow a math operator',
+                              lex
+                            );
                           } else {
-                            var limits = lex.text === "\\limits";
+                            var limits = lex.text === '\\limits';
                             base.value.limits = limits;
                             base.value.alwaysHandleSupSub = true;
                           }
                           this.consume();
-                        } else if (lex.text === "^") {
+                        } else if (lex.text === '^') {
                           // We got a superscript start
                           if (superscript) {
-                            throw new _ParseError2.default("Double superscript", lex);
+                            throw new _ParseError2.default('Double superscript', lex);
                           }
-                          superscript = this.handleSupSubscript("superscript");
-                        } else if (lex.text === "_") {
+                          superscript = this.handleSupSubscript('superscript');
+                        } else if (lex.text === '_') {
                           // We got a subscript start
                           if (subscript) {
-                            throw new _ParseError2.default("Double subscript", lex);
+                            throw new _ParseError2.default('Double subscript', lex);
                           }
-                          subscript = this.handleSupSubscript("subscript");
+                          subscript = this.handleSupSubscript('subscript');
                         } else if (lex.text === "'") {
                           // We got a prime
                           if (superscript) {
-                            throw new _ParseError2.default("Double superscript", lex);
+                            throw new _ParseError2.default('Double superscript', lex);
                           }
-                          var prime = new _ParseNode2.default("textord", "\\prime", this.mode);
+                          var prime = new _ParseNode2.default('textord', '\\prime', this.mode);
 
                           // Many primes can be grouped together, so we handle this here
                           var primes = [prime];
@@ -3070,11 +3157,11 @@
                           }
                           // If there's a superscript following the primes, combine that
                           // superscript in with the primes.
-                          if (this.nextToken.text === "^") {
-                            primes.push(this.handleSupSubscript("superscript"));
+                          if (this.nextToken.text === '^') {
+                            primes.push(this.handleSupSubscript('superscript'));
                           }
                           // Put everything into an ordgroup as the superscript
-                          superscript = new _ParseNode2.default("ordgroup", primes, this.mode);
+                          superscript = new _ParseNode2.default('ordgroup', primes, this.mode);
                         } else {
                           // If it wasn't ^, _, or ', stop parsing super/subscripts
                           break;
@@ -3084,7 +3171,7 @@
                       if (superscript || subscript) {
                         // If we got either a superscript or subscript, create a supsub
                         return new _ParseNode2.default(
-                          "supsub",
+                          'supsub',
                           {
                             base: base,
                             sup: superscript,
@@ -3105,7 +3192,7 @@
                     // Old font functions
                   },
                   {
-                    key: "parseImplicitGroup",
+                    key: 'parseImplicitGroup',
 
                     /**
                      * Parses an implicit group, which is a group that starts at the end of a
@@ -3128,7 +3215,7 @@
 
                       var func = start.result;
 
-                      if (func === "\\left") {
+                      if (func === '\\left') {
                         // If we see a left:
                         // Parse the entire left function (including the delimiter)
                         var left = this.parseFunction(start);
@@ -3137,10 +3224,10 @@
                         var body = this.parseExpression(false);
                         --this.leftrightDepth;
                         // Check the next token
-                        this.expect("\\right", false);
+                        this.expect('\\right', false);
                         var right = this.parseFunction();
                         return new _ParseNode2.default(
-                          "leftright",
+                          'leftright',
                           {
                             body: body,
                             left: left.value.value,
@@ -3148,17 +3235,20 @@
                           },
                           this.mode
                         );
-                      } else if (func === "\\begin") {
+                      } else if (func === '\\begin') {
                         // begin...end is similar to left...right
                         var begin = this.parseFunction(start);
                         var envName = begin.value.name;
                         if (!_environments2.default.hasOwnProperty(envName)) {
-                          throw new _ParseError2.default("No such environment: " + envName, begin.value.nameGroup);
+                          throw new _ParseError2.default(
+                            'No such environment: ' + envName,
+                            begin.value.nameGroup
+                          );
                         }
                         // Build the environment object. Arguments and other information will
                         // be made available to the begin and end methods using properties.
                         var env = _environments2.default[envName];
-                        var args = this.parseArguments("\\begin{" + envName + "}", env);
+                        var args = this.parseArguments('\\begin{' + envName + '}', env);
                         var context = {
                           mode: this.mode,
                           envName: envName,
@@ -3166,12 +3256,17 @@
                           positions: args.pop(),
                         };
                         var result = env.handler(context, args);
-                        this.expect("\\end", false);
+                        this.expect('\\end', false);
                         var endNameToken = this.nextToken;
                         var end = this.parseFunction();
                         if (end.value.name !== envName) {
                           throw new _ParseError2.default(
-                            "Mismatch: \\begin{" + envName + "} matched " + "by \\end{" + end.value.name + "}",
+                            'Mismatch: \\begin{' +
+                              envName +
+                              '} matched ' +
+                              'by \\end{' +
+                              end.value.name +
+                              '}',
                             endNameToken
                           );
                         }
@@ -3182,7 +3277,7 @@
                         this.consumeSpaces();
                         var _body = this.parseExpression(false);
                         return new _ParseNode2.default(
-                          "sizing",
+                          'sizing',
                           {
                             // Figure out what size to use based on the list of functions above
                             size: _utils2.default.indexOf(Parser.sizeFuncs, func) + 1,
@@ -3195,7 +3290,7 @@
                         this.consumeSpaces();
                         var _body2 = this.parseExpression(true);
                         return new _ParseNode2.default(
-                          "styling",
+                          'styling',
                           {
                             // Figure out what style to use by pulling out the style from
                             // the function name
@@ -3209,58 +3304,58 @@
                         // If we see an old font function, parse out the implicit body
                         this.consumeSpaces();
                         var _body3 = this.parseExpression(true);
-                        if (style.slice(0, 4) === "text") {
+                        if (style.slice(0, 4) === 'text') {
                           return new _ParseNode2.default(
-                            "text",
+                            'text',
                             {
                               style: style,
-                              body: new _ParseNode2.default("ordgroup", _body3, this.mode),
+                              body: new _ParseNode2.default('ordgroup', _body3, this.mode),
                             },
                             this.mode
                           );
                         } else {
                           return new _ParseNode2.default(
-                            "font",
+                            'font',
                             {
                               font: style,
-                              body: new _ParseNode2.default("ordgroup", _body3, this.mode),
+                              body: new _ParseNode2.default('ordgroup', _body3, this.mode),
                             },
                             this.mode
                           );
                         }
-                      } else if (func === "\\color") {
+                      } else if (func === '\\color') {
                         // If we see a styling function, parse out the implicit body
                         var color = this.parseColorGroup(false);
                         if (!color) {
-                          throw new _ParseError2.default("\\color not followed by color");
+                          throw new _ParseError2.default('\\color not followed by color');
                         }
                         var _body4 = this.parseExpression(true);
                         return new _ParseNode2.default(
-                          "color",
+                          'color',
                           {
-                            type: "color",
+                            type: 'color',
                             color: color.result.value,
                             value: _body4,
                           },
                           this.mode
                         );
-                      } else if (func === "$") {
-                        if (this.mode === "math") {
-                          throw new _ParseError2.default("$ within math mode");
+                      } else if (func === '$') {
+                        if (this.mode === 'math') {
+                          throw new _ParseError2.default('$ within math mode');
                         }
                         this.consume();
                         var outerMode = this.mode;
-                        this.switchMode("math");
-                        var _body5 = this.parseExpression(false, "$");
-                        this.expect("$", true);
+                        this.switchMode('math');
+                        var _body5 = this.parseExpression(false, '$');
+                        this.expect('$', true);
                         this.switchMode(outerMode);
                         return new _ParseNode2.default(
-                          "styling",
+                          'styling',
                           {
-                            style: "text",
+                            style: 'text',
                             value: _body5,
                           },
-                          "math"
+                          'math'
                         );
                       } else {
                         // Defer to parseFunction if it's not a function we handle
@@ -3278,7 +3373,7 @@
                      */
                   },
                   {
-                    key: "parseFunction",
+                    key: 'parseFunction',
                     value: function parseFunction(baseGroup) {
                       if (!baseGroup) {
                         baseGroup = this.parseGroup();
@@ -3288,10 +3383,16 @@
                         if (baseGroup.isFunction) {
                           var func = baseGroup.result;
                           var funcData = _functions2.default[func];
-                          if (this.mode === "text" && !funcData.allowedInText) {
-                            throw new _ParseError2.default("Can't use function '" + func + "' in text mode", baseGroup.token);
-                          } else if (this.mode === "math" && funcData.allowedInMath === false) {
-                            throw new _ParseError2.default("Can't use function '" + func + "' in math mode", baseGroup.token);
+                          if (this.mode === 'text' && !funcData.allowedInText) {
+                            throw new _ParseError2.default(
+                              "Can't use function '" + func + "' in text mode",
+                              baseGroup.token
+                            );
+                          } else if (this.mode === 'math' && funcData.allowedInMath === false) {
+                            throw new _ParseError2.default(
+                              "Can't use function '" + func + "' in math mode",
+                              baseGroup.token
+                            );
                           }
 
                           var args = this.parseArguments(func, funcData);
@@ -3311,7 +3412,7 @@
                      */
                   },
                   {
-                    key: "callFunction",
+                    key: 'callFunction',
                     value: function callFunction(name, args, positions, token) {
                       var context = {
                         funcName: name,
@@ -3331,7 +3432,7 @@
                      */
                   },
                   {
-                    key: "parseArguments",
+                    key: 'parseArguments',
                     value: function parseArguments(func, funcData) {
                       var totalArgs = funcData.numArgs + funcData.numOptionalArgs;
                       if (totalArgs === 0) {
@@ -3364,10 +3465,16 @@
                             arg = this.parseGroup();
                           }
                           if (!arg) {
-                            if (!this.settings.throwOnError && this.nextToken.text[0] === "\\") {
-                              arg = new ParseFuncOrArgument(this.handleUnsupportedCmd(this.nextToken.text), false);
+                            if (!this.settings.throwOnError && this.nextToken.text[0] === '\\') {
+                              arg = new ParseFuncOrArgument(
+                                this.handleUnsupportedCmd(this.nextToken.text),
+                                false
+                              );
                             } else {
-                              throw new _ParseError2.default("Expected group after '" + func + "'", nextToken);
+                              throw new _ParseError2.default(
+                                "Expected group after '" + func + "'",
+                                nextToken
+                              );
                             }
                           }
                         }
@@ -3377,7 +3484,15 @@
                           if (argGreediness > baseGreediness) {
                             argNode = this.parseFunction(arg);
                           } else {
-                            throw new _ParseError2.default("Got function '" + arg.result + "' as " + "argument to '" + func + "'", nextToken);
+                            throw new _ParseError2.default(
+                              "Got function '" +
+                                arg.result +
+                                "' as " +
+                                "argument to '" +
+                                func +
+                                "'",
+                              nextToken
+                            );
                           }
                         } else {
                           argNode = arg.result;
@@ -3398,23 +3513,23 @@
                      */
                   },
                   {
-                    key: "parseGroupOfType",
+                    key: 'parseGroupOfType',
                     value: function parseGroupOfType(innerMode, optional) {
                       var outerMode = this.mode;
                       // Handle `original` argTypes
-                      if (innerMode === "original") {
+                      if (innerMode === 'original') {
                         innerMode = outerMode;
                       }
 
-                      if (innerMode === "color") {
+                      if (innerMode === 'color') {
                         return this.parseColorGroup(optional);
                       }
-                      if (innerMode === "size") {
+                      if (innerMode === 'size') {
                         return this.parseSizeGroup(optional);
                       }
 
                       this.switchMode(innerMode);
-                      if (innerMode === "text") {
+                      if (innerMode === 'text') {
                         // text mode is special because it should ignore the whitespace before
                         // it
                         this.consumeSpaces();
@@ -3427,9 +3542,9 @@
                     },
                   },
                   {
-                    key: "consumeSpaces",
+                    key: 'consumeSpaces',
                     value: function consumeSpaces() {
-                      while (this.nextToken.text === " ") {
+                      while (this.nextToken.text === ' ') {
                         this.consume();
                       }
                     },
@@ -3443,27 +3558,30 @@
                      */
                   },
                   {
-                    key: "parseStringGroup",
+                    key: 'parseStringGroup',
                     value: function parseStringGroup(modeName, optional) {
-                      if (optional && this.nextToken.text !== "[") {
+                      if (optional && this.nextToken.text !== '[') {
                         return null;
                       }
                       var outerMode = this.mode;
-                      this.mode = "text";
-                      this.expect(optional ? "[" : "{");
-                      var str = "";
+                      this.mode = 'text';
+                      this.expect(optional ? '[' : '{');
+                      var str = '';
                       var firstToken = this.nextToken;
                       var lastToken = firstToken;
-                      while (this.nextToken.text !== (optional ? "]" : "}")) {
-                        if (this.nextToken.text === "EOF") {
-                          throw new _ParseError2.default("Unexpected end of input in " + modeName, firstToken.range(this.nextToken, str));
+                      while (this.nextToken.text !== (optional ? ']' : '}')) {
+                        if (this.nextToken.text === 'EOF') {
+                          throw new _ParseError2.default(
+                            'Unexpected end of input in ' + modeName,
+                            firstToken.range(this.nextToken, str)
+                          );
                         }
                         lastToken = this.nextToken;
                         str += lastToken.text;
                         this.consume();
                       }
                       this.mode = outerMode;
-                      this.expect(optional ? "]" : "}");
+                      this.expect(optional ? ']' : '}');
                       return firstToken.range(lastToken, str);
                     },
 
@@ -3477,20 +3595,26 @@
                      */
                   },
                   {
-                    key: "parseRegexGroup",
+                    key: 'parseRegexGroup',
                     value: function parseRegexGroup(regex, modeName) {
                       var outerMode = this.mode;
-                      this.mode = "text";
+                      this.mode = 'text';
                       var firstToken = this.nextToken;
                       var lastToken = firstToken;
-                      var str = "";
-                      while (this.nextToken.text !== "EOF" && regex.test(str + this.nextToken.text)) {
+                      var str = '';
+                      while (
+                        this.nextToken.text !== 'EOF' &&
+                        regex.test(str + this.nextToken.text)
+                      ) {
                         lastToken = this.nextToken;
                         str += lastToken.text;
                         this.consume();
                       }
-                      if (str === "") {
-                        throw new _ParseError2.default("Invalid " + modeName + ": '" + firstToken.text + "'", firstToken);
+                      if (str === '') {
+                        throw new _ParseError2.default(
+                          'Invalid ' + modeName + ": '" + firstToken.text + "'",
+                          firstToken
+                        );
                       }
                       this.mode = outerMode;
                       return firstToken.range(lastToken, str);
@@ -3501,9 +3625,9 @@
                      */
                   },
                   {
-                    key: "parseColorGroup",
+                    key: 'parseColorGroup',
                     value: function parseColorGroup(optional) {
-                      var res = this.parseStringGroup("color", optional);
+                      var res = this.parseStringGroup('color', optional);
                       if (!res) {
                         return null;
                       }
@@ -3511,7 +3635,10 @@
                       if (!match) {
                         throw new _ParseError2.default("Invalid color: '" + res.text + "'", res);
                       }
-                      return new ParseFuncOrArgument(new _ParseNode2.default("color", match[0], this.mode), false);
+                      return new ParseFuncOrArgument(
+                        new _ParseNode2.default('color', match[0], this.mode),
+                        false
+                      );
                     },
 
                     /**
@@ -3519,13 +3646,16 @@
                      */
                   },
                   {
-                    key: "parseSizeGroup",
+                    key: 'parseSizeGroup',
                     value: function parseSizeGroup(optional) {
                       var res = void 0;
-                      if (!optional && this.nextToken.text !== "{") {
-                        res = this.parseRegexGroup(/^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
+                      if (!optional && this.nextToken.text !== '{') {
+                        res = this.parseRegexGroup(
+                          /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/,
+                          'size'
+                        );
                       } else {
-                        res = this.parseStringGroup("size", optional);
+                        res = this.parseStringGroup('size', optional);
                       }
                       if (!res) {
                         return null;
@@ -3541,7 +3671,10 @@
                       if (!_units2.default.validUnit(data)) {
                         throw new _ParseError2.default("Invalid unit: '" + data.unit + "'", res);
                       }
-                      return new ParseFuncOrArgument(new _ParseNode2.default("size", data, this.mode), false);
+                      return new ParseFuncOrArgument(
+                        new _ParseNode2.default('size', data, this.mode),
+                        false
+                      );
                     },
 
                     /**
@@ -3557,21 +3690,30 @@
                      */
                   },
                   {
-                    key: "parseGroup",
+                    key: 'parseGroup',
                     value: function parseGroup(optional) {
                       var firstToken = this.nextToken;
                       // Try to parse an open brace
-                      if (this.nextToken.text === (optional ? "[" : "{")) {
+                      if (this.nextToken.text === (optional ? '[' : '{')) {
                         // If we get a brace, parse an expression
                         this.consume();
-                        var expression = this.parseExpression(false, optional ? "]" : null);
+                        var expression = this.parseExpression(false, optional ? ']' : null);
                         var lastToken = this.nextToken;
                         // Make sure we get a close brace
-                        this.expect(optional ? "]" : "}");
-                        if (this.mode === "text") {
+                        this.expect(optional ? ']' : '}');
+                        if (this.mode === 'text') {
                           this.formLigatures(expression);
                         }
-                        return new ParseFuncOrArgument(new _ParseNode2.default("ordgroup", expression, this.mode, firstToken, lastToken), false);
+                        return new ParseFuncOrArgument(
+                          new _ParseNode2.default(
+                            'ordgroup',
+                            expression,
+                            this.mode,
+                            firstToken,
+                            lastToken
+                          ),
+                          false
+                        );
                       } else {
                         // Otherwise, just return a nucleus, or nothing for an optional group
                         return optional ? null : this.parseSymbol();
@@ -3590,23 +3732,35 @@
                      */
                   },
                   {
-                    key: "formLigatures",
+                    key: 'formLigatures',
                     value: function formLigatures(group) {
                       var n = group.length - 1;
                       for (var i = 0; i < n; ++i) {
                         var a = group[i];
                         var v = a.value;
-                        if (v === "-" && group[i + 1].value === "-") {
-                          if (i + 1 < n && group[i + 2].value === "-") {
-                            group.splice(i, 3, new _ParseNode2.default("textord", "---", "text", a, group[i + 2]));
+                        if (v === '-' && group[i + 1].value === '-') {
+                          if (i + 1 < n && group[i + 2].value === '-') {
+                            group.splice(
+                              i,
+                              3,
+                              new _ParseNode2.default('textord', '---', 'text', a, group[i + 2])
+                            );
                             n -= 2;
                           } else {
-                            group.splice(i, 2, new _ParseNode2.default("textord", "--", "text", a, group[i + 1]));
+                            group.splice(
+                              i,
+                              2,
+                              new _ParseNode2.default('textord', '--', 'text', a, group[i + 1])
+                            );
                             n -= 1;
                           }
                         }
-                        if ((v === "'" || v === "`") && group[i + 1].value === v) {
-                          group.splice(i, 2, new _ParseNode2.default("textord", v + v, "text", a, group[i + 1]));
+                        if ((v === "'" || v === '`') && group[i + 1].value === v) {
+                          group.splice(
+                            i,
+                            2,
+                            new _ParseNode2.default('textord', v + v, 'text', a, group[i + 1])
+                          );
                           n -= 1;
                         }
                       }
@@ -3620,7 +3774,7 @@
                      */
                   },
                   {
-                    key: "parseSymbol",
+                    key: 'parseSymbol',
                     value: function parseSymbol() {
                       var nucleus = this.nextToken;
 
@@ -3634,14 +3788,26 @@
                         // Otherwise if this is a no-argument function, find the type it
                         // corresponds to in the symbols map
                         return new ParseFuncOrArgument(
-                          new _ParseNode2.default(_symbols2.default[this.mode][nucleus.text].group, nucleus.text, this.mode, nucleus),
+                          new _ParseNode2.default(
+                            _symbols2.default[this.mode][nucleus.text].group,
+                            nucleus.text,
+                            this.mode,
+                            nucleus
+                          ),
                           false,
                           nucleus
                         );
-                      } else if (this.mode === "text" && _unicodeRegexes.cjkRegex.test(nucleus.text)) {
+                      } else if (
+                        this.mode === 'text' &&
+                        _unicodeRegexes.cjkRegex.test(nucleus.text)
+                      ) {
                         this.consume();
-                        return new ParseFuncOrArgument(new _ParseNode2.default("textord", nucleus.text, this.mode, nucleus), false, nucleus);
-                      } else if (nucleus.text === "$") {
+                        return new ParseFuncOrArgument(
+                          new _ParseNode2.default('textord', nucleus.text, this.mode, nucleus),
+                          false,
+                          nucleus
+                        );
+                      } else if (nucleus.text === '$') {
                         return new ParseFuncOrArgument(nucleus.text, false, nucleus);
                       } else {
                         return null;
@@ -3652,28 +3818,33 @@
                 return Parser;
               })();
 
-              Parser.endOfExpression = ["}", "\\end", "\\right", "&", "\\\\", "\\cr"];
+              Parser.endOfExpression = ['}', '\\end', '\\right', '&', '\\\\', '\\cr'];
               Parser.SUPSUB_GREEDINESS = 1;
               Parser.sizeFuncs = [
-                "\\tiny",
-                "\\sixptsize",
-                "\\scriptsize",
-                "\\footnotesize",
-                "\\small",
-                "\\normalsize",
-                "\\large",
-                "\\Large",
-                "\\LARGE",
-                "\\huge",
-                "\\Huge",
+                '\\tiny',
+                '\\sixptsize',
+                '\\scriptsize',
+                '\\footnotesize',
+                '\\small',
+                '\\normalsize',
+                '\\large',
+                '\\Large',
+                '\\LARGE',
+                '\\huge',
+                '\\Huge',
               ];
-              Parser.styleFuncs = ["\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"];
+              Parser.styleFuncs = [
+                '\\displaystyle',
+                '\\textstyle',
+                '\\scriptstyle',
+                '\\scriptscriptstyle',
+              ];
               Parser.oldFontFuncs = {
-                "\\rm": "mathrm",
-                "\\sf": "mathsf",
-                "\\tt": "mathtt",
-                "\\bf": "mathbf",
-                "\\it": "mathit",
+                '\\rm': 'mathrm',
+                '\\sf': 'mathsf',
+                '\\tt': 'mathtt',
+                '\\bf': 'mathbf',
+                '\\it': 'mathit',
               };
 
               Parser.prototype.ParseNode = _ParseNode2.default;
@@ -3681,26 +3852,26 @@
               module.exports = Parser;
             },
             {
-              "./MacroExpander": 27,
-              "./ParseError": 29,
-              "./ParseNode": 30,
-              "./environments": 40,
-              "./functions": 43,
-              "./symbols": 48,
-              "./unicodeRegexes": 49,
-              "./units": 50,
-              "./utils": 51,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
+              './MacroExpander': 27,
+              './ParseError': 29,
+              './ParseNode': 30,
+              './environments': 40,
+              './functions': 43,
+              './symbols': 48,
+              './unicodeRegexes': 49,
+              './units': 50,
+              './utils': 51,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
             },
           ],
           32: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -3725,7 +3896,7 @@
                 options = options || {};
                 this.displayMode = _utils2.default.deflt(options.displayMode, false);
                 this.throwOnError = _utils2.default.deflt(options.throwOnError, true);
-                this.errorColor = _utils2.default.deflt(options.errorColor, "#cc0000");
+                this.errorColor = _utils2.default.deflt(options.errorColor, '#cc0000');
                 this.macros = options.macros || {};
                 this.colorIsTextColor = _utils2.default.deflt(options.colorIsTextColor, false);
               }; /**
@@ -3736,17 +3907,17 @@
               module.exports = Settings;
             },
             {
-              "./utils": 51,
-              "babel-runtime/helpers/classCallCheck": 4,
+              './utils': 51,
+              'babel-runtime/helpers/classCallCheck': 4,
             },
           ],
           33: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -3781,7 +3952,7 @@
 
                 (0, _createClass3.default)(Style, [
                   {
-                    key: "sup",
+                    key: 'sup',
                     value: function sup() {
                       return styles[_sup[this.id]];
                     },
@@ -3791,7 +3962,7 @@
                      */
                   },
                   {
-                    key: "sub",
+                    key: 'sub',
                     value: function sub() {
                       return styles[_sub[this.id]];
                     },
@@ -3802,7 +3973,7 @@
                      */
                   },
                   {
-                    key: "fracNum",
+                    key: 'fracNum',
                     value: function fracNum() {
                       return styles[_fracNum[this.id]];
                     },
@@ -3813,7 +3984,7 @@
                      */
                   },
                   {
-                    key: "fracDen",
+                    key: 'fracDen',
                     value: function fracDen() {
                       return styles[_fracDen[this.id]];
                     },
@@ -3824,7 +3995,7 @@
                      */
                   },
                   {
-                    key: "cramp",
+                    key: 'cramp',
                     value: function cramp() {
                       return styles[_cramp[this.id]];
                     },
@@ -3834,7 +4005,7 @@
                      */
                   },
                   {
-                    key: "text",
+                    key: 'text',
                     value: function text() {
                       return styles[_text[this.id]];
                     },
@@ -3844,7 +4015,7 @@
                      */
                   },
                   {
-                    key: "isTight",
+                    key: 'isTight',
                     value: function isTight() {
                       return this.size >= 2;
                     },
@@ -3894,25 +4065,25 @@
               };
             },
             {
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
             },
           ],
           34: [
             function (require, module, exports) {
-              var _domTree = require("./domTree");
+              var _domTree = require('./domTree');
 
               var _domTree2 = _interopRequireDefault(_domTree);
 
-              var _fontMetrics = require("./fontMetrics");
+              var _fontMetrics = require('./fontMetrics');
 
               var _fontMetrics2 = _interopRequireDefault(_fontMetrics);
 
-              var _symbols = require("./symbols");
+              var _symbols = require('./symbols');
 
               var _symbols2 = _interopRequireDefault(_symbols);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -3928,9 +4099,9 @@
                */
 
               var mainitLetters = [
-                "\\imath", // dotless i
-                "\\jmath", // dotless j
-                "\\pounds",
+                '\\imath', // dotless i
+                '\\jmath', // dotless j
+                '\\pounds',
               ];
 
               /**
@@ -3965,20 +4136,30 @@
                 var symbolNode = void 0;
                 if (metrics) {
                   var italic = metrics.italic;
-                  if (mode === "text") {
+                  if (mode === 'text') {
                     italic = 0;
                   }
-                  symbolNode = new _domTree2.default.symbolNode(value, metrics.height, metrics.depth, italic, metrics.skew, classes);
+                  symbolNode = new _domTree2.default.symbolNode(
+                    value,
+                    metrics.height,
+                    metrics.depth,
+                    italic,
+                    metrics.skew,
+                    classes
+                  );
                 } else {
                   // TODO(emily): Figure out a good way to only print this in development
-                  typeof console !== "undefined" && console.warn("No character metrics for '" + value + "' in style '" + fontFamily + "'");
+                  typeof console !== 'undefined' &&
+                    console.warn(
+                      "No character metrics for '" + value + "' in style '" + fontFamily + "'"
+                    );
                   symbolNode = new _domTree2.default.symbolNode(value, 0, 0, 0, 0, classes);
                 }
 
                 if (options) {
                   symbolNode.maxFontSize = options.sizeMultiplier;
                   if (options.style.isTight()) {
-                    symbolNode.classes.push("mtight");
+                    symbolNode.classes.push('mtight');
                   }
                   if (options.getColor()) {
                     symbolNode.style.color = options.getColor();
@@ -3999,10 +4180,10 @@
                 // textord in unsupported command errors but cannot be parsed as a regular
                 // text ordinal and is therefore not present as a symbol in the symbols
                 // table for text
-                if (value === "\\" || _symbols2.default[mode][value].font === "main") {
-                  return makeSymbol(value, "Main-Regular", mode, options, classes);
+                if (value === '\\' || _symbols2.default[mode][value].font === 'main') {
+                  return makeSymbol(value, 'Main-Regular', mode, options, classes);
                 } else {
-                  return makeSymbol(value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+                  return makeSymbol(value, 'AMS-Regular', mode, options, classes.concat(['amsrm']));
                 }
               };
 
@@ -4010,19 +4191,37 @@
                * Makes a symbol in the default font for mathords and textords.
                */
               var mathDefault = function mathDefault(value, mode, options, classes, type) {
-                if (type === "mathord") {
+                if (type === 'mathord') {
                   var fontLookup = mathit(value);
-                  return makeSymbol(value, fontLookup.fontName, mode, options, classes.concat([fontLookup.fontClass]));
-                } else if (type === "textord") {
+                  return makeSymbol(
+                    value,
+                    fontLookup.fontName,
+                    mode,
+                    options,
+                    classes.concat([fontLookup.fontClass])
+                  );
+                } else if (type === 'textord') {
                   var font = _symbols2.default[mode][value] && _symbols2.default[mode][value].font;
-                  if (font === "ams") {
-                    return makeSymbol(value, "AMS-Regular", mode, options, classes.concat(["amsrm"]));
+                  if (font === 'ams') {
+                    return makeSymbol(
+                      value,
+                      'AMS-Regular',
+                      mode,
+                      options,
+                      classes.concat(['amsrm'])
+                    );
                   } else {
                     // if (font === "main") {
-                    return makeSymbol(value, "Main-Regular", mode, options, classes.concat(["mathrm"]));
+                    return makeSymbol(
+                      value,
+                      'Main-Regular',
+                      mode,
+                      options,
+                      classes.concat(['mathrm'])
+                    );
                   }
                 } else {
-                  throw new Error("unexpected type: " + type + " in mathDefault");
+                  throw new Error('unexpected type: ' + type + ' in mathDefault');
                 }
               };
 
@@ -4040,13 +4239,13 @@
                   _utils2.default.contains(mainitLetters, value)
                 ) {
                   return {
-                    fontName: "Main-Italic",
-                    fontClass: "mainit",
+                    fontName: 'Main-Italic',
+                    fontClass: 'mainit',
                   };
                 } else {
                   return {
-                    fontName: "Math-Italic",
-                    fontClass: "mathit",
+                    fontName: 'Math-Italic',
+                    fontClass: 'mathit',
                   };
                 }
               };
@@ -4058,18 +4257,24 @@
                 var mode = group.mode;
                 var value = group.value;
 
-                var classes = ["mord"];
+                var classes = ['mord'];
 
                 var font = options.font;
                 if (font) {
                   var fontLookup = void 0;
-                  if (font === "mathit" || _utils2.default.contains(mainitLetters, value)) {
+                  if (font === 'mathit' || _utils2.default.contains(mainitLetters, value)) {
                     fontLookup = mathit(value);
                   } else {
                     fontLookup = fontMap[font];
                   }
                   if (lookupSymbol(value, fontLookup.fontName, mode).metrics) {
-                    return makeSymbol(value, fontLookup.fontName, mode, options, classes.concat([fontLookup.fontClass || font]));
+                    return makeSymbol(
+                      value,
+                      fontLookup.fontName,
+                      mode,
+                      options,
+                      classes.concat([fontLookup.fontClass || font])
+                    );
                   } else {
                     return mathDefault(value, mode, options, classes, type);
                   }
@@ -4186,7 +4391,7 @@
                 var depth = void 0;
                 var currPos = void 0;
                 var i = void 0;
-                if (positionType === "individualShift") {
+                if (positionType === 'individualShift') {
                   var oldChildren = children;
                   children = [oldChildren[0]];
 
@@ -4196,33 +4401,34 @@
                   currPos = depth;
                   for (i = 1; i < oldChildren.length; i++) {
                     var diff = -oldChildren[i].shift - currPos - oldChildren[i].elem.depth;
-                    var size = diff - (oldChildren[i - 1].elem.height + oldChildren[i - 1].elem.depth);
+                    var size =
+                      diff - (oldChildren[i - 1].elem.height + oldChildren[i - 1].elem.depth);
 
                     currPos = currPos + diff;
 
                     children.push({
-                      type: "kern",
+                      type: 'kern',
                       size: size,
                     });
                     children.push(oldChildren[i]);
                   }
-                } else if (positionType === "top") {
+                } else if (positionType === 'top') {
                   // We always start at the bottom, so calculate the bottom by adding up
                   // all the sizes
                   var bottom = positionData;
                   for (i = 0; i < children.length; i++) {
-                    if (children[i].type === "kern") {
+                    if (children[i].type === 'kern') {
                       bottom -= children[i].size;
                     } else {
                       bottom -= children[i].elem.height + children[i].elem.depth;
                     }
                   }
                   depth = bottom;
-                } else if (positionType === "bottom") {
+                } else if (positionType === 'bottom') {
                   depth = -positionData;
-                } else if (positionType === "shift") {
+                } else if (positionType === 'shift') {
                   depth = -children[0].elem.depth - positionData;
-                } else if (positionType === "firstBaseline") {
+                } else if (positionType === 'firstBaseline') {
                   depth = -children[0].elem.depth;
                 } else {
                   depth = 0;
@@ -4237,14 +4443,14 @@
                 // line-height.
                 var pstrutSize = 0;
                 for (i = 0; i < children.length; i++) {
-                  if (children[i].type === "elem") {
+                  if (children[i].type === 'elem') {
                     var child = children[i].elem;
                     pstrutSize = Math.max(pstrutSize, child.maxFontSize, child.height);
                   }
                 }
                 pstrutSize += 2;
-                var pstrut = makeSpan(["pstrut"], []);
-                pstrut.style.height = pstrutSize + "em";
+                var pstrut = makeSpan(['pstrut'], []);
+                pstrut.style.height = pstrutSize + 'em';
 
                 // Create a new list of actual children at the correct offsets
                 var realChildren = [];
@@ -4252,13 +4458,13 @@
                 var maxPos = depth;
                 currPos = depth;
                 for (i = 0; i < children.length; i++) {
-                  if (children[i].type === "kern") {
+                  if (children[i].type === 'kern') {
                     currPos += children[i].size;
                   } else {
                     var _child = children[i].elem;
 
                     var childWrap = makeSpan([], [pstrut, _child]);
-                    childWrap.style.top = -pstrutSize - currPos - _child.depth + "em";
+                    childWrap.style.top = -pstrutSize - currPos - _child.depth + 'em';
                     if (children[i].marginLeft) {
                       childWrap.style.marginLeft = children[i].marginLeft;
                     }
@@ -4276,27 +4482,33 @@
                 // The vlist contents go in a table-cell with `vertical-align:bottom`.
                 // This cell's bottom edge will determine the containing table's baseline
                 // without overly expanding the containing line-box.
-                var vlist = makeSpan(["vlist"], realChildren);
-                vlist.style.height = maxPos + "em";
+                var vlist = makeSpan(['vlist'], realChildren);
+                vlist.style.height = maxPos + 'em';
 
                 // A second row is used if necessary to represent the vlist's depth.
                 var rows = void 0;
                 if (minPos < 0) {
-                  var depthStrut = makeSpan(["vlist"], []);
-                  depthStrut.style.height = -minPos + "em";
+                  var depthStrut = makeSpan(['vlist'], []);
+                  depthStrut.style.height = -minPos + 'em';
 
                   // Safari wants the first row to have inline content; otherwise it
                   // puts the bottom of the *second* row on the baseline.
-                  var topStrut = makeSpan(["vlist-s"], [new _domTree2.default.symbolNode("\u200B")]);
+                  var topStrut = makeSpan(
+                    ['vlist-s'],
+                    [new _domTree2.default.symbolNode('\u200B')]
+                  );
 
-                  rows = [makeSpan(["vlist-r"], [vlist, topStrut]), makeSpan(["vlist-r"], [depthStrut])];
+                  rows = [
+                    makeSpan(['vlist-r'], [vlist, topStrut]),
+                    makeSpan(['vlist-r'], [depthStrut]),
+                  ];
                 } else {
-                  rows = [makeSpan(["vlist-r"], [vlist])];
+                  rows = [makeSpan(['vlist-r'], [vlist])];
                 }
 
-                var vtable = makeSpan(["vlist-t"], rows);
+                var vtable = makeSpan(['vlist-t'], rows);
                 if (rows.length === 2) {
-                  vtable.classes.push("vlist-t2");
+                  vtable.classes.push('vlist-t2');
                 }
                 vtable.height = maxPos;
                 vtable.depth = -minPos;
@@ -4306,33 +4518,33 @@
               // A map of spacing functions to their attributes, like size and corresponding
               // CSS class
               var spacingFunctions = {
-                "\\qquad": {
-                  size: "2em",
-                  className: "qquad",
+                '\\qquad': {
+                  size: '2em',
+                  className: 'qquad',
                 },
-                "\\quad": {
-                  size: "1em",
-                  className: "quad",
+                '\\quad': {
+                  size: '1em',
+                  className: 'quad',
                 },
-                "\\enspace": {
-                  size: "0.5em",
-                  className: "enspace",
+                '\\enspace': {
+                  size: '0.5em',
+                  className: 'enspace',
                 },
-                "\\;": {
-                  size: "0.277778em",
-                  className: "thickspace",
+                '\\;': {
+                  size: '0.277778em',
+                  className: 'thickspace',
                 },
-                "\\:": {
-                  size: "0.22222em",
-                  className: "mediumspace",
+                '\\:': {
+                  size: '0.22222em',
+                  className: 'mediumspace',
                 },
-                "\\,": {
-                  size: "0.16667em",
-                  className: "thinspace",
+                '\\,': {
+                  size: '0.16667em',
+                  className: 'thinspace',
                 },
-                "\\!": {
-                  size: "-0.16667em",
-                  className: "negativethinspace",
+                '\\!': {
+                  size: '-0.16667em',
+                  className: 'negativethinspace',
                 },
               };
 
@@ -4345,16 +4557,16 @@
               var fontMap = {
                 // styles
                 mathbf: {
-                  variant: "bold",
-                  fontName: "Main-Bold",
+                  variant: 'bold',
+                  fontName: 'Main-Bold',
                 },
                 mathrm: {
-                  variant: "normal",
-                  fontName: "Main-Regular",
+                  variant: 'normal',
+                  fontName: 'Main-Regular',
                 },
                 textit: {
-                  variant: "italic",
-                  fontName: "Main-Italic",
+                  variant: 'italic',
+                  fontName: 'Main-Italic',
                 },
 
                 // "mathit" is missing because it requires the use of two fonts: Main-Italic
@@ -4363,28 +4575,28 @@
 
                 // families
                 mathbb: {
-                  variant: "double-struck",
-                  fontName: "AMS-Regular",
+                  variant: 'double-struck',
+                  fontName: 'AMS-Regular',
                 },
                 mathcal: {
-                  variant: "script",
-                  fontName: "Caligraphic-Regular",
+                  variant: 'script',
+                  fontName: 'Caligraphic-Regular',
                 },
                 mathfrak: {
-                  variant: "fraktur",
-                  fontName: "Fraktur-Regular",
+                  variant: 'fraktur',
+                  fontName: 'Fraktur-Regular',
                 },
                 mathscr: {
-                  variant: "script",
-                  fontName: "Script-Regular",
+                  variant: 'script',
+                  fontName: 'Script-Regular',
                 },
                 mathsf: {
-                  variant: "sans-serif",
-                  fontName: "SansSerif-Regular",
+                  variant: 'sans-serif',
+                  fontName: 'SansSerif-Regular',
                 },
                 mathtt: {
-                  variant: "monospace",
-                  fontName: "Typewriter-Regular",
+                  variant: 'monospace',
+                  fontName: 'Typewriter-Regular',
                 },
               };
 
@@ -4401,47 +4613,47 @@
               };
             },
             {
-              "./domTree": 39,
-              "./fontMetrics": 41,
-              "./symbols": 48,
-              "./utils": 51,
+              './domTree': 39,
+              './fontMetrics': 41,
+              './symbols': 48,
+              './utils': 51,
             },
           ],
           35: [
             function (require, module, exports) {
-              var _stringify = require("babel-runtime/core-js/json/stringify");
+              var _stringify = require('babel-runtime/core-js/json/stringify');
 
               var _stringify2 = _interopRequireDefault(_stringify);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _Style = require("./Style");
+              var _Style = require('./Style');
 
               var _Style2 = _interopRequireDefault(_Style);
 
-              var _buildCommon = require("./buildCommon");
+              var _buildCommon = require('./buildCommon');
 
               var _buildCommon2 = _interopRequireDefault(_buildCommon);
 
-              var _delimiter = require("./delimiter");
+              var _delimiter = require('./delimiter');
 
               var _delimiter2 = _interopRequireDefault(_delimiter);
 
-              var _domTree = require("./domTree");
+              var _domTree = require('./domTree');
 
               var _domTree2 = _interopRequireDefault(_domTree);
 
-              var _units = require("./units");
+              var _units = require('./units');
 
               var _units2 = _interopRequireDefault(_units);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
-              var _stretchy = require("./stretchy");
+              var _stretchy = require('./stretchy');
 
               var _stretchy2 = _interopRequireDefault(_stretchy);
 
@@ -4458,14 +4670,14 @@
                */
 
               var isSpace = function isSpace(node) {
-                return node instanceof _domTree2.default.span && node.classes[0] === "mspace";
+                return node instanceof _domTree2.default.span && node.classes[0] === 'mspace';
               };
 
               // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
               // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
               // and the text before Rule 19.
               var isBin = function isBin(node) {
-                return node && node.classes[0] === "mbin";
+                return node && node.classes[0] === 'mbin';
               };
 
               var isBinLeftCanceller = function isBinLeftCanceller(node, isRealGroup) {
@@ -4473,7 +4685,10 @@
                 // of its `classes` array. A later cleanup should ensure this, for
                 // instance by changing the signature of `makeSpan`.
                 if (node) {
-                  return _utils2.default.contains(["mbin", "mopen", "mrel", "mop", "mpunct"], node.classes[0]);
+                  return _utils2.default.contains(
+                    ['mbin', 'mopen', 'mrel', 'mop', 'mpunct'],
+                    node.classes[0]
+                  );
                 } else {
                   return isRealGroup;
                 }
@@ -4481,7 +4696,7 @@
 
               var isBinRightCanceller = function isBinRightCanceller(node, isRealGroup) {
                 if (node) {
-                  return _utils2.default.contains(["mrel", "mclose", "mpunct"], node.classes[0]);
+                  return _utils2.default.contains(['mrel', 'mclose', 'mpunct'], node.classes[0]);
                 } else {
                   return isRealGroup;
                 }
@@ -4536,7 +4751,9 @@
                     if (_i < groups.length) {
                       // If there is a following group, move space within it.
                       if (groups[_i] instanceof _domTree2.default.symbolNode) {
-                        groups[_i] = (0, _buildCommon.makeSpan)([].concat(groups[_i].classes), [groups[_i]]);
+                        groups[_i] = (0, _buildCommon.makeSpan)([].concat(groups[_i].classes), [
+                          groups[_i],
+                        ]);
                       }
                       _buildCommon2.default.prependChildren(groups[_i], spaces);
                     } else {
@@ -4549,8 +4766,12 @@
 
                 // Binary operators change to ordinary symbols in some contexts.
                 for (var _i2 = 0; _i2 < groups.length; _i2++) {
-                  if (isBin(groups[_i2]) && (isBinLeftCanceller(groups[_i2 - 1], isRealGroup) || isBinRightCanceller(groups[_i2 + 1], isRealGroup))) {
-                    groups[_i2].classes[0] = "mord";
+                  if (
+                    isBin(groups[_i2]) &&
+                    (isBinLeftCanceller(groups[_i2 - 1], isRealGroup) ||
+                      isBinRightCanceller(groups[_i2 + 1], isRealGroup))
+                  ) {
+                    groups[_i2].classes[0] = 'mord';
                   }
                 }
 
@@ -4559,17 +4780,17 @@
                 // TODO(kevinb): Handle \\not{abc} correctly.  The \\not should appear over
                 // the 'a' instead of the 'c'.
                 for (var _i3 = 0; _i3 < groups.length; _i3++) {
-                  if (groups[_i3].value === "\u0338" && _i3 + 1 < groups.length) {
+                  if (groups[_i3].value === '\u0338' && _i3 + 1 < groups.length) {
                     var children = groups.slice(_i3, _i3 + 2);
 
-                    children[0].classes = ["mainrm"];
+                    children[0].classes = ['mainrm'];
                     // \u0338 is a combining glyph so we could reorder the children so
                     // that it comes after the other glyph.  This works correctly on
                     // most browsers except for Safari.  Instead we absolutely position
                     // the glyph and set its right side to match that of the other
                     // glyph which is visually equivalent.
-                    children[0].style.position = "absolute";
-                    children[0].style.right = "0";
+                    children[0].style.position = 'absolute';
+                    children[0].style.right = '0';
 
                     // Copy the classes from the second glyph to the new container.
                     // This is so it behaves the same as though there was no \\not.
@@ -4577,13 +4798,13 @@
                     var container = (0, _buildCommon.makeSpan)(classes, children);
 
                     // LaTeX adds a space between ords separated by a \\not.
-                    if (classes.indexOf("mord") !== -1) {
+                    if (classes.indexOf('mord') !== -1) {
                       // \glue(\thickmuskip) 2.77771 plus 2.77771
-                      container.style.paddingLeft = "0.277771em";
+                      container.style.paddingLeft = '0.277771em';
                     }
 
                     // Ensure that the \u0338 is positioned relative to the container.
-                    container.style.position = "relative";
+                    container.style.position = 'relative';
                     groups.splice(_i3, 2, container);
                   }
                 }
@@ -4598,7 +4819,12 @@
                     return getTypeOfDomTree(node.children[node.children.length - 1]);
                   }
                 } else {
-                  if (_utils2.default.contains(["mord", "mop", "mbin", "mrel", "mopen", "mclose", "mpunct", "minner"], node.classes[0])) {
+                  if (
+                    _utils2.default.contains(
+                      ['mord', 'mop', 'mbin', 'mrel', 'mopen', 'mclose', 'mpunct', 'minner'],
+                      node.classes[0]
+                    )
+                  ) {
                     return node.classes[0];
                   }
                 }
@@ -4616,13 +4842,17 @@
                   return false;
                 } else {
                   var base = group.value.base;
-                  if (base.type === "op") {
+                  if (base.type === 'op') {
                     // Operators handle supsubs differently when they have limits
                     // (e.g. `\displaystyle\sum_2^3`)
-                    return base.value.limits && (options.style.size === _Style2.default.DISPLAY.size || base.value.alwaysHandleSupSub);
-                  } else if (base.type === "accent") {
+                    return (
+                      base.value.limits &&
+                      (options.style.size === _Style2.default.DISPLAY.size ||
+                        base.value.alwaysHandleSupSub)
+                    );
+                  } else if (base.type === 'accent') {
                     return isCharacterBox(base.value.base);
-                  } else if (base.type === "horizBrace") {
+                  } else if (base.type === 'horizBrace') {
                     var isSup = group.value.sub ? false : true;
                     return isSup === base.value.isOver;
                   } else {
@@ -4639,19 +4869,19 @@
               var getBaseElem = function getBaseElem(group) {
                 if (!group) {
                   return false;
-                } else if (group.type === "ordgroup") {
+                } else if (group.type === 'ordgroup') {
                   if (group.value.length === 1) {
                     return getBaseElem(group.value[0]);
                   } else {
                     return group;
                   }
-                } else if (group.type === "color") {
+                } else if (group.type === 'color') {
                   if (group.value.value.length === 1) {
                     return getBaseElem(group.value.value[0]);
                   } else {
                     return group;
                   }
-                } else if (group.type === "font") {
+                } else if (group.type === 'font') {
                   return getBaseElem(group.value.body);
                 } else {
                   return group;
@@ -4668,19 +4898,19 @@
 
                 // These are all they types of groups which hold single characters
                 return (
-                  baseElem.type === "mathord" ||
-                  baseElem.type === "textord" ||
-                  baseElem.type === "bin" ||
-                  baseElem.type === "rel" ||
-                  baseElem.type === "inner" ||
-                  baseElem.type === "open" ||
-                  baseElem.type === "close" ||
-                  baseElem.type === "punct"
+                  baseElem.type === 'mathord' ||
+                  baseElem.type === 'textord' ||
+                  baseElem.type === 'bin' ||
+                  baseElem.type === 'rel' ||
+                  baseElem.type === 'inner' ||
+                  baseElem.type === 'open' ||
+                  baseElem.type === 'close' ||
+                  baseElem.type === 'punct'
                 );
               };
 
               var makeNullDelimiter = function makeNullDelimiter(options, classes) {
-                var moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
+                var moreClasses = ['nulldelimiter'].concat(options.baseSizingClasses());
                 return (0, _buildCommon.makeSpan)(classes.concat(moreClasses));
               };
 
@@ -4691,39 +4921,43 @@
               var groupTypes = {};
 
               groupTypes.mathord = function (group, options) {
-                return _buildCommon2.default.makeOrd(group, options, "mathord");
+                return _buildCommon2.default.makeOrd(group, options, 'mathord');
               };
 
               groupTypes.textord = function (group, options) {
-                return _buildCommon2.default.makeOrd(group, options, "textord");
+                return _buildCommon2.default.makeOrd(group, options, 'textord');
               };
 
               groupTypes.bin = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["mbin"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['mbin']);
               };
 
               groupTypes.rel = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["mrel"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['mrel']);
               };
 
               groupTypes.open = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["mopen"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['mopen']);
               };
 
               groupTypes.close = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["mclose"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['mclose']);
               };
 
               groupTypes.inner = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["minner"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['minner']);
               };
 
               groupTypes.punct = function (group, options) {
-                return _buildCommon2.default.mathsym(group.value, group.mode, options, ["mpunct"]);
+                return _buildCommon2.default.mathsym(group.value, group.mode, options, ['mpunct']);
               };
 
               groupTypes.ordgroup = function (group, options) {
-                return (0, _buildCommon.makeSpan)(["mord"], buildExpression(group.value, options, true), options);
+                return (0, _buildCommon.makeSpan)(
+                  ['mord'],
+                  buildExpression(group.value, options, true),
+                  options
+                );
               };
 
               groupTypes.text = function (group, options) {
@@ -4735,11 +4969,15 @@
                     i--;
                   }
                 }
-                return (0, _buildCommon.makeSpan)(["mord", "text"], inner, newOptions);
+                return (0, _buildCommon.makeSpan)(['mord', 'text'], inner, newOptions);
               };
 
               groupTypes.color = function (group, options) {
-                var elements = buildExpression(group.value.value, options.withColor(group.value.color), false);
+                var elements = buildExpression(
+                  group.value.value,
+                  options.withColor(group.value.color),
+                  false
+                );
 
                 // \color isn't supposed to affect the type of the elements it contains.
                 // To accomplish this, we wrap the results in a fragment, so the inner
@@ -4773,7 +5011,10 @@
                   newOptions = options.havingStyle(options.style.sup());
                   supm = buildGroup(group.value.sup, newOptions, options);
                   if (!isCharacterBox(group.value.base)) {
-                    supShift = base.height - (newOptions.fontMetrics().supDrop * newOptions.sizeMultiplier) / options.sizeMultiplier;
+                    supShift =
+                      base.height -
+                      (newOptions.fontMetrics().supDrop * newOptions.sizeMultiplier) /
+                        options.sizeMultiplier;
                   }
                 }
 
@@ -4781,7 +5022,10 @@
                   newOptions = options.havingStyle(options.style.sub());
                   subm = buildGroup(group.value.sub, newOptions, options);
                   if (!isCharacterBox(group.value.base)) {
-                    subShift = base.depth + (newOptions.fontMetrics().subDrop * newOptions.sizeMultiplier) / options.sizeMultiplier;
+                    subShift =
+                      base.depth +
+                      (newOptions.fontMetrics().subDrop * newOptions.sizeMultiplier) /
+                        options.sizeMultiplier;
                   }
                 }
 
@@ -4798,7 +5042,7 @@
                 // scriptspace is a font-size-independent size, so scale it
                 // appropriately
                 var multiplier = options.sizeMultiplier;
-                var scriptspace = 0.5 / metrics.ptPerEm / multiplier + "em";
+                var scriptspace = 0.5 / metrics.ptPerEm / multiplier + 'em';
 
                 var supsub = void 0;
                 if (!group.value.sup) {
@@ -4807,7 +5051,7 @@
 
                   var vlistElem = [
                     {
-                      type: "elem",
+                      type: 'elem',
                       elem: subm,
                       marginRight: scriptspace,
                     },
@@ -4816,10 +5060,10 @@
                   // Account for that by shifting the subscript back the appropriate
                   // amount. Note we only do this when the base is a single symbol.
                   if (base instanceof _domTree2.default.symbolNode) {
-                    vlistElem[0].marginLeft = -base.italic + "em";
+                    vlistElem[0].marginLeft = -base.italic + 'em';
                   }
 
-                  supsub = _buildCommon2.default.makeVList(vlistElem, "shift", subShift, options);
+                  supsub = _buildCommon2.default.makeVList(vlistElem, 'shift', subShift, options);
                 } else if (!group.value.sub) {
                   // Rule 18c, d
                   supShift = Math.max(supShift, minSupShift, supm.depth + 0.25 * metrics.xHeight);
@@ -4827,12 +5071,12 @@
                   supsub = _buildCommon2.default.makeVList(
                     [
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: supm,
                         marginRight: scriptspace,
                       },
                     ],
-                    "shift",
+                    'shift',
                     -supShift,
                     options
                   );
@@ -4854,13 +5098,13 @@
 
                   var _vlistElem = [
                     {
-                      type: "elem",
+                      type: 'elem',
                       elem: subm,
                       shift: subShift,
                       marginRight: scriptspace,
                     },
                     {
-                      type: "elem",
+                      type: 'elem',
                       elem: supm,
                       shift: -supShift,
                       marginRight: scriptspace,
@@ -4868,15 +5112,24 @@
                   ];
                   // See comment above about subscripts not being shifted
                   if (base instanceof _domTree2.default.symbolNode) {
-                    _vlistElem[0].marginLeft = -base.italic + "em";
+                    _vlistElem[0].marginLeft = -base.italic + 'em';
                   }
 
-                  supsub = _buildCommon2.default.makeVList(_vlistElem, "individualShift", null, options);
+                  supsub = _buildCommon2.default.makeVList(
+                    _vlistElem,
+                    'individualShift',
+                    null,
+                    options
+                  );
                 }
 
                 // We ensure to wrap the supsub vlist in a span.msupsub to reset text-align
-                var mclass = getTypeOfDomTree(base) || "mord";
-                return (0, _buildCommon.makeSpan)([mclass], [base, (0, _buildCommon.makeSpan)(["msupsub"], [supsub])], options);
+                var mclass = getTypeOfDomTree(base) || 'mord';
+                return (0, _buildCommon.makeSpan)(
+                  [mclass],
+                  [base, (0, _buildCommon.makeSpan)(['msupsub'], [supsub])],
+                  options
+                );
               };
 
               groupTypes.genfrac = function (group, options) {
@@ -4884,9 +5137,9 @@
                 // Figure out what style this fraction should be in based on the
                 // function used
                 var style = options.style;
-                if (group.value.size === "display") {
+                if (group.value.size === 'display') {
                   style = _Style2.default.DISPLAY;
-                } else if (group.value.size === "text") {
+                } else if (group.value.size === 'text') {
                   style = _Style2.default.TEXT;
                 }
 
@@ -4904,7 +5157,7 @@
                 var ruleWidth = void 0;
                 var ruleSpacing = void 0;
                 if (group.value.hasBarLine) {
-                  rule = makeLineSpan("frac-line", options);
+                  rule = makeLineSpan('frac-line', options);
                   ruleWidth = rule.height;
                   ruleSpacing = rule.height;
                 } else {
@@ -4948,17 +5201,17 @@
                   frac = _buildCommon2.default.makeVList(
                     [
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: denomm,
                         shift: denomShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: numerm,
                         shift: -numShift,
                       },
                     ],
-                    "individualShift",
+                    'individualShift',
                     null,
                     options
                   );
@@ -4967,11 +5220,13 @@
                   var axisHeight = options.fontMetrics().axisHeight;
 
                   if (numShift - numerm.depth - (axisHeight + 0.5 * ruleWidth) < clearance) {
-                    numShift += clearance - (numShift - numerm.depth - (axisHeight + 0.5 * ruleWidth));
+                    numShift +=
+                      clearance - (numShift - numerm.depth - (axisHeight + 0.5 * ruleWidth));
                   }
 
                   if (axisHeight - 0.5 * ruleWidth - (denomm.height - denomShift) < clearance) {
-                    denomShift += clearance - (axisHeight - 0.5 * ruleWidth - (denomm.height - denomShift));
+                    denomShift +=
+                      clearance - (axisHeight - 0.5 * ruleWidth - (denomm.height - denomShift));
                   }
 
                   var midShift = -(axisHeight - 0.5 * ruleWidth);
@@ -4979,22 +5234,22 @@
                   frac = _buildCommon2.default.makeVList(
                     [
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: denomm,
                         shift: denomShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: rule,
                         shift: midShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: numerm,
                         shift: -numShift,
                       },
                     ],
-                    "individualShift",
+                    'individualShift',
                     null,
                     options
                   );
@@ -5017,23 +5272,33 @@
                 var leftDelim = void 0;
                 var rightDelim = void 0;
                 if (group.value.leftDelim == null) {
-                  leftDelim = makeNullDelimiter(options, ["mopen"]);
+                  leftDelim = makeNullDelimiter(options, ['mopen']);
                 } else {
-                  leftDelim = _delimiter2.default.customSizedDelim(group.value.leftDelim, delimSize, true, options.havingStyle(style), group.mode, [
-                    "mopen",
-                  ]);
+                  leftDelim = _delimiter2.default.customSizedDelim(
+                    group.value.leftDelim,
+                    delimSize,
+                    true,
+                    options.havingStyle(style),
+                    group.mode,
+                    ['mopen']
+                  );
                 }
                 if (group.value.rightDelim == null) {
-                  rightDelim = makeNullDelimiter(options, ["mclose"]);
+                  rightDelim = makeNullDelimiter(options, ['mclose']);
                 } else {
-                  rightDelim = _delimiter2.default.customSizedDelim(group.value.rightDelim, delimSize, true, options.havingStyle(style), group.mode, [
-                    "mclose",
-                  ]);
+                  rightDelim = _delimiter2.default.customSizedDelim(
+                    group.value.rightDelim,
+                    delimSize,
+                    true,
+                    options.havingStyle(style),
+                    group.mode,
+                    ['mclose']
+                  );
                 }
 
                 return (0, _buildCommon.makeSpan)(
-                  ["mord"].concat(newOptions.sizingClasses(options)),
-                  [leftDelim, (0, _buildCommon.makeSpan)(["mfrac"], [frac]), rightDelim],
+                  ['mord'].concat(newOptions.sizingClasses(options)),
+                  [leftDelim, (0, _buildCommon.makeSpan)(['mfrac'], [frac]), rightDelim],
                   options
                 );
               };
@@ -5125,23 +5390,25 @@
                   var colDescr = colDescriptions[colDescrNum] || {};
 
                   var firstSeparator = true;
-                  while (colDescr.type === "separator") {
+                  while (colDescr.type === 'separator') {
                     // If there is more than one separator in a row, add a space
                     // between them.
                     if (!firstSeparator) {
-                      colSep = (0, _buildCommon.makeSpan)(["arraycolsep"], []);
-                      colSep.style.width = options.fontMetrics().doubleRuleSep + "em";
+                      colSep = (0, _buildCommon.makeSpan)(['arraycolsep'], []);
+                      colSep.style.width = options.fontMetrics().doubleRuleSep + 'em';
                       cols.push(colSep);
                     }
 
-                    if (colDescr.separator === "|") {
-                      var separator = (0, _buildCommon.makeSpan)(["vertical-separator"], []);
-                      separator.style.height = totalHeight + "em";
-                      separator.style.verticalAlign = -(totalHeight - offset) + "em";
+                    if (colDescr.separator === '|') {
+                      var separator = (0, _buildCommon.makeSpan)(['vertical-separator'], []);
+                      separator.style.height = totalHeight + 'em';
+                      separator.style.verticalAlign = -(totalHeight - offset) + 'em';
 
                       cols.push(separator);
                     } else {
-                      throw new _ParseError2.default("Invalid separator type: " + colDescr.separator);
+                      throw new _ParseError2.default(
+                        'Invalid separator type: ' + colDescr.separator
+                      );
                     }
 
                     colDescrNum++;
@@ -5157,8 +5424,8 @@
                   if (c > 0 || group.value.hskipBeforeAndAfter) {
                     sepwidth = _utils2.default.deflt(colDescr.pregap, arraycolsep);
                     if (sepwidth !== 0) {
-                      colSep = (0, _buildCommon.makeSpan)(["arraycolsep"], []);
-                      colSep.style.width = sepwidth + "em";
+                      colSep = (0, _buildCommon.makeSpan)(['arraycolsep'], []);
+                      colSep.style.width = sepwidth + 'em';
                       cols.push(colSep);
                     }
                   }
@@ -5174,56 +5441,75 @@
                     elem.depth = row.depth;
                     elem.height = row.height;
                     col.push({
-                      type: "elem",
+                      type: 'elem',
                       elem: elem,
                       shift: shift,
                     });
                   }
 
-                  col = _buildCommon2.default.makeVList(col, "individualShift", null, options);
-                  col = (0, _buildCommon.makeSpan)(["col-align-" + (colDescr.align || "c")], [col]);
+                  col = _buildCommon2.default.makeVList(col, 'individualShift', null, options);
+                  col = (0, _buildCommon.makeSpan)(['col-align-' + (colDescr.align || 'c')], [col]);
                   cols.push(col);
 
                   if (c < nc - 1 || group.value.hskipBeforeAndAfter) {
                     sepwidth = _utils2.default.deflt(colDescr.postgap, arraycolsep);
                     if (sepwidth !== 0) {
-                      colSep = (0, _buildCommon.makeSpan)(["arraycolsep"], []);
-                      colSep.style.width = sepwidth + "em";
+                      colSep = (0, _buildCommon.makeSpan)(['arraycolsep'], []);
+                      colSep.style.width = sepwidth + 'em';
                       cols.push(colSep);
                     }
                   }
                 }
-                body = (0, _buildCommon.makeSpan)(["mtable"], cols);
-                return (0, _buildCommon.makeSpan)(["mord"], [body], options);
+                body = (0, _buildCommon.makeSpan)(['mtable'], cols);
+                return (0, _buildCommon.makeSpan)(['mord'], [body], options);
               };
 
               groupTypes.spacing = function (group, options) {
-                if (group.value === "\\ " || group.value === "\\space" || group.value === " " || group.value === "~") {
+                if (
+                  group.value === '\\ ' ||
+                  group.value === '\\space' ||
+                  group.value === ' ' ||
+                  group.value === '~'
+                ) {
                   // Spaces are generated by adding an actual space. Each of these
                   // things has an entry in the symbols table, so these will be turned
                   // into appropriate outputs.
-                  if (group.mode === "text") {
-                    return _buildCommon2.default.makeOrd(group, options, "textord");
+                  if (group.mode === 'text') {
+                    return _buildCommon2.default.makeOrd(group, options, 'textord');
                   } else {
-                    return (0, _buildCommon.makeSpan)(["mspace"], [_buildCommon2.default.mathsym(group.value, group.mode, options)], options);
+                    return (0, _buildCommon.makeSpan)(
+                      ['mspace'],
+                      [_buildCommon2.default.mathsym(group.value, group.mode, options)],
+                      options
+                    );
                   }
                 } else {
                   // Other kinds of spaces are of arbitrary width. We use CSS to
                   // generate these.
-                  return (0, _buildCommon.makeSpan)(["mspace", _buildCommon2.default.spacingFunctions[group.value].className], [], options);
+                  return (0, _buildCommon.makeSpan)(
+                    ['mspace', _buildCommon2.default.spacingFunctions[group.value].className],
+                    [],
+                    options
+                  );
                 }
               };
 
               groupTypes.llap = function (group, options) {
-                var inner = (0, _buildCommon.makeSpan)(["inner"], [buildGroup(group.value.body, options)]);
-                var fix = (0, _buildCommon.makeSpan)(["fix"], []);
-                return (0, _buildCommon.makeSpan)(["mord", "llap"], [inner, fix], options);
+                var inner = (0, _buildCommon.makeSpan)(
+                  ['inner'],
+                  [buildGroup(group.value.body, options)]
+                );
+                var fix = (0, _buildCommon.makeSpan)(['fix'], []);
+                return (0, _buildCommon.makeSpan)(['mord', 'llap'], [inner, fix], options);
               };
 
               groupTypes.rlap = function (group, options) {
-                var inner = (0, _buildCommon.makeSpan)(["inner"], [buildGroup(group.value.body, options)]);
-                var fix = (0, _buildCommon.makeSpan)(["fix"], []);
-                return (0, _buildCommon.makeSpan)(["mord", "rlap"], [inner, fix], options);
+                var inner = (0, _buildCommon.makeSpan)(
+                  ['inner'],
+                  [buildGroup(group.value.body, options)]
+                );
+                var fix = (0, _buildCommon.makeSpan)(['fix'], []);
+                return (0, _buildCommon.makeSpan)(['mord', 'rlap'], [inner, fix], options);
               };
 
               groupTypes.op = function (group, options) {
@@ -5231,7 +5517,7 @@
                 var supGroup = void 0;
                 var subGroup = void 0;
                 var hasLimits = false;
-                if (group.type === "supsub") {
+                if (group.type === 'supsub') {
                   // If we have limits, supsub will pass us its group to handle. Pull
                   // out the superscript and subscript and set the group to the op in
                   // its base.
@@ -5244,10 +5530,14 @@
                 var style = options.style;
 
                 // Most operators have a large successor symbol, but these don't.
-                var noSuccessor = ["\\smallint"];
+                var noSuccessor = ['\\smallint'];
 
                 var large = false;
-                if (style.size === _Style2.default.DISPLAY.size && group.value.symbol && !_utils2.default.contains(noSuccessor, group.value.body)) {
+                if (
+                  style.size === _Style2.default.DISPLAY.size &&
+                  group.value.symbol &&
+                  !_utils2.default.contains(noSuccessor, group.value.body)
+                ) {
                   // Most symbol operators get larger in displaystyle (rule 13)
                   large = true;
                 }
@@ -5255,20 +5545,22 @@
                 var base = void 0;
                 if (group.value.symbol) {
                   // If this is a symbol, create the symbol.
-                  var fontName = large ? "Size2-Regular" : "Size1-Regular";
-                  base = _buildCommon2.default.makeSymbol(group.value.body, fontName, "math", options, [
-                    "mop",
-                    "op-symbol",
-                    large ? "large-op" : "small-op",
-                  ]);
+                  var fontName = large ? 'Size2-Regular' : 'Size1-Regular';
+                  base = _buildCommon2.default.makeSymbol(
+                    group.value.body,
+                    fontName,
+                    'math',
+                    options,
+                    ['mop', 'op-symbol', large ? 'large-op' : 'small-op']
+                  );
                 } else if (group.value.value) {
                   // If this is a list, compose that list.
                   var inner = buildExpression(group.value.value, options, true);
                   if (inner.length === 1 && inner[0] instanceof _domTree2.default.symbolNode) {
                     base = inner[0];
-                    base.classes[0] = "mop"; // replace old mclass
+                    base.classes[0] = 'mop'; // replace old mclass
                   } else {
-                    base = (0, _buildCommon.makeSpan)(["mop"], inner, options);
+                    base = (0, _buildCommon.makeSpan)(['mop'], inner, options);
                   }
                 } else {
                   // Otherwise, this is a text operator. Build the text from the
@@ -5279,7 +5571,7 @@
                   for (var i = 1; i < group.value.body.length; i++) {
                     output.push(_buildCommon2.default.mathsym(group.value.body[i], group.mode));
                   }
-                  base = (0, _buildCommon.makeSpan)(["mop"], output, options);
+                  base = (0, _buildCommon.makeSpan)(['mop'], output, options);
                 }
 
                 // If content of op is a single symbol, shift it vertically.
@@ -5313,14 +5605,20 @@
                     newOptions = options.havingStyle(style.sup());
                     supm = buildGroup(supGroup, newOptions, options);
 
-                    supKern = Math.max(options.fontMetrics().bigOpSpacing1, options.fontMetrics().bigOpSpacing3 - supm.depth);
+                    supKern = Math.max(
+                      options.fontMetrics().bigOpSpacing1,
+                      options.fontMetrics().bigOpSpacing3 - supm.depth
+                    );
                   }
 
                   if (subGroup) {
                     newOptions = options.havingStyle(style.sub());
                     subm = buildGroup(subGroup, newOptions, options);
 
-                    subKern = Math.max(options.fontMetrics().bigOpSpacing2, options.fontMetrics().bigOpSpacing4 - subm.height);
+                    subKern = Math.max(
+                      options.fontMetrics().bigOpSpacing2,
+                      options.fontMetrics().bigOpSpacing4 - subm.height
+                    );
                   }
 
                   // Build the final group as a vlist of the possible subscript, base,
@@ -5338,24 +5636,24 @@
                     finalGroup = _buildCommon2.default.makeVList(
                       [
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: options.fontMetrics().bigOpSpacing5,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: subm,
-                          marginLeft: -slant + "em",
+                          marginLeft: -slant + 'em',
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: subKern,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: base,
                         },
                       ],
-                      "top",
+                      'top',
                       top,
                       options
                     );
@@ -5365,24 +5663,24 @@
                     finalGroup = _buildCommon2.default.makeVList(
                       [
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: base,
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: supKern,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: supm,
-                          marginLeft: slant + "em",
+                          marginLeft: slant + 'em',
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: options.fontMetrics().bigOpSpacing5,
                         },
                       ],
-                      "bottom",
+                      'bottom',
                       bottom,
                       options
                     );
@@ -5392,52 +5690,58 @@
                     // subscript) but be safe.
                     return base;
                   } else {
-                    bottom = options.fontMetrics().bigOpSpacing5 + subm.height + subm.depth + subKern + base.depth + baseShift;
+                    bottom =
+                      options.fontMetrics().bigOpSpacing5 +
+                      subm.height +
+                      subm.depth +
+                      subKern +
+                      base.depth +
+                      baseShift;
 
                     finalGroup = _buildCommon2.default.makeVList(
                       [
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: options.fontMetrics().bigOpSpacing5,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: subm,
-                          marginLeft: -slant + "em",
+                          marginLeft: -slant + 'em',
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: subKern,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: base,
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: supKern,
                         },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: supm,
-                          marginLeft: slant + "em",
+                          marginLeft: slant + 'em',
                         },
                         {
-                          type: "kern",
+                          type: 'kern',
                           size: options.fontMetrics().bigOpSpacing5,
                         },
                       ],
-                      "bottom",
+                      'bottom',
                       bottom,
                       options
                     );
                   }
 
-                  return (0, _buildCommon.makeSpan)(["mop", "op-limits"], [finalGroup], options);
+                  return (0, _buildCommon.makeSpan)(['mop', 'op-limits'], [finalGroup], options);
                 } else {
                   if (baseShift) {
-                    base.style.position = "relative";
-                    base.style.top = baseShift + "em";
+                    base.style.position = 'relative';
+                    base.style.top = baseShift + 'em';
                   }
 
                   return base;
@@ -5447,49 +5751,56 @@
               groupTypes.mod = function (group, options) {
                 var inner = [];
 
-                if (group.value.modType === "bmod") {
+                if (group.value.modType === 'bmod') {
                   // “\nonscript\mskip-\medmuskip\mkern5mu”
                   if (!options.style.isTight()) {
-                    inner.push((0, _buildCommon.makeSpan)(["mspace", "negativemediumspace"], [], options));
+                    inner.push(
+                      (0, _buildCommon.makeSpan)(['mspace', 'negativemediumspace'], [], options)
+                    );
                   }
-                  inner.push((0, _buildCommon.makeSpan)(["mspace", "thickspace"], [], options));
+                  inner.push((0, _buildCommon.makeSpan)(['mspace', 'thickspace'], [], options));
                 } else if (options.style.size === _Style2.default.DISPLAY.size) {
-                  inner.push((0, _buildCommon.makeSpan)(["mspace", "quad"], [], options));
-                } else if (group.value.modType === "mod") {
-                  inner.push((0, _buildCommon.makeSpan)(["mspace", "twelvemuspace"], [], options));
+                  inner.push((0, _buildCommon.makeSpan)(['mspace', 'quad'], [], options));
+                } else if (group.value.modType === 'mod') {
+                  inner.push((0, _buildCommon.makeSpan)(['mspace', 'twelvemuspace'], [], options));
                 } else {
-                  inner.push((0, _buildCommon.makeSpan)(["mspace", "eightmuspace"], [], options));
+                  inner.push((0, _buildCommon.makeSpan)(['mspace', 'eightmuspace'], [], options));
                 }
 
-                if (group.value.modType === "pod" || group.value.modType === "pmod") {
-                  inner.push(_buildCommon2.default.mathsym("(", group.mode));
+                if (group.value.modType === 'pod' || group.value.modType === 'pmod') {
+                  inner.push(_buildCommon2.default.mathsym('(', group.mode));
                 }
 
-                if (group.value.modType !== "pod") {
+                if (group.value.modType !== 'pod') {
                   var modInner = [
-                    _buildCommon2.default.mathsym("m", group.mode),
-                    _buildCommon2.default.mathsym("o", group.mode),
-                    _buildCommon2.default.mathsym("d", group.mode),
+                    _buildCommon2.default.mathsym('m', group.mode),
+                    _buildCommon2.default.mathsym('o', group.mode),
+                    _buildCommon2.default.mathsym('d', group.mode),
                   ];
-                  if (group.value.modType === "bmod") {
-                    inner.push((0, _buildCommon.makeSpan)(["mbin"], modInner, options));
+                  if (group.value.modType === 'bmod') {
+                    inner.push((0, _buildCommon.makeSpan)(['mbin'], modInner, options));
                     // “\mkern5mu\nonscript\mskip-\medmuskip”
-                    inner.push((0, _buildCommon.makeSpan)(["mspace", "thickspace"], [], options));
+                    inner.push((0, _buildCommon.makeSpan)(['mspace', 'thickspace'], [], options));
                     if (!options.style.isTight()) {
-                      inner.push((0, _buildCommon.makeSpan)(["mspace", "negativemediumspace"], [], options));
+                      inner.push(
+                        (0, _buildCommon.makeSpan)(['mspace', 'negativemediumspace'], [], options)
+                      );
                     }
                   } else {
                     Array.prototype.push.apply(inner, modInner);
-                    inner.push((0, _buildCommon.makeSpan)(["mspace", "sixmuspace"], [], options));
+                    inner.push((0, _buildCommon.makeSpan)(['mspace', 'sixmuspace'], [], options));
                   }
                 }
 
                 if (group.value.value) {
-                  Array.prototype.push.apply(inner, buildExpression(group.value.value, options, false));
+                  Array.prototype.push.apply(
+                    inner,
+                    buildExpression(group.value.value, options, false)
+                  );
                 }
 
-                if (group.value.modType === "pod" || group.value.modType === "pmod") {
-                  inner.push(_buildCommon2.default.mathsym(")", group.mode));
+                if (group.value.modType === 'pod' || group.value.modType === 'pmod') {
+                  inner.push(_buildCommon2.default.mathsym(')', group.mode));
                 }
 
                 return _buildCommon2.default.makeFragment(inner);
@@ -5499,27 +5810,47 @@
                 // The KaTeX logo. The offsets for the K and a were chosen to look
                 // good, but the offsets for the T, E, and X were taken from the
                 // definition of \TeX in TeX (see TeXbook pg. 356)
-                var k = (0, _buildCommon.makeSpan)(["k"], [_buildCommon2.default.mathsym("K", group.mode)], options);
-                var a = (0, _buildCommon.makeSpan)(["a"], [_buildCommon2.default.mathsym("A", group.mode)], options);
+                var k = (0, _buildCommon.makeSpan)(
+                  ['k'],
+                  [_buildCommon2.default.mathsym('K', group.mode)],
+                  options
+                );
+                var a = (0, _buildCommon.makeSpan)(
+                  ['a'],
+                  [_buildCommon2.default.mathsym('A', group.mode)],
+                  options
+                );
 
                 a.height = (a.height + 0.2) * 0.75;
                 a.depth = (a.height - 0.2) * 0.75;
 
-                var t = (0, _buildCommon.makeSpan)(["t"], [_buildCommon2.default.mathsym("T", group.mode)], options);
-                var e = (0, _buildCommon.makeSpan)(["e"], [_buildCommon2.default.mathsym("E", group.mode)], options);
+                var t = (0, _buildCommon.makeSpan)(
+                  ['t'],
+                  [_buildCommon2.default.mathsym('T', group.mode)],
+                  options
+                );
+                var e = (0, _buildCommon.makeSpan)(
+                  ['e'],
+                  [_buildCommon2.default.mathsym('E', group.mode)],
+                  options
+                );
 
                 e.height = e.height - 0.2155;
                 e.depth = e.depth + 0.2155;
 
-                var x = (0, _buildCommon.makeSpan)(["x"], [_buildCommon2.default.mathsym("X", group.mode)], options);
+                var x = (0, _buildCommon.makeSpan)(
+                  ['x'],
+                  [_buildCommon2.default.mathsym('X', group.mode)],
+                  options
+                );
 
-                return (0, _buildCommon.makeSpan)(["mord", "katex-logo"], [k, a, t, e, x], options);
+                return (0, _buildCommon.makeSpan)(['mord', 'katex-logo'], [k, a, t, e, x], options);
               };
 
               var makeLineSpan = function makeLineSpan(className, options, thickness) {
                 var line = (0, _buildCommon.makeSpan)([className], [], options);
                 line.height = thickness || options.fontMetrics().defaultRuleThickness;
-                line.style.borderBottomWidth = line.height + "em";
+                line.style.borderBottomWidth = line.height + 'em';
                 line.maxFontSize = 1.0;
                 return line;
               };
@@ -5531,22 +5862,22 @@
                 var innerGroup = buildGroup(group.value.body, options.havingCrampedStyle());
 
                 // Create the line above the body
-                var line = makeLineSpan("overline-line", options);
+                var line = makeLineSpan('overline-line', options);
 
                 // Generate the vlist, with the appropriate kerns
                 var vlist = _buildCommon2.default.makeVList(
                   [
-                    { type: "elem", elem: innerGroup },
-                    { type: "kern", size: 3 * line.height },
-                    { type: "elem", elem: line },
-                    { type: "kern", size: line.height },
+                    { type: 'elem', elem: innerGroup },
+                    { type: 'kern', size: 3 * line.height },
+                    { type: 'elem', elem: line },
+                    { type: 'kern', size: line.height },
                   ],
-                  "firstBaseline",
+                  'firstBaseline',
                   null,
                   options
                 );
 
-                return (0, _buildCommon.makeSpan)(["mord", "overline"], [vlist], options);
+                return (0, _buildCommon.makeSpan)(['mord', 'overline'], [vlist], options);
               };
 
               groupTypes.underline = function (group, options) {
@@ -5555,22 +5886,22 @@
                 var innerGroup = buildGroup(group.value.body, options);
 
                 // Create the line above the body
-                var line = makeLineSpan("underline-line", options);
+                var line = makeLineSpan('underline-line', options);
 
                 // Generate the vlist, with the appropriate kerns
                 var vlist = _buildCommon2.default.makeVList(
                   [
-                    { type: "kern", size: line.height },
-                    { type: "elem", elem: line },
-                    { type: "kern", size: 3 * line.height },
-                    { type: "elem", elem: innerGroup },
+                    { type: 'kern', size: line.height },
+                    { type: 'elem', elem: line },
+                    { type: 'kern', size: 3 * line.height },
+                    { type: 'elem', elem: innerGroup },
                   ],
-                  "top",
+                  'top',
                   innerGroup.height,
                   options
                 );
 
-                return (0, _buildCommon.makeSpan)(["mord", "underline"], [vlist], options);
+                return (0, _buildCommon.makeSpan)(['mord', 'underline'], [vlist], options);
               };
 
               groupTypes.sqrt = function (group, options) {
@@ -5598,10 +5929,17 @@
                 // Calculate the clearance between the body and line
                 var lineClearance = theta + phi / 4;
 
-                var minDelimiterHeight = (inner.height + inner.depth + lineClearance + theta) * options.sizeMultiplier;
+                var minDelimiterHeight =
+                  (inner.height + inner.depth + lineClearance + theta) * options.sizeMultiplier;
 
                 // Create a sqrt SVG of the required minimum size
-                var img = _delimiter2.default.customSizedDelim("\\surd", minDelimiterHeight, false, options, group.mode);
+                var img = _delimiter2.default.customSizedDelim(
+                  '\\surd',
+                  minDelimiterHeight,
+                  false,
+                  options,
+                  group.mode
+                );
 
                 // Calculate the actual line width.
                 // This actually should depend on the chosen font -- e.g. \boldmath
@@ -5628,28 +5966,28 @@
                 if (inner.height === 0 && inner.depth === 0) {
                   body = (0, _buildCommon.makeSpan)();
                 } else {
-                  inner.style.paddingLeft = img.surdWidth + "em";
+                  inner.style.paddingLeft = img.surdWidth + 'em';
 
                   // Overlay the image and the argument.
                   body = _buildCommon2.default.makeVList(
                     [
-                      { type: "elem", elem: inner },
+                      { type: 'elem', elem: inner },
                       {
-                        type: "kern",
+                        type: 'kern',
                         size: -(inner.height + imgShift),
                       },
-                      { type: "elem", elem: img },
-                      { type: "kern", size: ruleWidth },
+                      { type: 'elem', elem: img },
+                      { type: 'kern', size: ruleWidth },
                     ],
-                    "firstBaseline",
+                    'firstBaseline',
                     null,
                     options
                   );
-                  body.children[0].children[0].classes.push("svg-align");
+                  body.children[0].children[0].classes.push('svg-align');
                 }
 
                 if (!group.value.index) {
-                  return (0, _buildCommon.makeSpan)(["mord", "sqrt"], [body], options);
+                  return (0, _buildCommon.makeSpan)(['mord', 'sqrt'], [body], options);
                 } else {
                   // Handle the optional root index
 
@@ -5662,12 +6000,21 @@
                   var toShift = 0.6 * (body.height - body.depth);
 
                   // Build a VList with the superscript shifted up correctly
-                  var rootVList = _buildCommon2.default.makeVList([{ type: "elem", elem: rootm }], "shift", -toShift, options);
+                  var rootVList = _buildCommon2.default.makeVList(
+                    [{ type: 'elem', elem: rootm }],
+                    'shift',
+                    -toShift,
+                    options
+                  );
                   // Add a class surrounding it so we can add on the appropriate
                   // kerning
-                  var rootVListWrap = (0, _buildCommon.makeSpan)(["root"], [rootVList]);
+                  var rootVListWrap = (0, _buildCommon.makeSpan)(['root'], [rootVList]);
 
-                  return (0, _buildCommon.makeSpan)(["mord", "sqrt"], [rootVListWrap, body], options);
+                  return (0, _buildCommon.makeSpan)(
+                    ['mord', 'sqrt'],
+                    [rootVListWrap, body],
+                    options
+                  );
                 }
               };
 
@@ -5678,14 +6025,17 @@
                 // Add size-resetting classes to the inner list and set maxFontSize
                 // manually. Handle nested size changes.
                 for (var i = 0; i < inner.length; i++) {
-                  var pos = _utils2.default.indexOf(inner[i].classes, "sizing");
+                  var pos = _utils2.default.indexOf(inner[i].classes, 'sizing');
                   if (pos < 0) {
-                    Array.prototype.push.apply(inner[i].classes, options.sizingClasses(baseOptions));
-                  } else if (inner[i].classes[pos + 1] === "reset-size" + options.size) {
+                    Array.prototype.push.apply(
+                      inner[i].classes,
+                      options.sizingClasses(baseOptions)
+                    );
+                  } else if (inner[i].classes[pos + 1] === 'reset-size' + options.size) {
                     // This is a nested size change: e.g., inner[i] is the "b" in
                     // `\Huge a \small b`. Override the old size (the `reset-` class)
                     // but not the new size.
-                    inner[i].classes[pos + 1] = "reset-size" + baseOptions.size;
+                    inner[i].classes[pos + 1] = 'reset-size' + baseOptions.size;
                   }
 
                   inner[i].height *= multiplier;
@@ -5727,14 +6077,20 @@
               groupTypes.delimsizing = function (group, options) {
                 var delim = group.value.value;
 
-                if (delim === ".") {
+                if (delim === '.') {
                   // Empty delimiters still count as elements, even though they don't
                   // show anything.
                   return (0, _buildCommon.makeSpan)([group.value.mclass]);
                 }
 
                 // Use delimiter.sizedDelim to generate the delimiter.
-                return _delimiter2.default.sizedDelim(delim, group.value.size, options, group.mode, [group.value.mclass]);
+                return _delimiter2.default.sizedDelim(
+                  delim,
+                  group.value.size,
+                  options,
+                  group.mode,
+                  [group.value.mclass]
+                );
               };
 
               groupTypes.leftright = function (group, options) {
@@ -5762,13 +6118,20 @@
                 innerDepth *= options.sizeMultiplier;
 
                 var leftDelim = void 0;
-                if (group.value.left === ".") {
+                if (group.value.left === '.') {
                   // Empty delimiters in \left and \right make null delimiter spaces.
-                  leftDelim = makeNullDelimiter(options, ["mopen"]);
+                  leftDelim = makeNullDelimiter(options, ['mopen']);
                 } else {
                   // Otherwise, use leftRightDelim to generate the correct sized
                   // delimiter.
-                  leftDelim = _delimiter2.default.leftRightDelim(group.value.left, innerHeight, innerDepth, options, group.mode, ["mopen"]);
+                  leftDelim = _delimiter2.default.leftRightDelim(
+                    group.value.left,
+                    innerHeight,
+                    innerDepth,
+                    options,
+                    group.mode,
+                    ['mopen']
+                  );
                 }
                 // Add it to the beginning of the expression
                 inner.unshift(leftDelim);
@@ -5798,23 +6161,36 @@
 
                 var rightDelim = void 0;
                 // Same for the right delimiter
-                if (group.value.right === ".") {
-                  rightDelim = makeNullDelimiter(options, ["mclose"]);
+                if (group.value.right === '.') {
+                  rightDelim = makeNullDelimiter(options, ['mclose']);
                 } else {
-                  rightDelim = _delimiter2.default.leftRightDelim(group.value.right, innerHeight, innerDepth, options, group.mode, ["mclose"]);
+                  rightDelim = _delimiter2.default.leftRightDelim(
+                    group.value.right,
+                    innerHeight,
+                    innerDepth,
+                    options,
+                    group.mode,
+                    ['mclose']
+                  );
                 }
                 // Add it to the end of the expression.
                 inner.push(rightDelim);
 
-                return (0, _buildCommon.makeSpan)(["minner"], inner, options);
+                return (0, _buildCommon.makeSpan)(['minner'], inner, options);
               };
 
               groupTypes.middle = function (group, options) {
                 var middleDelim = void 0;
-                if (group.value.value === ".") {
+                if (group.value.value === '.') {
                   middleDelim = makeNullDelimiter(options, []);
                 } else {
-                  middleDelim = _delimiter2.default.sizedDelim(group.value.value, 1, options, group.mode, []);
+                  middleDelim = _delimiter2.default.sizedDelim(
+                    group.value.value,
+                    1,
+                    options,
+                    group.mode,
+                    []
+                  );
                   middleDelim.isMiddle = {
                     value: group.value.value,
                     options: options,
@@ -5825,7 +6201,7 @@
 
               groupTypes.rule = function (group, options) {
                 // Make an empty span for the rule
-                var rule = (0, _buildCommon.makeSpan)(["mord", "rule"], [], options);
+                var rule = (0, _buildCommon.makeSpan)(['mord', 'rule'], [], options);
 
                 // Calculate the shift, width, and height of the rule, and account for units
                 var shift = 0;
@@ -5837,9 +6213,9 @@
                 var height = _units2.default.calculateSize(group.value.height, options);
 
                 // Style the rule to the right size
-                rule.style.borderRightWidth = width + "em";
-                rule.style.borderTopWidth = height + "em";
-                rule.style.bottom = shift + "em";
+                rule.style.borderRightWidth = width + 'em';
+                rule.style.borderTopWidth = height + 'em';
+                rule.style.bottom = shift + 'em';
 
                 // Record the height and width
                 rule.width = width;
@@ -5855,11 +6231,11 @@
 
               groupTypes.kern = function (group, options) {
                 // Make an empty span for the rule
-                var rule = (0, _buildCommon.makeSpan)(["mord", "rule"], [], options);
+                var rule = (0, _buildCommon.makeSpan)(['mord', 'rule'], [], options);
 
                 if (group.value.dimension) {
                   var dimension = _units2.default.calculateSize(group.value.dimension, options);
-                  rule.style.marginLeft = dimension + "em";
+                  rule.style.marginLeft = dimension + 'em';
                 }
 
                 return rule;
@@ -5870,7 +6246,7 @@
                 var base = group.value.base;
 
                 var supsubGroup = void 0;
-                if (group.type === "supsub") {
+                if (group.type === 'supsub') {
                   // If our base is a character box, and we have superscripts and
                   // subscripts, the supsub will defer to us. In particular, we want
                   // to attach the superscripts and subscripts to the inner body (so
@@ -5925,7 +6301,12 @@
                 // Build the accent
                 var accentBody = void 0;
                 if (!group.value.isStretchy) {
-                  var accent = _buildCommon2.default.makeSymbol(group.value.label, "Main-Regular", group.mode, options);
+                  var accent = _buildCommon2.default.makeSymbol(
+                    group.value.label,
+                    'Main-Regular',
+                    group.mode,
+                    options
+                  );
                   // Remove the italic correction of the accent, because it only serves to
                   // shift the accent over to a place we don't want.
                   accent.italic = 0;
@@ -5937,33 +6318,36 @@
                   // Similarly, text accent \H is a combining character and
                   // requires a different adjustment.
                   var accentClass = null;
-                  if (group.value.label === "\\vec") {
-                    accentClass = "accent-vec";
-                  } else if (group.value.label === "\\H") {
-                    accentClass = "accent-hungarian";
+                  if (group.value.label === '\\vec') {
+                    accentClass = 'accent-vec';
+                  } else if (group.value.label === '\\H') {
+                    accentClass = 'accent-hungarian';
                   }
 
                   accentBody = (0, _buildCommon.makeSpan)([], [accent]);
-                  accentBody = (0, _buildCommon.makeSpan)(["accent-body", accentClass], [accentBody]);
+                  accentBody = (0, _buildCommon.makeSpan)(
+                    ['accent-body', accentClass],
+                    [accentBody]
+                  );
 
                   // Shift the accent over by the skew. Note we shift by twice the skew
                   // because we are centering the accent, so by adding 2*skew to the left,
                   // we shift it to the right by 1*skew.
-                  accentBody.style.marginLeft = 2 * skew + "em";
+                  accentBody.style.marginLeft = 2 * skew + 'em';
 
                   accentBody = _buildCommon2.default.makeVList(
                     [
-                      { type: "elem", elem: body },
+                      { type: 'elem', elem: body },
                       {
-                        type: "kern",
+                        type: 'kern',
                         size: -clearance,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: accentBody,
                       },
                     ],
-                    "firstBaseline",
+                    'firstBaseline',
                     null,
                     options
                   );
@@ -5972,27 +6356,31 @@
 
                   accentBody = _buildCommon2.default.makeVList(
                     [
-                      { type: "elem", elem: body },
+                      { type: 'elem', elem: body },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: accentBody,
                       },
                     ],
-                    "firstBaseline",
+                    'firstBaseline',
                     null,
                     options
                   );
 
                   var styleSpan = accentBody.children[0].children[0].children[1];
-                  styleSpan.classes.push("svg-align"); // text-align: left;
+                  styleSpan.classes.push('svg-align'); // text-align: left;
                   if (skew > 0) {
                     // Shorten the accent and nudge it to the right.
-                    styleSpan.style.width = "calc(100% - " + 2 * skew + "em)";
-                    styleSpan.style.marginLeft = 2 * skew + "em";
+                    styleSpan.style.width = 'calc(100% - ' + 2 * skew + 'em)';
+                    styleSpan.style.marginLeft = 2 * skew + 'em';
                   }
                 }
 
-                var accentWrap = (0, _buildCommon.makeSpan)(["mord", "accent"], [accentBody], options);
+                var accentWrap = (0, _buildCommon.makeSpan)(
+                  ['mord', 'accent'],
+                  [accentBody],
+                  options
+                );
 
                 if (supsubGroup) {
                   // Here, we replace the "base" child of the supsub with our newly
@@ -6004,7 +6392,7 @@
                   supsubGroup.height = Math.max(accentWrap.height, supsubGroup.height);
 
                   // Accents should always be ords, even when their innards are not.
-                  supsubGroup.classes[0] = "mord";
+                  supsubGroup.classes[0] = 'mord';
 
                   return supsubGroup;
                 } else {
@@ -6015,7 +6403,7 @@
               groupTypes.horizBrace = function (group, options) {
                 var style = options.style;
 
-                var hasSupSub = group.type === "supsub";
+                var hasSupSub = group.type === 'supsub';
                 var supSubGroup = void 0;
                 var newOptions = void 0;
                 if (hasSupSub) {
@@ -6033,7 +6421,10 @@
                 }
 
                 // Build the base group
-                var body = buildGroup(group.value.base, options.havingBaseStyle(_Style2.default.DISPLAY));
+                var body = buildGroup(
+                  group.value.base,
+                  options.havingBaseStyle(_Style2.default.DISPLAY)
+                );
 
                 // Create the stretchy element
                 var braceBody = _stretchy2.default.svgSpan(group, options);
@@ -6044,27 +6435,27 @@
                 if (group.value.isOver) {
                   vlist = _buildCommon2.default.makeVList(
                     [
-                      { type: "elem", elem: body },
-                      { type: "kern", size: 0.1 },
-                      { type: "elem", elem: braceBody },
+                      { type: 'elem', elem: body },
+                      { type: 'kern', size: 0.1 },
+                      { type: 'elem', elem: braceBody },
                     ],
-                    "firstBaseline",
+                    'firstBaseline',
                     null,
                     options
                   );
-                  vlist.children[0].children[0].children[1].classes.push("svg-align");
+                  vlist.children[0].children[0].children[1].classes.push('svg-align');
                 } else {
                   vlist = _buildCommon2.default.makeVList(
                     [
-                      { type: "elem", elem: braceBody },
-                      { type: "kern", size: 0.1 },
-                      { type: "elem", elem: body },
+                      { type: 'elem', elem: braceBody },
+                      { type: 'kern', size: 0.1 },
+                      { type: 'elem', elem: body },
                     ],
-                    "bottom",
+                    'bottom',
                     body.depth + 0.1 + braceBody.height,
                     options
                   );
-                  vlist.children[0].children[0].children[0].classes.push("svg-align");
+                  vlist.children[0].children[0].children[0].classes.push('svg-align');
                 }
 
                 if (hasSupSub) {
@@ -6076,19 +6467,23 @@
                   //   ┏━━━━━━━━┓   or    ┏━━━┓     not    ┏━━━━━━━━━┓
                   //    equation           eqn                 eqn
 
-                  var vSpan = (0, _buildCommon.makeSpan)(["mord", group.value.isOver ? "mover" : "munder"], [vlist], options);
+                  var vSpan = (0, _buildCommon.makeSpan)(
+                    ['mord', group.value.isOver ? 'mover' : 'munder'],
+                    [vlist],
+                    options
+                  );
 
                   if (group.value.isOver) {
                     vlist = _buildCommon2.default.makeVList(
                       [
-                        { type: "elem", elem: vSpan },
-                        { type: "kern", size: 0.2 },
+                        { type: 'elem', elem: vSpan },
+                        { type: 'kern', size: 0.2 },
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: supSubGroup,
                         },
                       ],
-                      "firstBaseline",
+                      'firstBaseline',
                       null,
                       options
                     );
@@ -6096,20 +6491,24 @@
                     vlist = _buildCommon2.default.makeVList(
                       [
                         {
-                          type: "elem",
+                          type: 'elem',
                           elem: supSubGroup,
                         },
-                        { type: "kern", size: 0.2 },
-                        { type: "elem", elem: vSpan },
+                        { type: 'kern', size: 0.2 },
+                        { type: 'elem', elem: vSpan },
                       ],
-                      "bottom",
+                      'bottom',
                       vSpan.depth + 0.2 + supSubGroup.height,
                       options
                     );
                   }
                 }
 
-                return (0, _buildCommon.makeSpan)(["mord", group.value.isOver ? "mover" : "munder"], [vlist], options);
+                return (0, _buildCommon.makeSpan)(
+                  ['mord', group.value.isOver ? 'mover' : 'munder'],
+                  [vlist],
+                  options
+                );
               };
 
               groupTypes.accentUnder = function (group, options) {
@@ -6122,18 +6521,18 @@
                 // Generate the vlist, with the appropriate kerns
                 var vlist = _buildCommon2.default.makeVList(
                   [
-                    { type: "elem", elem: accentBody },
-                    { type: "kern", size: kern },
-                    { type: "elem", elem: innerGroup },
+                    { type: 'elem', elem: accentBody },
+                    { type: 'kern', size: kern },
+                    { type: 'elem', elem: innerGroup },
                   ],
-                  "bottom",
+                  'bottom',
                   accentBody.height + kern,
                   options
                 );
 
-                vlist.children[0].children[0].children[0].classes.push("svg-align");
+                vlist.children[0].children[0].children[0].classes.push('svg-align');
 
-                return (0, _buildCommon.makeSpan)(["mord", "accentunder"], [vlist], options);
+                return (0, _buildCommon.makeSpan)(['mord', 'accentunder'], [vlist], options);
               };
 
               groupTypes.enclose = function (group, options) {
@@ -6146,19 +6545,19 @@
                 var pad = 0;
                 var imgShift = 0;
 
-                if (label === "sout") {
-                  img = (0, _buildCommon.makeSpan)(["stretchy", "sout"]);
+                if (label === 'sout') {
+                  img = (0, _buildCommon.makeSpan)(['stretchy', 'sout']);
                   img.height = options.fontMetrics().defaultRuleThickness / scale;
                   imgShift = -0.5 * options.fontMetrics().xHeight;
                 } else {
                   // Add horizontal padding
-                  inner.classes.push(label === "fbox" ? "boxpad" : "cancel-pad");
+                  inner.classes.push(label === 'fbox' ? 'boxpad' : 'cancel-pad');
 
                   // Add vertical padding
                   var isCharBox = isCharacterBox(group.value.body);
                   // ref: LaTeX source2e: \fboxsep = 3pt;  \fboxrule = .4pt
                   // ref: cancel package: \advance\totalheight2\p@ % "+2"
-                  pad = label === "fbox" ? 0.34 : isCharBox ? 0.2 : 0;
+                  pad = label === 'fbox' ? 0.34 : isCharBox ? 0.2 : 0;
                   imgShift = inner.depth + pad;
 
                   img = _stretchy2.default.encloseSpan(inner, label, pad, options);
@@ -6166,28 +6565,28 @@
 
                 var vlist = _buildCommon2.default.makeVList(
                   [
-                    { type: "elem", elem: inner, shift: 0 },
+                    { type: 'elem', elem: inner, shift: 0 },
                     {
-                      type: "elem",
+                      type: 'elem',
                       elem: img,
                       shift: imgShift,
                     },
                   ],
-                  "individualShift",
+                  'individualShift',
                   null,
                   options
                 );
 
-                if (label !== "fbox") {
-                  vlist.children[0].children[0].children[1].classes.push("svg-align");
+                if (label !== 'fbox') {
+                  vlist.children[0].children[0].children[1].classes.push('svg-align');
                 }
 
                 if (/cancel/.test(label)) {
                   // cancel does not create horiz space for its line extension.
                   // That is, not when adjacent to a mord.
-                  return (0, _buildCommon.makeSpan)(["mord", "cancel-lap"], [vlist], options);
+                  return (0, _buildCommon.makeSpan)(['mord', 'cancel-lap'], [vlist], options);
                 } else {
-                  return (0, _buildCommon.makeSpan)(["mord"], [vlist], options);
+                  return (0, _buildCommon.makeSpan)(['mord'], [vlist], options);
                 }
               };
 
@@ -6199,14 +6598,14 @@
 
                 var newOptions = options.havingStyle(style.sup());
                 var upperGroup = buildGroup(group.value.body, newOptions, options);
-                upperGroup.classes.push("x-arrow-pad");
+                upperGroup.classes.push('x-arrow-pad');
 
                 var lowerGroup = void 0;
                 if (group.value.below) {
                   // Build the lower group
                   newOptions = options.havingStyle(style.sub());
                   lowerGroup = buildGroup(group.value.below, newOptions, options);
-                  lowerGroup.classes.push("x-arrow-pad");
+                  lowerGroup.classes.push('x-arrow-pad');
                 }
 
                 var arrowBody = _stretchy2.default.svgSpan(group, options);
@@ -6217,26 +6616,30 @@
                 // Generate the vlist
                 var vlist = void 0;
                 if (group.value.below) {
-                  var lowerShift = -options.fontMetrics().axisHeight + lowerGroup.height + arrowBody.height + 0.111;
+                  var lowerShift =
+                    -options.fontMetrics().axisHeight +
+                    lowerGroup.height +
+                    arrowBody.height +
+                    0.111;
                   vlist = _buildCommon2.default.makeVList(
                     [
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: upperGroup,
                         shift: upperShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: arrowBody,
                         shift: arrowShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: lowerGroup,
                         shift: lowerShift,
                       },
                     ],
-                    "individualShift",
+                    'individualShift',
                     null,
                     options
                   );
@@ -6244,25 +6647,25 @@
                   vlist = _buildCommon2.default.makeVList(
                     [
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: upperGroup,
                         shift: upperShift,
                       },
                       {
-                        type: "elem",
+                        type: 'elem',
                         elem: arrowBody,
                         shift: arrowShift,
                       },
                     ],
-                    "individualShift",
+                    'individualShift',
                     null,
                     options
                   );
                 }
 
-                vlist.children[0].children[0].children[1].classes.push("svg-align");
+                vlist.children[0].children[0].children[1].classes.push('svg-align');
 
-                return (0, _buildCommon.makeSpan)(["mrel", "x-arrow"], [vlist], options);
+                return (0, _buildCommon.makeSpan)(['mrel', 'x-arrow'], [vlist], options);
               };
 
               groupTypes.phantom = function (group, options) {
@@ -6296,7 +6699,11 @@
                   // If the size changed between the parent and the current group, account
                   // for that size difference.
                   if (baseOptions && options.size !== baseOptions.size) {
-                    groupNode = (0, _buildCommon.makeSpan)(options.sizingClasses(baseOptions), [groupNode], options);
+                    groupNode = (0, _buildCommon.makeSpan)(
+                      options.sizingClasses(baseOptions),
+                      [groupNode],
+                      options
+                    );
 
                     var multiplier = options.sizeMultiplier / baseOptions.sizeMultiplier;
 
@@ -6321,25 +6728,28 @@
 
                 // Build the expression contained in the tree
                 var expression = buildExpression(tree, options, true);
-                var body = (0, _buildCommon.makeSpan)(["base"], expression, options);
+                var body = (0, _buildCommon.makeSpan)(['base'], expression, options);
 
                 // Add struts, which ensure that the top of the HTML element falls at the
                 // height of the expression, and the bottom of the HTML element falls at the
                 // depth of the expression.
-                var topStrut = (0, _buildCommon.makeSpan)(["strut"]);
-                var bottomStrut = (0, _buildCommon.makeSpan)(["strut", "bottom"]);
+                var topStrut = (0, _buildCommon.makeSpan)(['strut']);
+                var bottomStrut = (0, _buildCommon.makeSpan)(['strut', 'bottom']);
 
-                topStrut.style.height = body.height + "em";
-                bottomStrut.style.height = body.height + body.depth + "em";
+                topStrut.style.height = body.height + 'em';
+                bottomStrut.style.height = body.height + body.depth + 'em';
                 // We'd like to use `vertical-align: top` but in IE 9 this lowers the
                 // baseline of the box to the bottom of this strut (instead staying in the
                 // normal place) so we use an absolute value for vertical-align instead
-                bottomStrut.style.verticalAlign = -body.depth + "em";
+                bottomStrut.style.verticalAlign = -body.depth + 'em';
 
                 // Wrap the struts and body together
-                var htmlNode = (0, _buildCommon.makeSpan)(["katex-html"], [topStrut, bottomStrut, body]);
+                var htmlNode = (0, _buildCommon.makeSpan)(
+                  ['katex-html'],
+                  [topStrut, bottomStrut, body]
+                );
 
-                htmlNode.setAttribute("aria-hidden", "true");
+                htmlNode.setAttribute('aria-hidden', 'true');
 
                 return htmlNode;
               };
@@ -6347,48 +6757,48 @@
               module.exports = buildHTML;
             },
             {
-              "./ParseError": 29,
-              "./Style": 33,
-              "./buildCommon": 34,
-              "./delimiter": 38,
-              "./domTree": 39,
-              "./stretchy": 47,
-              "./units": 50,
-              "./utils": 51,
-              "babel-runtime/core-js/json/stringify": 2,
+              './ParseError': 29,
+              './Style': 33,
+              './buildCommon': 34,
+              './delimiter': 38,
+              './domTree': 39,
+              './stretchy': 47,
+              './units': 50,
+              './utils': 51,
+              'babel-runtime/core-js/json/stringify': 2,
             },
           ],
           36: [
             function (require, module, exports) {
-              var _buildCommon = require("./buildCommon");
+              var _buildCommon = require('./buildCommon');
 
               var _buildCommon2 = _interopRequireDefault(_buildCommon);
 
-              var _fontMetrics = require("./fontMetrics");
+              var _fontMetrics = require('./fontMetrics');
 
               var _fontMetrics2 = _interopRequireDefault(_fontMetrics);
 
-              var _mathMLTree = require("./mathMLTree");
+              var _mathMLTree = require('./mathMLTree');
 
               var _mathMLTree2 = _interopRequireDefault(_mathMLTree);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _Style = require("./Style");
+              var _Style = require('./Style');
 
               var _Style2 = _interopRequireDefault(_Style);
 
-              var _symbols = require("./symbols");
+              var _symbols = require('./symbols');
 
               var _symbols2 = _interopRequireDefault(_symbols);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
-              var _stretchy = require("./stretchy");
+              var _stretchy = require('./stretchy');
 
               var _stretchy2 = _interopRequireDefault(_stretchy);
 
@@ -6424,12 +6834,12 @@
                 }
 
                 var mode = group.mode;
-                if (font === "mathit") {
-                  return "italic";
+                if (font === 'mathit') {
+                  return 'italic';
                 }
 
                 var value = group.value;
-                if (_utils2.default.contains(["\\imath", "\\jmath"], value)) {
+                if (_utils2.default.contains(['\\imath', '\\jmath'], value)) {
                   return null;
                 }
 
@@ -6452,17 +6862,19 @@
               var groupTypes = {};
 
               var defaultVariant = {
-                mi: "italic",
-                mn: "normal",
-                mtext: "normal",
+                mi: 'italic',
+                mn: 'normal',
+                mtext: 'normal',
               };
 
               groupTypes.mathord = function (group, options) {
-                var node = new _mathMLTree2.default.MathNode("mi", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mi', [
+                  makeText(group.value, group.mode),
+                ]);
 
-                var variant = getVariant(group, options) || "italic";
+                var variant = getVariant(group, options) || 'italic';
                 if (variant !== defaultVariant[node.type]) {
-                  node.setAttribute("mathvariant", variant);
+                  node.setAttribute('mathvariant', variant);
                 }
                 return node;
               };
@@ -6470,61 +6882,73 @@
               groupTypes.textord = function (group, options) {
                 var text = makeText(group.value, group.mode);
 
-                var variant = getVariant(group, options) || "normal";
+                var variant = getVariant(group, options) || 'normal';
 
                 var node = void 0;
-                if (group.mode === "text") {
-                  node = new _mathMLTree2.default.MathNode("mtext", [text]);
+                if (group.mode === 'text') {
+                  node = new _mathMLTree2.default.MathNode('mtext', [text]);
                 } else if (/[0-9]/.test(group.value)) {
                   // TODO(kevinb) merge adjacent <mn> nodes
                   // do it as a post processing step
-                  node = new _mathMLTree2.default.MathNode("mn", [text]);
-                } else if (group.value === "\\prime") {
-                  node = new _mathMLTree2.default.MathNode("mo", [text]);
+                  node = new _mathMLTree2.default.MathNode('mn', [text]);
+                } else if (group.value === '\\prime') {
+                  node = new _mathMLTree2.default.MathNode('mo', [text]);
                 } else {
-                  node = new _mathMLTree2.default.MathNode("mi", [text]);
+                  node = new _mathMLTree2.default.MathNode('mi', [text]);
                 }
                 if (variant !== defaultVariant[node.type]) {
-                  node.setAttribute("mathvariant", variant);
+                  node.setAttribute('mathvariant', variant);
                 }
 
                 return node;
               };
 
               groupTypes.bin = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
                 return node;
               };
 
               groupTypes.rel = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
                 return node;
               };
 
               groupTypes.open = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
                 return node;
               };
 
               groupTypes.close = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
                 return node;
               };
 
               groupTypes.inner = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
                 return node;
               };
 
               groupTypes.punct = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value, group.mode)]);
+                var node = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value, group.mode),
+                ]);
 
-                node.setAttribute("separator", "true");
+                node.setAttribute('separator', 'true');
 
                 return node;
               };
@@ -6532,7 +6956,7 @@
               groupTypes.ordgroup = function (group, options) {
                 var inner = buildExpression(group.value, options);
 
-                var node = new _mathMLTree2.default.MathNode("mrow", inner);
+                var node = new _mathMLTree2.default.MathNode('mrow', inner);
 
                 return node;
               };
@@ -6547,11 +6971,11 @@
                 var currentText = null;
                 for (var i = 0; i < body.length; i++) {
                   var _group = buildGroup(body[i], options);
-                  if (_group.type === "mtext" && currentText != null) {
+                  if (_group.type === 'mtext' && currentText != null) {
                     Array.prototype.push.apply(currentText.children, _group.children);
                   } else {
                     inner.push(_group);
-                    if (_group.type === "mtext") {
+                    if (_group.type === 'mtext') {
                       currentText = _group;
                     }
                   }
@@ -6562,16 +6986,16 @@
                 if (inner.length === 1) {
                   return inner[0];
                 } else {
-                  return new _mathMLTree2.default.MathNode("mrow", inner);
+                  return new _mathMLTree2.default.MathNode('mrow', inner);
                 }
               };
 
               groupTypes.color = function (group, options) {
                 var inner = buildExpression(group.value.value, options);
 
-                var node = new _mathMLTree2.default.MathNode("mstyle", inner);
+                var node = new _mathMLTree2.default.MathNode('mstyle', inner);
 
-                node.setAttribute("mathcolor", group.value.color);
+                node.setAttribute('mathcolor', group.value.color);
 
                 return node;
               };
@@ -6582,7 +7006,7 @@
                 var isOver = void 0;
                 var isSup = void 0;
                 if (group.value.base) {
-                  if (group.value.base.value.type === "horizBrace") {
+                  if (group.value.base.value.type === 'horizBrace') {
                     isSup = group.value.sup ? true : false;
                     if (isSup === group.value.base.value.isOver) {
                       isBrace = true;
@@ -6604,17 +7028,17 @@
 
                 var nodeType = void 0;
                 if (isBrace) {
-                  nodeType = isOver ? "mover" : "munder";
+                  nodeType = isOver ? 'mover' : 'munder';
                 } else if (!group.value.sub) {
-                  nodeType = "msup";
+                  nodeType = 'msup';
                 } else if (!group.value.sup) {
-                  nodeType = "msub";
+                  nodeType = 'msub';
                 } else {
                   var base = group.value.base;
                   if (base && base.value.limits && options.style === _Style2.default.DISPLAY) {
-                    nodeType = "munderover";
+                    nodeType = 'munderover';
                   } else {
-                    nodeType = "msubsup";
+                    nodeType = 'msubsup';
                   }
                 }
 
@@ -6624,22 +7048,24 @@
               };
 
               groupTypes.genfrac = function (group, options) {
-                var node = new _mathMLTree2.default.MathNode("mfrac", [
+                var node = new _mathMLTree2.default.MathNode('mfrac', [
                   buildGroup(group.value.numer, options),
                   buildGroup(group.value.denom, options),
                 ]);
 
                 if (!group.value.hasBarLine) {
-                  node.setAttribute("linethickness", "0px");
+                  node.setAttribute('linethickness', '0px');
                 }
 
                 if (group.value.leftDelim != null || group.value.rightDelim != null) {
                   var withDelims = [];
 
                   if (group.value.leftDelim != null) {
-                    var leftOp = new _mathMLTree2.default.MathNode("mo", [new _mathMLTree2.default.TextNode(group.value.leftDelim)]);
+                    var leftOp = new _mathMLTree2.default.MathNode('mo', [
+                      new _mathMLTree2.default.TextNode(group.value.leftDelim),
+                    ]);
 
-                    leftOp.setAttribute("fence", "true");
+                    leftOp.setAttribute('fence', 'true');
 
                     withDelims.push(leftOp);
                   }
@@ -6647,14 +7073,16 @@
                   withDelims.push(node);
 
                   if (group.value.rightDelim != null) {
-                    var rightOp = new _mathMLTree2.default.MathNode("mo", [new _mathMLTree2.default.TextNode(group.value.rightDelim)]);
+                    var rightOp = new _mathMLTree2.default.MathNode('mo', [
+                      new _mathMLTree2.default.TextNode(group.value.rightDelim),
+                    ]);
 
-                    rightOp.setAttribute("fence", "true");
+                    rightOp.setAttribute('fence', 'true');
 
                     withDelims.push(rightOp);
                   }
 
-                  var outerNode = new _mathMLTree2.default.MathNode("mrow", withDelims);
+                  var outerNode = new _mathMLTree2.default.MathNode('mrow', withDelims);
 
                   return outerNode;
                 }
@@ -6664,12 +7092,14 @@
 
               groupTypes.array = function (group, options) {
                 return new _mathMLTree2.default.MathNode(
-                  "mtable",
+                  'mtable',
                   group.value.body.map(function (row) {
                     return new _mathMLTree2.default.MathNode(
-                      "mtr",
+                      'mtr',
                       row.map(function (cell) {
-                        return new _mathMLTree2.default.MathNode("mtd", [buildGroup(cell, options)]);
+                        return new _mathMLTree2.default.MathNode('mtd', [
+                          buildGroup(cell, options),
+                        ]);
                       })
                     );
                   })
@@ -6679,9 +7109,14 @@
               groupTypes.sqrt = function (group, options) {
                 var node = void 0;
                 if (group.value.index) {
-                  node = new _mathMLTree2.default.MathNode("mroot", [buildGroup(group.value.body, options), buildGroup(group.value.index, options)]);
+                  node = new _mathMLTree2.default.MathNode('mroot', [
+                    buildGroup(group.value.body, options),
+                    buildGroup(group.value.index, options),
+                  ]);
                 } else {
-                  node = new _mathMLTree2.default.MathNode("msqrt", [buildGroup(group.value.body, options)]);
+                  node = new _mathMLTree2.default.MathNode('msqrt', [
+                    buildGroup(group.value.body, options),
+                  ]);
                 }
 
                 return node;
@@ -6690,30 +7125,36 @@
               groupTypes.leftright = function (group, options) {
                 var inner = buildExpression(group.value.body, options);
 
-                if (group.value.left !== ".") {
-                  var leftNode = new _mathMLTree2.default.MathNode("mo", [makeText(group.value.left, group.mode)]);
+                if (group.value.left !== '.') {
+                  var leftNode = new _mathMLTree2.default.MathNode('mo', [
+                    makeText(group.value.left, group.mode),
+                  ]);
 
-                  leftNode.setAttribute("fence", "true");
+                  leftNode.setAttribute('fence', 'true');
 
                   inner.unshift(leftNode);
                 }
 
-                if (group.value.right !== ".") {
-                  var rightNode = new _mathMLTree2.default.MathNode("mo", [makeText(group.value.right, group.mode)]);
+                if (group.value.right !== '.') {
+                  var rightNode = new _mathMLTree2.default.MathNode('mo', [
+                    makeText(group.value.right, group.mode),
+                  ]);
 
-                  rightNode.setAttribute("fence", "true");
+                  rightNode.setAttribute('fence', 'true');
 
                   inner.push(rightNode);
                 }
 
-                var outerNode = new _mathMLTree2.default.MathNode("mrow", inner);
+                var outerNode = new _mathMLTree2.default.MathNode('mrow', inner);
 
                 return outerNode;
               };
 
               groupTypes.middle = function (group, options) {
-                var middleNode = new _mathMLTree2.default.MathNode("mo", [makeText(group.value.middle, group.mode)]);
-                middleNode.setAttribute("fence", "true");
+                var middleNode = new _mathMLTree2.default.MathNode('mo', [
+                  makeText(group.value.middle, group.mode),
+                ]);
+                middleNode.setAttribute('fence', 'true');
                 return middleNode;
               };
 
@@ -6722,12 +7163,17 @@
                 if (group.value.isStretchy) {
                   accentNode = _stretchy2.default.mathMLnode(group.value.label);
                 } else {
-                  accentNode = new _mathMLTree2.default.MathNode("mo", [makeText(group.value.label, group.mode)]);
+                  accentNode = new _mathMLTree2.default.MathNode('mo', [
+                    makeText(group.value.label, group.mode),
+                  ]);
                 }
 
-                var node = new _mathMLTree2.default.MathNode("mover", [buildGroup(group.value.base, options), accentNode]);
+                var node = new _mathMLTree2.default.MathNode('mover', [
+                  buildGroup(group.value.base, options),
+                  accentNode,
+                ]);
 
-                node.setAttribute("accent", "true");
+                node.setAttribute('accent', 'true');
 
                 return node;
               };
@@ -6735,12 +7181,22 @@
               groupTypes.spacing = function (group) {
                 var node = void 0;
 
-                if (group.value === "\\ " || group.value === "\\space" || group.value === " " || group.value === "~") {
-                  node = new _mathMLTree2.default.MathNode("mtext", [new _mathMLTree2.default.TextNode("\xA0")]);
+                if (
+                  group.value === '\\ ' ||
+                  group.value === '\\space' ||
+                  group.value === ' ' ||
+                  group.value === '~'
+                ) {
+                  node = new _mathMLTree2.default.MathNode('mtext', [
+                    new _mathMLTree2.default.TextNode('\xA0'),
+                  ]);
                 } else {
-                  node = new _mathMLTree2.default.MathNode("mspace");
+                  node = new _mathMLTree2.default.MathNode('mspace');
 
-                  node.setAttribute("width", _buildCommon2.default.spacingFunctions[group.value].size);
+                  node.setAttribute(
+                    'width',
+                    _buildCommon2.default.spacingFunctions[group.value].size
+                  );
                 }
 
                 return node;
@@ -6753,16 +7209,23 @@
 
                 if (group.value.symbol) {
                   // This is a symbol. Just add the symbol.
-                  node = new _mathMLTree2.default.MathNode("mo", [makeText(group.value.body, group.mode)]);
+                  node = new _mathMLTree2.default.MathNode('mo', [
+                    makeText(group.value.body, group.mode),
+                  ]);
                 } else if (group.value.value) {
                   // This is an operator with children. Add them.
-                  node = new _mathMLTree2.default.MathNode("mo", buildExpression(group.value.value, options));
+                  node = new _mathMLTree2.default.MathNode(
+                    'mo',
+                    buildExpression(group.value.value, options)
+                  );
                 } else {
                   // This is a text operator. Add all of the characters from the
                   // operator's name.
                   // TODO(emily): Add a space in the middle of some of these
                   // operators, like \limsup.
-                  node = new _mathMLTree2.default.MathNode("mi", [new _mathMLTree2.default.TextNode(group.value.body.slice(1))]);
+                  node = new _mathMLTree2.default.MathNode('mi', [
+                    new _mathMLTree2.default.TextNode(group.value.body.slice(1)),
+                  ]);
                 }
 
                 return node;
@@ -6771,27 +7234,31 @@
               groupTypes.mod = function (group, options) {
                 var inner = [];
 
-                if (group.value.modType === "pod" || group.value.modType === "pmod") {
-                  inner.push(new _mathMLTree2.default.MathNode("mo", [makeText("(", group.mode)]));
+                if (group.value.modType === 'pod' || group.value.modType === 'pmod') {
+                  inner.push(new _mathMLTree2.default.MathNode('mo', [makeText('(', group.mode)]));
                 }
-                if (group.value.modType !== "pod") {
-                  inner.push(new _mathMLTree2.default.MathNode("mo", [makeText("mod", group.mode)]));
+                if (group.value.modType !== 'pod') {
+                  inner.push(
+                    new _mathMLTree2.default.MathNode('mo', [makeText('mod', group.mode)])
+                  );
                 }
                 if (group.value.value) {
-                  var space = new _mathMLTree2.default.MathNode("mspace");
-                  space.setAttribute("width", "0.333333em");
+                  var space = new _mathMLTree2.default.MathNode('mspace');
+                  space.setAttribute('width', '0.333333em');
                   inner.push(space);
                   inner = inner.concat(buildExpression(group.value.value, options));
                 }
-                if (group.value.modType === "pod" || group.value.modType === "pmod") {
-                  inner.push(new _mathMLTree2.default.MathNode("mo", [makeText(")", group.mode)]));
+                if (group.value.modType === 'pod' || group.value.modType === 'pmod') {
+                  inner.push(new _mathMLTree2.default.MathNode('mo', [makeText(')', group.mode)]));
                 }
 
-                return new _mathMLTree2.default.MathNode("mo", inner);
+                return new _mathMLTree2.default.MathNode('mo', inner);
               };
 
               groupTypes.katex = function (group) {
-                var node = new _mathMLTree2.default.MathNode("mtext", [new _mathMLTree2.default.TextNode("KaTeX")]);
+                var node = new _mathMLTree2.default.MathNode('mtext', [
+                  new _mathMLTree2.default.TextNode('KaTeX'),
+                ]);
 
                 return node;
               };
@@ -6804,20 +7271,20 @@
               groupTypes.delimsizing = function (group) {
                 var children = [];
 
-                if (group.value.value !== ".") {
+                if (group.value.value !== '.') {
                   children.push(makeText(group.value.value, group.mode));
                 }
 
-                var node = new _mathMLTree2.default.MathNode("mo", children);
+                var node = new _mathMLTree2.default.MathNode('mo', children);
 
-                if (group.value.mclass === "mopen" || group.value.mclass === "mclose") {
+                if (group.value.mclass === 'mopen' || group.value.mclass === 'mclose') {
                   // Only some of the delimsizing functions act as fences, and they
                   // return "mopen" or "mclose" mclass.
-                  node.setAttribute("fence", "true");
+                  node.setAttribute('fence', 'true');
                 } else {
                   // Explicitly disable fencing if it's not a fence, to override the
                   // defaults.
-                  node.setAttribute("fence", "false");
+                  node.setAttribute('fence', 'false');
                 }
 
                 return node;
@@ -6839,19 +7306,19 @@
 
                 var inner = buildExpression(group.value.value, newOptions);
 
-                var node = new _mathMLTree2.default.MathNode("mstyle", inner);
+                var node = new _mathMLTree2.default.MathNode('mstyle', inner);
 
                 var styleAttributes = {
-                  display: ["0", "true"],
-                  text: ["0", "false"],
-                  script: ["1", "false"],
-                  scriptscript: ["2", "false"],
+                  display: ['0', 'true'],
+                  text: ['0', 'false'],
+                  script: ['1', 'false'],
+                  scriptscript: ['2', 'false'],
                 };
 
                 var attr = styleAttributes[group.value.style];
 
-                node.setAttribute("scriptlevel", attr[0]);
-                node.setAttribute("displaystyle", attr[1]);
+                node.setAttribute('scriptlevel', attr[0]);
+                node.setAttribute('displaystyle', attr[1]);
 
                 return node;
               };
@@ -6860,68 +7327,83 @@
                 var newOptions = options.havingSize(group.value.size);
                 var inner = buildExpression(group.value.value, newOptions);
 
-                var node = new _mathMLTree2.default.MathNode("mstyle", inner);
+                var node = new _mathMLTree2.default.MathNode('mstyle', inner);
 
                 // TODO(emily): This doesn't produce the correct size for nested size
                 // changes, because we don't keep state of what style we're currently
                 // in, so we can't reset the size to normal before changing it.  Now
                 // that we're passing an options parameter we should be able to fix
                 // this.
-                node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
+                node.setAttribute('mathsize', newOptions.sizeMultiplier + 'em');
 
                 return node;
               };
 
               groupTypes.overline = function (group, options) {
-                var operator = new _mathMLTree2.default.MathNode("mo", [new _mathMLTree2.default.TextNode("\u203E")]);
-                operator.setAttribute("stretchy", "true");
+                var operator = new _mathMLTree2.default.MathNode('mo', [
+                  new _mathMLTree2.default.TextNode('\u203E'),
+                ]);
+                operator.setAttribute('stretchy', 'true');
 
-                var node = new _mathMLTree2.default.MathNode("mover", [buildGroup(group.value.body, options), operator]);
-                node.setAttribute("accent", "true");
+                var node = new _mathMLTree2.default.MathNode('mover', [
+                  buildGroup(group.value.body, options),
+                  operator,
+                ]);
+                node.setAttribute('accent', 'true');
 
                 return node;
               };
 
               groupTypes.underline = function (group, options) {
-                var operator = new _mathMLTree2.default.MathNode("mo", [new _mathMLTree2.default.TextNode("\u203E")]);
-                operator.setAttribute("stretchy", "true");
+                var operator = new _mathMLTree2.default.MathNode('mo', [
+                  new _mathMLTree2.default.TextNode('\u203E'),
+                ]);
+                operator.setAttribute('stretchy', 'true');
 
-                var node = new _mathMLTree2.default.MathNode("munder", [buildGroup(group.value.body, options), operator]);
-                node.setAttribute("accentunder", "true");
+                var node = new _mathMLTree2.default.MathNode('munder', [
+                  buildGroup(group.value.body, options),
+                  operator,
+                ]);
+                node.setAttribute('accentunder', 'true');
 
                 return node;
               };
 
               groupTypes.accentUnder = function (group, options) {
                 var accentNode = _stretchy2.default.mathMLnode(group.value.label);
-                var node = new _mathMLTree2.default.MathNode("munder", [buildGroup(group.value.body, options), accentNode]);
-                node.setAttribute("accentunder", "true");
+                var node = new _mathMLTree2.default.MathNode('munder', [
+                  buildGroup(group.value.body, options),
+                  accentNode,
+                ]);
+                node.setAttribute('accentunder', 'true');
                 return node;
               };
 
               groupTypes.enclose = function (group, options) {
-                var node = new _mathMLTree2.default.MathNode("menclose", [buildGroup(group.value.body, options)]);
-                var notation = "";
+                var node = new _mathMLTree2.default.MathNode('menclose', [
+                  buildGroup(group.value.body, options),
+                ]);
+                var notation = '';
                 switch (group.value.label) {
-                  case "\\bcancel":
-                    notation = "downdiagonalstrike";
+                  case '\\bcancel':
+                    notation = 'downdiagonalstrike';
                     break;
-                  case "\\sout":
-                    notation = "horizontalstrike";
+                  case '\\sout':
+                    notation = 'horizontalstrike';
                     break;
-                  case "\\fbox":
-                    notation = "box";
+                  case '\\fbox':
+                    notation = 'box';
                     break;
                   default:
-                    notation = "updiagonalstrike";
+                    notation = 'updiagonalstrike';
                 }
-                node.setAttribute("notation", notation);
+                node.setAttribute('notation', notation);
                 return node;
               };
 
               groupTypes.horizBrace = function (group, options) {
                 var accentNode = _stretchy2.default.mathMLnode(group.value.label);
-                return new _mathMLTree2.default.MathNode(group.value.isOver ? "mover" : "munder", [
+                return new _mathMLTree2.default.MathNode(group.value.isOver ? 'mover' : 'munder', [
                   buildGroup(group.value.base, options),
                   accentNode,
                 ]);
@@ -6936,15 +7418,19 @@
                   var upperNode = buildGroup(group.value.body, options);
                   if (group.value.below) {
                     lowerNode = buildGroup(group.value.below, options);
-                    node = new _mathMLTree2.default.MathNode("munderover", [arrowNode, lowerNode, upperNode]);
+                    node = new _mathMLTree2.default.MathNode('munderover', [
+                      arrowNode,
+                      lowerNode,
+                      upperNode,
+                    ]);
                   } else {
-                    node = new _mathMLTree2.default.MathNode("mover", [arrowNode, upperNode]);
+                    node = new _mathMLTree2.default.MathNode('mover', [arrowNode, upperNode]);
                   }
                 } else if (group.value.below) {
                   lowerNode = buildGroup(group.value.below, options);
-                  node = new _mathMLTree2.default.MathNode("munder", [arrowNode, lowerNode]);
+                  node = new _mathMLTree2.default.MathNode('munder', [arrowNode, lowerNode]);
                 } else {
-                  node = new _mathMLTree2.default.MathNode("mover", [arrowNode]);
+                  node = new _mathMLTree2.default.MathNode('mover', [arrowNode]);
                 }
                 return node;
               };
@@ -6952,43 +7438,47 @@
               groupTypes.rule = function (group) {
                 // TODO(emily): Figure out if there's an actual way to draw black boxes
                 // in MathML.
-                var node = new _mathMLTree2.default.MathNode("mrow");
+                var node = new _mathMLTree2.default.MathNode('mrow');
 
                 return node;
               };
 
               groupTypes.kern = function (group) {
                 // TODO(kevin): Figure out if there's a way to add space in MathML
-                var node = new _mathMLTree2.default.MathNode("mrow");
+                var node = new _mathMLTree2.default.MathNode('mrow');
 
                 return node;
               };
 
               groupTypes.llap = function (group, options) {
-                var node = new _mathMLTree2.default.MathNode("mpadded", [buildGroup(group.value.body, options)]);
+                var node = new _mathMLTree2.default.MathNode('mpadded', [
+                  buildGroup(group.value.body, options),
+                ]);
 
-                node.setAttribute("lspace", "-1width");
-                node.setAttribute("width", "0px");
+                node.setAttribute('lspace', '-1width');
+                node.setAttribute('width', '0px');
 
                 return node;
               };
 
               groupTypes.rlap = function (group, options) {
-                var node = new _mathMLTree2.default.MathNode("mpadded", [buildGroup(group.value.body, options)]);
+                var node = new _mathMLTree2.default.MathNode('mpadded', [
+                  buildGroup(group.value.body, options),
+                ]);
 
-                node.setAttribute("width", "0px");
+                node.setAttribute('width', '0px');
 
                 return node;
               };
 
               groupTypes.phantom = function (group, options) {
                 var inner = buildExpression(group.value.value, options);
-                return new _mathMLTree2.default.MathNode("mphantom", inner);
+                return new _mathMLTree2.default.MathNode('mphantom', inner);
               };
 
               groupTypes.mclass = function (group, options) {
                 var inner = buildExpression(group.value.value, options);
-                return new _mathMLTree2.default.MathNode("mstyle", inner);
+                return new _mathMLTree2.default.MathNode('mstyle', inner);
               };
 
               /**
@@ -7014,17 +7504,18 @@
                */
               // TODO(kevinb): determine if removeUnnecessaryRow should always be true
               var buildGroup = function buildGroup(group, options) {
-                var removeUnnecessaryRow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+                var removeUnnecessaryRow =
+                  arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
                 if (!group) {
-                  return new _mathMLTree2.default.MathNode("mrow");
+                  return new _mathMLTree2.default.MathNode('mrow');
                 }
 
                 if (groupTypes[group.type]) {
                   // Call the groupTypes function
                   var result = groupTypes[group.type](group, options);
                   if (removeUnnecessaryRow) {
-                    if (result.type === "mrow" && result.children.length === 1) {
+                    if (result.type === 'mrow' && result.children.length === 1) {
                       return result.children[0];
                     }
                   }
@@ -7047,55 +7538,60 @@
 
                 // Wrap up the expression in an mrow so it is presented in the semantics
                 // tag correctly.
-                var wrapper = new _mathMLTree2.default.MathNode("mrow", expression);
+                var wrapper = new _mathMLTree2.default.MathNode('mrow', expression);
 
                 // Build a TeX annotation of the source
-                var annotation = new _mathMLTree2.default.MathNode("annotation", [new _mathMLTree2.default.TextNode(texExpression)]);
+                var annotation = new _mathMLTree2.default.MathNode('annotation', [
+                  new _mathMLTree2.default.TextNode(texExpression),
+                ]);
 
-                annotation.setAttribute("encoding", "application/x-tex");
+                annotation.setAttribute('encoding', 'application/x-tex');
 
-                var semantics = new _mathMLTree2.default.MathNode("semantics", [wrapper, annotation]);
+                var semantics = new _mathMLTree2.default.MathNode('semantics', [
+                  wrapper,
+                  annotation,
+                ]);
 
-                var math = new _mathMLTree2.default.MathNode("math", [semantics]);
+                var math = new _mathMLTree2.default.MathNode('math', [semantics]);
 
                 // You can't style <math> nodes, so we wrap the node in a span.
-                return (0, _buildCommon.makeSpan)(["katex-mathml"], [math]);
+                return (0, _buildCommon.makeSpan)(['katex-mathml'], [math]);
               };
 
               module.exports = buildMathML;
             },
             {
-              "./ParseError": 29,
-              "./Style": 33,
-              "./buildCommon": 34,
-              "./fontMetrics": 41,
-              "./mathMLTree": 45,
-              "./stretchy": 47,
-              "./symbols": 48,
-              "./utils": 51,
+              './ParseError': 29,
+              './Style': 33,
+              './buildCommon': 34,
+              './fontMetrics': 41,
+              './mathMLTree': 45,
+              './stretchy': 47,
+              './symbols': 48,
+              './utils': 51,
             },
           ],
           37: [
             function (require, module, exports) {
-              var _buildHTML = require("./buildHTML");
+              var _buildHTML = require('./buildHTML');
 
               var _buildHTML2 = _interopRequireDefault(_buildHTML);
 
-              var _buildMathML = require("./buildMathML");
+              var _buildMathML = require('./buildMathML');
 
               var _buildMathML2 = _interopRequireDefault(_buildMathML);
 
-              var _buildCommon = require("./buildCommon");
+              var _buildCommon = require('./buildCommon');
 
-              var _Options = require("./Options");
+              var _Options = require('./Options');
 
               var _Options2 = _interopRequireDefault(_Options);
 
-              var _Settings = require("./Settings");
+              var _Settings = require('./Settings');
 
               var _Settings2 = _interopRequireDefault(_Settings);
 
-              var _Style = require("./Style");
+              var _Style = require('./Style');
 
               var _Style2 = _interopRequireDefault(_Style);
 
@@ -7121,10 +7617,10 @@
                 var mathMLNode = (0, _buildMathML2.default)(tree, expression, options);
                 var htmlNode = (0, _buildHTML2.default)(tree, options);
 
-                var katexNode = (0, _buildCommon.makeSpan)(["katex"], [mathMLNode, htmlNode]);
+                var katexNode = (0, _buildCommon.makeSpan)(['katex'], [mathMLNode, htmlNode]);
 
                 if (settings.displayMode) {
-                  return (0, _buildCommon.makeSpan)(["katex-display"], [katexNode]);
+                  return (0, _buildCommon.makeSpan)(['katex-display'], [katexNode]);
                 } else {
                   return katexNode;
                 }
@@ -7133,37 +7629,37 @@
               module.exports = buildTree;
             },
             {
-              "./Options": 28,
-              "./Settings": 32,
-              "./Style": 33,
-              "./buildCommon": 34,
-              "./buildHTML": 35,
-              "./buildMathML": 36,
+              './Options': 28,
+              './Settings': 32,
+              './Style': 33,
+              './buildCommon': 34,
+              './buildHTML': 35,
+              './buildMathML': 36,
             },
           ],
           38: [
             function (require, module, exports) {
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _Style = require("./Style");
+              var _Style = require('./Style');
 
               var _Style2 = _interopRequireDefault(_Style);
 
-              var _buildCommon = require("./buildCommon");
+              var _buildCommon = require('./buildCommon');
 
               var _buildCommon2 = _interopRequireDefault(_buildCommon);
 
-              var _fontMetrics = require("./fontMetrics");
+              var _fontMetrics = require('./fontMetrics');
 
               var _fontMetrics2 = _interopRequireDefault(_fontMetrics);
 
-              var _symbols = require("./symbols");
+              var _symbols = require('./symbols');
 
               var _symbols2 = _interopRequireDefault(_symbols);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -7199,7 +7695,10 @@
 
               var getMetrics = function getMetrics(symbol, font) {
                 if (_symbols2.default.math[symbol] && _symbols2.default.math[symbol].replace) {
-                  return _fontMetrics2.default.getCharacterMetrics(_symbols2.default.math[symbol].replace, font);
+                  return _fontMetrics2.default.getCharacterMetrics(
+                    _symbols2.default.math[symbol].replace,
+                    font
+                  );
                 } else {
                   return _fontMetrics2.default.getCharacterMetrics(symbol, font);
                 }
@@ -7212,7 +7711,11 @@
               var styleWrap = function styleWrap(delim, toStyle, options, classes) {
                 var newOptions = options.havingBaseStyle(toStyle);
 
-                var span = (0, _buildCommon.makeSpan)((classes || []).concat(newOptions.sizingClasses(options)), [delim], options);
+                var span = (0, _buildCommon.makeSpan)(
+                  (classes || []).concat(newOptions.sizingClasses(options)),
+                  [delim],
+                  options
+                );
 
                 span.delimSizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
                 span.height *= span.delimSizeMultiplier;
@@ -7224,10 +7727,12 @@
 
               var centerSpan = function centerSpan(span, options, style) {
                 var newOptions = options.havingBaseStyle(style);
-                var shift = (1 - options.sizeMultiplier / newOptions.sizeMultiplier) * options.fontMetrics().axisHeight;
+                var shift =
+                  (1 - options.sizeMultiplier / newOptions.sizeMultiplier) *
+                  options.fontMetrics().axisHeight;
 
-                span.classes.push("delimcenter");
-                span.style.top = shift + "em";
+                span.classes.push('delimcenter');
+                span.style.top = shift + 'em';
                 span.height -= shift;
                 span.depth += shift;
               };
@@ -7237,8 +7742,15 @@
                * font, but is restyled to either be in textstyle, scriptstyle, or
                * scriptscriptstyle.
                */
-              var makeSmallDelim = function makeSmallDelim(delim, style, center, options, mode, classes) {
-                var text = _buildCommon2.default.makeSymbol(delim, "Main-Regular", mode, options);
+              var makeSmallDelim = function makeSmallDelim(
+                delim,
+                style,
+                center,
+                options,
+                mode,
+                classes
+              ) {
+                var text = _buildCommon2.default.makeSymbol(delim, 'Main-Regular', mode, options);
                 var span = styleWrap(text, style, options, classes);
                 if (center) {
                   centerSpan(span, options, style);
@@ -7250,17 +7762,29 @@
                * Builds a symbol in the given font size (note size is an integer)
                */
               var mathrmSize = function mathrmSize(value, size, mode, options) {
-                return _buildCommon2.default.makeSymbol(value, "Size" + size + "-Regular", mode, options);
+                return _buildCommon2.default.makeSymbol(
+                  value,
+                  'Size' + size + '-Regular',
+                  mode,
+                  options
+                );
               };
 
               /**
                * Makes a large delimiter. This is a delimiter that comes in the Size1, Size2,
                * Size3, or Size4 fonts. It is always rendered in textstyle.
                */
-              var makeLargeDelim = function makeLargeDelim(delim, size, center, options, mode, classes) {
+              var makeLargeDelim = function makeLargeDelim(
+                delim,
+                size,
+                center,
+                options,
+                mode,
+                classes
+              ) {
                 var inner = mathrmSize(delim, size, mode, options);
                 var span = styleWrap(
-                  (0, _buildCommon.makeSpan)(["delimsizing", "size" + size], [inner], options),
+                  (0, _buildCommon.makeSpan)(['delimsizing', 'size' + size], [inner], options),
                   _Style2.default.TEXT,
                   options,
                   classes
@@ -7278,27 +7802,39 @@
               var makeInner = function makeInner(symbol, font, mode) {
                 var sizeClass = void 0;
                 // Apply the correct CSS class to choose the right font.
-                if (font === "Size1-Regular") {
-                  sizeClass = "delim-size1";
-                } else if (font === "Size4-Regular") {
-                  sizeClass = "delim-size4";
+                if (font === 'Size1-Regular') {
+                  sizeClass = 'delim-size1';
+                } else if (font === 'Size4-Regular') {
+                  sizeClass = 'delim-size4';
                 }
 
                 var inner = (0, _buildCommon.makeSpan)(
-                  ["delimsizinginner", sizeClass],
-                  [(0, _buildCommon.makeSpan)([], [_buildCommon2.default.makeSymbol(symbol, font, mode)])]
+                  ['delimsizinginner', sizeClass],
+                  [
+                    (0, _buildCommon.makeSpan)(
+                      [],
+                      [_buildCommon2.default.makeSymbol(symbol, font, mode)]
+                    ),
+                  ]
                 );
 
                 // Since this will be passed into `makeVList` in the end, wrap the element
                 // in the appropriate tag that VList uses.
-                return { type: "elem", elem: inner };
+                return { type: 'elem', elem: inner };
               };
 
               /**
                * Make a stacked delimiter out of a given delimiter, with the total height at
                * least `heightTotal`. This routine is mentioned on page 442 of the TeXbook.
                */
-              var makeStackedDelim = function makeStackedDelim(delim, heightTotal, center, options, mode, classes) {
+              var makeStackedDelim = function makeStackedDelim(
+                delim,
+                heightTotal,
+                center,
+                options,
+                mode,
+                classes
+              ) {
                 // There are four parts, the top, an optional middle, a repeated part, and a
                 // bottom.
                 var top = void 0;
@@ -7308,95 +7844,95 @@
                 top = repeat = bottom = delim;
                 middle = null;
                 // Also keep track of what font the delimiters are in
-                var font = "Size1-Regular";
+                var font = 'Size1-Regular';
 
                 // We set the parts and font based on the symbol. Note that we use
                 // '\u23d0' instead of '|' and '\u2016' instead of '\\|' for the
                 // repeats of the arrows
-                if (delim === "\\uparrow") {
-                  repeat = bottom = "\u23D0";
-                } else if (delim === "\\Uparrow") {
-                  repeat = bottom = "\u2016";
-                } else if (delim === "\\downarrow") {
-                  top = repeat = "\u23D0";
-                } else if (delim === "\\Downarrow") {
-                  top = repeat = "\u2016";
-                } else if (delim === "\\updownarrow") {
-                  top = "\\uparrow";
-                  repeat = "\u23D0";
-                  bottom = "\\downarrow";
-                } else if (delim === "\\Updownarrow") {
-                  top = "\\Uparrow";
-                  repeat = "\u2016";
-                  bottom = "\\Downarrow";
-                } else if (delim === "[" || delim === "\\lbrack") {
-                  top = "\u23A1";
-                  repeat = "\u23A2";
-                  bottom = "\u23A3";
-                  font = "Size4-Regular";
-                } else if (delim === "]" || delim === "\\rbrack") {
-                  top = "\u23A4";
-                  repeat = "\u23A5";
-                  bottom = "\u23A6";
-                  font = "Size4-Regular";
-                } else if (delim === "\\lfloor") {
-                  repeat = top = "\u23A2";
-                  bottom = "\u23A3";
-                  font = "Size4-Regular";
-                } else if (delim === "\\lceil") {
-                  top = "\u23A1";
-                  repeat = bottom = "\u23A2";
-                  font = "Size4-Regular";
-                } else if (delim === "\\rfloor") {
-                  repeat = top = "\u23A5";
-                  bottom = "\u23A6";
-                  font = "Size4-Regular";
-                } else if (delim === "\\rceil") {
-                  top = "\u23A4";
-                  repeat = bottom = "\u23A5";
-                  font = "Size4-Regular";
-                } else if (delim === "(") {
-                  top = "\u239B";
-                  repeat = "\u239C";
-                  bottom = "\u239D";
-                  font = "Size4-Regular";
-                } else if (delim === ")") {
-                  top = "\u239E";
-                  repeat = "\u239F";
-                  bottom = "\u23A0";
-                  font = "Size4-Regular";
-                } else if (delim === "\\{" || delim === "\\lbrace") {
-                  top = "\u23A7";
-                  middle = "\u23A8";
-                  bottom = "\u23A9";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
-                } else if (delim === "\\}" || delim === "\\rbrace") {
-                  top = "\u23AB";
-                  middle = "\u23AC";
-                  bottom = "\u23AD";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
-                } else if (delim === "\\lgroup") {
-                  top = "\u23A7";
-                  bottom = "\u23A9";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
-                } else if (delim === "\\rgroup") {
-                  top = "\u23AB";
-                  bottom = "\u23AD";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
-                } else if (delim === "\\lmoustache") {
-                  top = "\u23A7";
-                  bottom = "\u23AD";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
-                } else if (delim === "\\rmoustache") {
-                  top = "\u23AB";
-                  bottom = "\u23A9";
-                  repeat = "\u23AA";
-                  font = "Size4-Regular";
+                if (delim === '\\uparrow') {
+                  repeat = bottom = '\u23D0';
+                } else if (delim === '\\Uparrow') {
+                  repeat = bottom = '\u2016';
+                } else if (delim === '\\downarrow') {
+                  top = repeat = '\u23D0';
+                } else if (delim === '\\Downarrow') {
+                  top = repeat = '\u2016';
+                } else if (delim === '\\updownarrow') {
+                  top = '\\uparrow';
+                  repeat = '\u23D0';
+                  bottom = '\\downarrow';
+                } else if (delim === '\\Updownarrow') {
+                  top = '\\Uparrow';
+                  repeat = '\u2016';
+                  bottom = '\\Downarrow';
+                } else if (delim === '[' || delim === '\\lbrack') {
+                  top = '\u23A1';
+                  repeat = '\u23A2';
+                  bottom = '\u23A3';
+                  font = 'Size4-Regular';
+                } else if (delim === ']' || delim === '\\rbrack') {
+                  top = '\u23A4';
+                  repeat = '\u23A5';
+                  bottom = '\u23A6';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\lfloor') {
+                  repeat = top = '\u23A2';
+                  bottom = '\u23A3';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\lceil') {
+                  top = '\u23A1';
+                  repeat = bottom = '\u23A2';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\rfloor') {
+                  repeat = top = '\u23A5';
+                  bottom = '\u23A6';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\rceil') {
+                  top = '\u23A4';
+                  repeat = bottom = '\u23A5';
+                  font = 'Size4-Regular';
+                } else if (delim === '(') {
+                  top = '\u239B';
+                  repeat = '\u239C';
+                  bottom = '\u239D';
+                  font = 'Size4-Regular';
+                } else if (delim === ')') {
+                  top = '\u239E';
+                  repeat = '\u239F';
+                  bottom = '\u23A0';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\{' || delim === '\\lbrace') {
+                  top = '\u23A7';
+                  middle = '\u23A8';
+                  bottom = '\u23A9';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\}' || delim === '\\rbrace') {
+                  top = '\u23AB';
+                  middle = '\u23AC';
+                  bottom = '\u23AD';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\lgroup') {
+                  top = '\u23A7';
+                  bottom = '\u23A9';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\rgroup') {
+                  top = '\u23AB';
+                  bottom = '\u23AD';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\lmoustache') {
+                  top = '\u23A7';
+                  bottom = '\u23AD';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
+                } else if (delim === '\\rmoustache') {
+                  top = '\u23AB';
+                  bottom = '\u23A9';
+                  repeat = '\u23AA';
+                  font = 'Size4-Regular';
                 }
 
                 // Get the metrics of the four sections
@@ -7419,7 +7955,9 @@
                 var minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
                 // Compute the number of copies of the repeat symbol we will need
-                var repeatCount = Math.ceil((heightTotal - minHeight) / (middleFactor * repeatHeightTotal));
+                var repeatCount = Math.ceil(
+                  (heightTotal - minHeight) / (middleFactor * repeatHeightTotal)
+                );
 
                 // Compute the total height of the delimiter including all the symbols
                 var realHeightTotal = minHeight + repeatCount * middleFactor * repeatHeightTotal;
@@ -7465,9 +8003,14 @@
 
                 // Finally, build the vlist
                 var newOptions = options.havingBaseStyle(_Style2.default.TEXT);
-                var inner = _buildCommon2.default.makeVList(inners, "bottom", depth, newOptions);
+                var inner = _buildCommon2.default.makeVList(inners, 'bottom', depth, newOptions);
 
-                return styleWrap((0, _buildCommon.makeSpan)(["delimsizing", "mult"], [inner], newOptions), _Style2.default.TEXT, options, classes);
+                return styleWrap(
+                  (0, _buildCommon.makeSpan)(['delimsizing', 'mult'], [inner], newOptions),
+                  _Style2.default.TEXT,
+                  options,
+                  classes
+                );
               };
 
               var sqrtInnerSVG = {
@@ -7495,30 +8038,40 @@
                 var span = _buildCommon2.default.makeSpan([], [], options);
                 var sizeMultiplier = options.sizeMultiplier; // default
 
-                if (delim.type === "small") {
+                if (delim.type === 'small') {
                   // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
                   var newOptions = options.havingBaseStyle(delim.style);
                   sizeMultiplier = newOptions.sizeMultiplier / options.sizeMultiplier;
 
                   span.height = 1 * sizeMultiplier;
-                  span.style.height = span.height + "em";
+                  span.style.height = span.height + 'em';
                   span.surdWidth = 0.833 * sizeMultiplier; // from the font.
                   //In the font, the glyph is 1000 units tall. The font scale is 1:1000.
 
-                  span.innerHTML = "<svg width='100%' height='" + span.height + "em'>\n            " + sqrtInnerSVG["main"] + "</svg>";
-                } else if (delim.type === "large") {
+                  span.innerHTML =
+                    "<svg width='100%' height='" +
+                    span.height +
+                    "em'>\n            " +
+                    sqrtInnerSVG['main'] +
+                    '</svg>';
+                } else if (delim.type === 'large') {
                   // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
                   // Get sqrt height from font data
                   span.height = sizeToMaxHeight[delim.size] / sizeMultiplier;
-                  span.style.height = span.height + "em";
+                  span.style.height = span.height + 'em';
                   span.surdWidth = 1.0 / sizeMultiplier; // from the font
 
-                  span.innerHTML = '<svg width="100%" height="' + span.height + 'em">\n            ' + sqrtInnerSVG[delim.size] + "</svg>";
+                  span.innerHTML =
+                    '<svg width="100%" height="' +
+                    span.height +
+                    'em">\n            ' +
+                    sqrtInnerSVG[delim.size] +
+                    '</svg>';
                 } else {
                   // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
                   // We'll use a single SVG to accomplish the same thing.
                   span.height = height / sizeMultiplier;
-                  span.style.height = span.height + "em";
+                  span.style.height = span.height + 'em';
                   span.surdWidth = 1.056 / sizeMultiplier;
                   var viewBoxHeight = Math.floor(span.height * 1000); // scale = 1:1000
                   var vertSegment = viewBoxHeight - 54;
@@ -7533,9 +8086,9 @@
                     viewBoxHeight +
                     "'\n            preserveAspectRatio='xMinYMax slice'>\n            <path d='M702 0H400000v40H742v" +
                     vertSegment +
-                    "\n            " +
-                    sqrtInnerSVG["tall"] +
-                    "</svg>";
+                    '\n            ' +
+                    sqrtInnerSVG['tall'] +
+                    '</svg>';
                 }
 
                 span.sizeMultiplier = sizeMultiplier;
@@ -7546,47 +8099,56 @@
               // There are three kinds of delimiters, delimiters that stack when they become
               // too large
               var stackLargeDelimiters = [
-                "(",
-                ")",
-                "[",
-                "\\lbrack",
-                "]",
-                "\\rbrack",
-                "\\{",
-                "\\lbrace",
-                "\\}",
-                "\\rbrace",
-                "\\lfloor",
-                "\\rfloor",
-                "\\lceil",
-                "\\rceil",
-                "\\surd",
+                '(',
+                ')',
+                '[',
+                '\\lbrack',
+                ']',
+                '\\rbrack',
+                '\\{',
+                '\\lbrace',
+                '\\}',
+                '\\rbrace',
+                '\\lfloor',
+                '\\rfloor',
+                '\\lceil',
+                '\\rceil',
+                '\\surd',
               ];
 
               // delimiters that always stack
               var stackAlwaysDelimiters = [
-                "\\uparrow",
-                "\\downarrow",
-                "\\updownarrow",
-                "\\Uparrow",
-                "\\Downarrow",
-                "\\Updownarrow",
-                "|",
-                "\\|",
-                "\\vert",
-                "\\Vert",
-                "\\lvert",
-                "\\rvert",
-                "\\lVert",
-                "\\rVert",
-                "\\lgroup",
-                "\\rgroup",
-                "\\lmoustache",
-                "\\rmoustache",
+                '\\uparrow',
+                '\\downarrow',
+                '\\updownarrow',
+                '\\Uparrow',
+                '\\Downarrow',
+                '\\Updownarrow',
+                '|',
+                '\\|',
+                '\\vert',
+                '\\Vert',
+                '\\lvert',
+                '\\rvert',
+                '\\lVert',
+                '\\rVert',
+                '\\lgroup',
+                '\\rgroup',
+                '\\lmoustache',
+                '\\rmoustache',
               ];
 
               // and delimiters that never stack
-              var stackNeverDelimiters = ["<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt"];
+              var stackNeverDelimiters = [
+                '<',
+                '>',
+                '\\langle',
+                '\\rangle',
+                '/',
+                '\\backslash',
+                '\\lt',
+                '\\gt',
+              ];
 
               // Metrics of the different sizes. Found by looking at TeX's output of
               // $\bigl| // \Bigl| \biggl| \Biggl| \showlists$
@@ -7598,17 +8160,27 @@
                */
               var makeSizedDelim = function makeSizedDelim(delim, size, options, mode, classes) {
                 // < and > turn into \langle and \rangle in delimiters
-                if (delim === "<" || delim === "\\lt") {
-                  delim = "\\langle";
-                } else if (delim === ">" || delim === "\\gt") {
-                  delim = "\\rangle";
+                if (delim === '<' || delim === '\\lt') {
+                  delim = '\\langle';
+                } else if (delim === '>' || delim === '\\gt') {
+                  delim = '\\rangle';
                 }
 
                 // Sized delimiters are never centered.
-                if (_utils2.default.contains(stackLargeDelimiters, delim) || _utils2.default.contains(stackNeverDelimiters, delim)) {
+                if (
+                  _utils2.default.contains(stackLargeDelimiters, delim) ||
+                  _utils2.default.contains(stackNeverDelimiters, delim)
+                ) {
                   return makeLargeDelim(delim, size, false, options, mode, classes);
                 } else if (_utils2.default.contains(stackAlwaysDelimiters, delim)) {
-                  return makeStackedDelim(delim, sizeToMaxHeight[size], false, options, mode, classes);
+                  return makeStackedDelim(
+                    delim,
+                    sizeToMaxHeight[size],
+                    false,
+                    options,
+                    mode,
+                    classes
+                  );
                 } else {
                   throw new _ParseError2.default("Illegal delimiter: '" + delim + "'");
                 }
@@ -7629,63 +8201,63 @@
               // Delimiters that never stack try small delimiters and large delimiters only
               var stackNeverDelimiterSequence = [
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPTSCRIPT,
                 },
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPT,
                 },
-                { type: "small", style: _Style2.default.TEXT },
-                { type: "large", size: 1 },
-                { type: "large", size: 2 },
-                { type: "large", size: 3 },
-                { type: "large", size: 4 },
+                { type: 'small', style: _Style2.default.TEXT },
+                { type: 'large', size: 1 },
+                { type: 'large', size: 2 },
+                { type: 'large', size: 3 },
+                { type: 'large', size: 4 },
               ];
 
               // Delimiters that always stack try the small delimiters first, then stack
               var stackAlwaysDelimiterSequence = [
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPTSCRIPT,
                 },
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPT,
                 },
-                { type: "small", style: _Style2.default.TEXT },
-                { type: "stack" },
+                { type: 'small', style: _Style2.default.TEXT },
+                { type: 'stack' },
               ];
 
               // Delimiters that stack when large try the small and then large delimiters, and
               // stack afterwards
               var stackLargeDelimiterSequence = [
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPTSCRIPT,
                 },
                 {
-                  type: "small",
+                  type: 'small',
                   style: _Style2.default.SCRIPT,
                 },
-                { type: "small", style: _Style2.default.TEXT },
-                { type: "large", size: 1 },
-                { type: "large", size: 2 },
-                { type: "large", size: 3 },
-                { type: "large", size: 4 },
-                { type: "stack" },
+                { type: 'small', style: _Style2.default.TEXT },
+                { type: 'large', size: 1 },
+                { type: 'large', size: 2 },
+                { type: 'large', size: 3 },
+                { type: 'large', size: 4 },
+                { type: 'stack' },
               ];
 
               /**
                * Get the font used in a delimiter based on what kind of delimiter it is.
                */
               var delimTypeToFont = function delimTypeToFont(type) {
-                if (type.type === "small") {
-                  return "Main-Regular";
-                } else if (type.type === "large") {
-                  return "Size" + type.size + "-Regular";
-                } else if (type.type === "stack") {
-                  return "Size4-Regular";
+                if (type.type === 'small') {
+                  return 'Main-Regular';
+                } else if (type.type === 'large') {
+                  return 'Size' + type.size + '-Regular';
+                } else if (type.type === 'stack') {
+                  return 'Size4-Regular';
                 }
               };
 
@@ -7700,7 +8272,7 @@
                 // at index 3-2=1, text starts at 3-1=2, and display starts at min(2,3-0)=2
                 var start = Math.min(2, 3 - options.style.size);
                 for (var i = start; i < sequence.length; i++) {
-                  if (sequence[i].type === "stack") {
+                  if (sequence[i].type === 'stack') {
                     // This is always the last delimiter, so we just break the loop now.
                     break;
                   }
@@ -7711,7 +8283,7 @@
                   // Small delimiters are scaled down versions of the same font, so we
                   // account for the style change size.
 
-                  if (sequence[i].type === "small") {
+                  if (sequence[i].type === 'small') {
                     var newOptions = options.havingBaseStyle(sequence[i].style);
                     heightDepth *= newOptions.sizeMultiplier;
                   }
@@ -7730,11 +8302,18 @@
                * Make a delimiter of a given height+depth, with optional centering. Here, we
                * traverse the sequences, and create a delimiter that the sequence tells us to.
                */
-              var makeCustomSizedDelim = function makeCustomSizedDelim(delim, height, center, options, mode, classes) {
-                if (delim === "<" || delim === "\\lt") {
-                  delim = "\\langle";
-                } else if (delim === ">" || delim === "\\gt") {
-                  delim = "\\rangle";
+              var makeCustomSizedDelim = function makeCustomSizedDelim(
+                delim,
+                height,
+                center,
+                options,
+                mode,
+                classes
+              ) {
+                if (delim === '<' || delim === '\\lt') {
+                  delim = '\\langle';
+                } else if (delim === '>' || delim === '\\gt') {
+                  delim = '\\rangle';
                 }
 
                 // Decide what sequence to use
@@ -7750,18 +8329,18 @@
                 // Look through the sequence
                 var delimType = traverseSequence(delim, height, sequence, options);
 
-                if (delim === "\\surd") {
+                if (delim === '\\surd') {
                   // Get an SVG image for
                   return sqrtSpan(height, delimType, options);
                 } else {
                   // Get the delimiter from font glyphs.
                   // Depending on the sequence element we decided on, call the
                   // appropriate function.
-                  if (delimType.type === "small") {
+                  if (delimType.type === 'small') {
                     return makeSmallDelim(delim, delimType.style, center, options, mode, classes);
-                  } else if (delimType.type === "large") {
+                  } else if (delimType.type === 'large') {
                     return makeLargeDelim(delim, delimType.size, center, options, mode, classes);
-                  } else if (delimType.type === "stack") {
+                  } else if (delimType.type === 'stack') {
                     return makeStackedDelim(delim, height, center, options, mode, classes);
                   }
                 }
@@ -7771,7 +8350,14 @@
                * Make a delimiter for use with `\left` and `\right`, given a height and depth
                * of an expression that the delimiters surround.
                */
-              var makeLeftRightDelim = function makeLeftRightDelim(delim, height, depth, options, mode, classes) {
+              var makeLeftRightDelim = function makeLeftRightDelim(
+                delim,
+                height,
+                depth,
+                options,
+                mode,
+                classes
+              ) {
                 // We always center \left/\right delimiters, so the axis is always shifted
                 var axisHeight = options.fontMetrics().axisHeight * options.sizeMultiplier;
 
@@ -7807,29 +8393,29 @@
               };
             },
             {
-              "./ParseError": 29,
-              "./Style": 33,
-              "./buildCommon": 34,
-              "./fontMetrics": 41,
-              "./symbols": 48,
-              "./utils": 51,
+              './ParseError': 29,
+              './Style': 33,
+              './buildCommon': 34,
+              './fontMetrics': 41,
+              './symbols': 48,
+              './utils': 51,
             },
           ],
           39: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _unicodeRegexes = require("./unicodeRegexes");
+              var _unicodeRegexes = require('./unicodeRegexes');
 
               var _unicodeRegexes2 = _interopRequireDefault(_unicodeRegexes);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -7858,7 +8444,7 @@
                   }
                 }
 
-                return classes.join(" ");
+                return classes.join(' ');
               };
 
               /**
@@ -7881,7 +8467,7 @@
                   this.innerHTML; // used for inline SVG code.
                   if (options) {
                     if (options.style.isTight()) {
-                      this.classes.push("mtight");
+                      this.classes.push('mtight');
                     }
                     if (options.getColor()) {
                       this.style.color = options.getColor();
@@ -7897,13 +8483,13 @@
 
                 (0, _createClass3.default)(span, [
                   {
-                    key: "setAttribute",
+                    key: 'setAttribute',
                     value: function setAttribute(attribute, value) {
                       this.attributes[attribute] = value;
                     },
                   },
                   {
-                    key: "tryCombine",
+                    key: 'tryCombine',
                     value: function tryCombine(sibling) {
                       return false;
                     },
@@ -7913,9 +8499,9 @@
                      */
                   },
                   {
-                    key: "toNode",
+                    key: 'toNode',
                     value: function toNode() {
-                      var span = document.createElement("span");
+                      var span = document.createElement('span');
 
                       // Apply the class
                       span.className = createClass(this.classes);
@@ -7951,9 +8537,9 @@
                      */
                   },
                   {
-                    key: "toMarkup",
+                    key: 'toMarkup',
                     value: function toMarkup() {
-                      var markup = "<span";
+                      var markup = '<span';
 
                       // Add the class
                       if (this.classes.length) {
@@ -7962,12 +8548,13 @@
                         markup += '"';
                       }
 
-                      var styles = "";
+                      var styles = '';
 
                       // Add the styles, after hyphenation
                       for (var style in this.style) {
                         if (this.style.hasOwnProperty(style)) {
-                          styles += _utils2.default.hyphenate(style) + ":" + this.style[style] + ";";
+                          styles +=
+                            _utils2.default.hyphenate(style) + ':' + this.style[style] + ';';
                         }
                       }
 
@@ -7978,13 +8565,13 @@
                       // Add the attributes
                       for (var attr in this.attributes) {
                         if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                          markup += " " + attr + '="';
+                          markup += ' ' + attr + '="';
                           markup += _utils2.default.escape(this.attributes[attr]);
                           markup += '"';
                         }
                       }
 
-                      markup += ">";
+                      markup += '>';
 
                       if (this.innerHTML) {
                         markup += this.innerHTML;
@@ -7995,7 +8582,7 @@
                         markup += this.children[i].toMarkup();
                       }
 
-                      markup += "</span>";
+                      markup += '</span>';
 
                       return markup;
                     },
@@ -8027,7 +8614,7 @@
 
                 (0, _createClass3.default)(documentFragment, [
                   {
-                    key: "toNode",
+                    key: 'toNode',
                     value: function toNode() {
                       // Create a fragment
                       var frag = document.createDocumentFragment();
@@ -8045,9 +8632,9 @@
                      */
                   },
                   {
-                    key: "toMarkup",
+                    key: 'toMarkup',
                     value: function toMarkup() {
-                      var markup = "";
+                      var markup = '';
 
                       // Simply concatenate the markup for the children together
                       for (var i = 0; i < this.children.length; i++) {
@@ -8062,11 +8649,11 @@
               })();
 
               var iCombinations = {
-                î: "\u0131\u0302",
-                ï: "\u0131\u0308",
-                í: "\u0131\u0301",
+                î: '\u0131\u0302',
+                ï: '\u0131\u0308',
+                í: '\u0131\u0301',
                 // 'ī': '\u0131\u0304', // enable when we add Extended Latin
-                ì: "\u0131\u0300",
+                ì: '\u0131\u0300',
               };
 
               /**
@@ -8079,7 +8666,7 @@
                 function symbolNode(value, height, depth, italic, skew, classes, style) {
                   (0, _classCallCheck3.default)(this, symbolNode);
 
-                  this.value = value || "";
+                  this.value = value || '';
                   this.height = height || 0;
                   this.depth = depth || 0;
                   this.italic = italic || 0;
@@ -8097,9 +8684,9 @@
                     // the other characters we wanted to test there for it gets its own
                     // CSS class.
                     if (_unicodeRegexes2.default.hangulRegex.test(value)) {
-                      this.classes.push("hangul_fallback");
+                      this.classes.push('hangul_fallback');
                     } else {
-                      this.classes.push("cjk_fallback");
+                      this.classes.push('cjk_fallback');
                     }
                   }
 
@@ -8111,7 +8698,7 @@
 
                 (0, _createClass3.default)(symbolNode, [
                   {
-                    key: "tryCombine",
+                    key: 'tryCombine',
                     value: function tryCombine(sibling) {
                       if (
                         !sibling ||
@@ -8124,12 +8711,18 @@
                         return false;
                       }
                       for (var style in this.style) {
-                        if (this.style.hasOwnProperty(style) && this.style[style] !== sibling.style[style]) {
+                        if (
+                          this.style.hasOwnProperty(style) &&
+                          this.style[style] !== sibling.style[style]
+                        ) {
                           return false;
                         }
                       }
                       for (var _style in sibling.style) {
-                        if (sibling.style.hasOwnProperty(_style) && this.style[_style] !== sibling.style[_style]) {
+                        if (
+                          sibling.style.hasOwnProperty(_style) &&
+                          this.style[_style] !== sibling.style[_style]
+                        ) {
                           return false;
                         }
                       }
@@ -8146,24 +8739,24 @@
                      */
                   },
                   {
-                    key: "toNode",
+                    key: 'toNode',
                     value: function toNode() {
                       var node = document.createTextNode(this.value);
                       var span = null;
 
                       if (this.italic > 0) {
-                        span = document.createElement("span");
-                        span.style.marginRight = this.italic + "em";
+                        span = document.createElement('span');
+                        span.style.marginRight = this.italic + 'em';
                       }
 
                       if (this.classes.length > 0) {
-                        span = span || document.createElement("span");
+                        span = span || document.createElement('span');
                         span.className = createClass(this.classes);
                       }
 
                       for (var style in this.style) {
                         if (this.style.hasOwnProperty(style)) {
-                          span = span || document.createElement("span");
+                          span = span || document.createElement('span');
                           span.style[style] = this.style[style];
                         }
                       }
@@ -8181,13 +8774,13 @@
                      */
                   },
                   {
-                    key: "toMarkup",
+                    key: 'toMarkup',
                     value: function toMarkup() {
                       // TODO(alpert): More duplication than I'd like from
                       // span.prototype.toMarkup and symbolNode.prototype.toNode...
                       var needsSpan = false;
 
-                      var markup = "<span";
+                      var markup = '<span';
 
                       if (this.classes.length) {
                         needsSpan = true;
@@ -8196,14 +8789,15 @@
                         markup += '"';
                       }
 
-                      var styles = "";
+                      var styles = '';
 
                       if (this.italic > 0) {
-                        styles += "margin-right:" + this.italic + "em;";
+                        styles += 'margin-right:' + this.italic + 'em;';
                       }
                       for (var style in this.style) {
                         if (this.style.hasOwnProperty(style)) {
-                          styles += _utils2.default.hyphenate(style) + ":" + this.style[style] + ";";
+                          styles +=
+                            _utils2.default.hyphenate(style) + ':' + this.style[style] + ';';
                         }
                       }
 
@@ -8214,9 +8808,9 @@
 
                       var escaped = _utils2.default.escape(this.value);
                       if (needsSpan) {
-                        markup += ">";
+                        markup += '>';
                         markup += escaped;
-                        markup += "</span>";
+                        markup += '</span>';
                         return markup;
                       } else {
                         return escaped;
@@ -8234,19 +8828,19 @@
               };
             },
             {
-              "./unicodeRegexes": 49,
-              "./utils": 51,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
+              './unicodeRegexes': 49,
+              './utils': 51,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
             },
           ],
           40: [
             function (require, module, exports) {
-              var _ParseNode = require("./ParseNode");
+              var _ParseNode = require('./ParseNode');
 
               var _ParseNode2 = _interopRequireDefault(_ParseNode);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
@@ -8267,10 +8861,10 @@
                 var rowGaps = [];
                 while (true) {
                   var cell = parser.parseExpression(false, null);
-                  cell = new _ParseNode2.default("ordgroup", cell, parser.mode);
+                  cell = new _ParseNode2.default('ordgroup', cell, parser.mode);
                   if (style) {
                     cell = new _ParseNode2.default(
-                      "styling",
+                      'styling',
                       {
                         style: style,
                         value: [cell],
@@ -8280,17 +8874,17 @@
                   }
                   row.push(cell);
                   var next = parser.nextToken.text;
-                  if (next === "&") {
+                  if (next === '&') {
                     parser.consume();
-                  } else if (next === "\\end") {
+                  } else if (next === '\\end') {
                     break;
-                  } else if (next === "\\\\" || next === "\\cr") {
+                  } else if (next === '\\\\' || next === '\\cr') {
                     var cr = parser.parseFunction();
                     rowGaps.push(cr.value.size);
                     row = [];
                     body.push(row);
                   } else {
-                    throw new _ParseError2.default("Expected & or \\\\ or \\end", parser.nextToken);
+                    throw new _ParseError2.default('Expected & or \\\\ or \\end', parser.nextToken);
                   }
                 }
                 result.body = body;
@@ -8322,10 +8916,10 @@
                * The handler must return a ParseResult.
                */
               function defineEnvironment(names, props, handler) {
-                if (typeof names === "string") {
+                if (typeof names === 'string') {
                   names = [names];
                 }
-                if (typeof props === "number") {
+                if (typeof props === 'number') {
                   props = { numArgs: props };
                 }
                 // Set default values of environments
@@ -8345,10 +8939,10 @@
               // Decides on a style for cells in an array according to whether the given
               // environment name starts with the letter 'd'.
               function dCellStyle(envName) {
-                if (envName.substr(0, 1) === "d") {
-                  return "display";
+                if (envName.substr(0, 1) === 'd') {
+                  return 'display';
                 } else {
-                  return "text";
+                  return 'text';
                 }
               }
 
@@ -8357,7 +8951,7 @@
               // {darray} is an {array} environment where cells are set in \displaystyle,
               // as defined in nccmath.sty.
               defineEnvironment(
-                ["array", "darray"],
+                ['array', 'darray'],
                 {
                   numArgs: 1,
                 },
@@ -8366,21 +8960,21 @@
                   colalign = colalign.value.map ? colalign.value : [colalign];
                   var cols = colalign.map(function (node) {
                     var ca = node.value;
-                    if ("lcr".indexOf(ca) !== -1) {
+                    if ('lcr'.indexOf(ca) !== -1) {
                       return {
-                        type: "align",
+                        type: 'align',
                         align: ca,
                       };
-                    } else if (ca === "|") {
+                    } else if (ca === '|') {
                       return {
-                        type: "separator",
-                        separator: "|",
+                        type: 'separator',
+                        separator: '|',
                       };
                     }
-                    throw new _ParseError2.default("Unknown column alignment: " + node.value, node);
+                    throw new _ParseError2.default('Unknown column alignment: ' + node.value, node);
                   });
                   var res = {
-                    type: "array",
+                    type: 'array',
                     cols: cols,
                     hskipBeforeAndAfter: true,
                   };
@@ -8391,47 +8985,51 @@
 
               // The matrix environments of amsmath builds on the array environment
               // of LaTeX, which is discussed above.
-              defineEnvironment(["matrix", "pmatrix", "bmatrix", "Bmatrix", "vmatrix", "Vmatrix"], {}, function (context) {
-                var delimiters = {
-                  matrix: null,
-                  pmatrix: ["(", ")"],
-                  bmatrix: ["[", "]"],
-                  Bmatrix: ["\\{", "\\}"],
-                  vmatrix: ["|", "|"],
-                  Vmatrix: ["\\Vert", "\\Vert"],
-                }[context.envName];
-                var res = {
-                  type: "array",
-                  hskipBeforeAndAfter: false,
-                };
-                res = parseArray(context.parser, res, dCellStyle(context.envName));
-                if (delimiters) {
-                  res = new _ParseNode2.default(
-                    "leftright",
-                    {
-                      body: [res],
-                      left: delimiters[0],
-                      right: delimiters[1],
-                    },
-                    context.mode
-                  );
+              defineEnvironment(
+                ['matrix', 'pmatrix', 'bmatrix', 'Bmatrix', 'vmatrix', 'Vmatrix'],
+                {},
+                function (context) {
+                  var delimiters = {
+                    matrix: null,
+                    pmatrix: ['(', ')'],
+                    bmatrix: ['[', ']'],
+                    Bmatrix: ['\\{', '\\}'],
+                    vmatrix: ['|', '|'],
+                    Vmatrix: ['\\Vert', '\\Vert'],
+                  }[context.envName];
+                  var res = {
+                    type: 'array',
+                    hskipBeforeAndAfter: false,
+                  };
+                  res = parseArray(context.parser, res, dCellStyle(context.envName));
+                  if (delimiters) {
+                    res = new _ParseNode2.default(
+                      'leftright',
+                      {
+                        body: [res],
+                        left: delimiters[0],
+                        right: delimiters[1],
+                      },
+                      context.mode
+                    );
+                  }
+                  return res;
                 }
-                return res;
-              });
+              );
 
               // A cases environment (in amsmath.sty) is almost equivalent to
               // \def\arraystretch{1.2}%
               // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
               // {dcases} is a {cases} environment where cells are set in \displaystyle,
               // as defined in mathtools.sty.
-              defineEnvironment(["cases", "dcases"], {}, function (context) {
+              defineEnvironment(['cases', 'dcases'], {}, function (context) {
                 var res = {
-                  type: "array",
+                  type: 'array',
                   arraystretch: 1.2,
                   cols: [
                     {
-                      type: "align",
-                      align: "l",
+                      type: 'align',
+                      align: 'l',
                       pregap: 0,
                       // TODO(kevinb) get the current style.
                       // For now we use the metrics for TEXT style which is what we were
@@ -8440,8 +9038,8 @@
                       postgap: 1.0,
                     },
                     {
-                      type: "align",
-                      align: "l",
+                      type: 'align',
+                      align: 'l',
                       pregap: 0,
                       postgap: 0,
                     },
@@ -8449,11 +9047,11 @@
                 };
                 res = parseArray(context.parser, res, dCellStyle(context.envName));
                 res = new _ParseNode2.default(
-                  "leftright",
+                  'leftright',
                   {
                     body: [res],
-                    left: "\\{",
-                    right: ".",
+                    left: '\\{',
+                    right: '.',
                   },
                   context.mode
                 );
@@ -8464,18 +9062,18 @@
               // except it operates within math mode.
               // Note that we assume \nomallineskiplimit to be zero,
               // so that \strut@ is the same as \strut.
-              defineEnvironment("aligned", {}, function (context) {
+              defineEnvironment('aligned', {}, function (context) {
                 var res = {
-                  type: "array",
+                  type: 'array',
                   cols: [],
                   addJot: true,
                 };
-                res = parseArray(context.parser, res, "display");
+                res = parseArray(context.parser, res, 'display');
                 // Count number of columns = maximum number of cells in each row.
                 // At the same time, prepend empty group {} at beginning of every second
                 // cell in each row (starting with second cell) so that operators become
                 // binary.  This behavior is implemented in amsmath's \start@aligned.
-                var emptyGroup = new _ParseNode2.default("ordgroup", [], context.mode);
+                var emptyGroup = new _ParseNode2.default('ordgroup', [], context.mode);
                 var numCols = 0;
                 res.value.body.forEach(function (row) {
                   for (var i = 1; i < row.length; i += 2) {
@@ -8488,15 +9086,15 @@
                   }
                 });
                 for (var i = 0; i < numCols; ++i) {
-                  var align = "r";
+                  var align = 'r';
                   var pregap = 0;
                   if (i % 2 === 1) {
-                    align = "l";
+                    align = 'l';
                   } else if (i > 0) {
                     pregap = 2; // one \qquad between columns
                   }
                   res.value.cols[i] = {
-                    type: "align",
+                    type: 'align',
                     align: align,
                     pregap: pregap,
                     postgap: 0,
@@ -8508,28 +9106,28 @@
               // A gathered environment is like an array environment with one centered
               // column, but where rows are considered lines so get \jot line spacing
               // and contents are set in \displaystyle.
-              defineEnvironment("gathered", {}, function (context) {
+              defineEnvironment('gathered', {}, function (context) {
                 var res = {
-                  type: "array",
+                  type: 'array',
                   cols: [
                     {
-                      type: "align",
-                      align: "c",
+                      type: 'align',
+                      align: 'c',
                     },
                   ],
                   addJot: true,
                 };
-                res = parseArray(context.parser, res, "display");
+                res = parseArray(context.parser, res, 'display');
                 return res;
               });
             },
-            { "./ParseError": 29, "./ParseNode": 30 },
+            { './ParseError': 29, './ParseNode': 30 },
           ],
           41: [
             function (require, module, exports) {
-              var _unicodeRegexes = require("./unicodeRegexes");
+              var _unicodeRegexes = require('./unicodeRegexes');
 
-              var _fontMetricsData = require("./fontMetricsData");
+              var _fontMetricsData = require('./fontMetricsData');
 
               var _fontMetricsData2 = _interopRequireDefault(_fontMetricsData);
 
@@ -8632,134 +9230,134 @@
               // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
               var extraCharacterMap = {
                 // Latin-1
-                À: "A",
-                Á: "A",
-                Â: "A",
-                Ã: "A",
-                Ä: "A",
-                Å: "A",
-                Æ: "A",
-                Ç: "C",
-                È: "E",
-                É: "E",
-                Ê: "E",
-                Ë: "E",
-                Ì: "I",
-                Í: "I",
-                Î: "I",
-                Ï: "I",
-                Ð: "D",
-                Ñ: "N",
-                Ò: "O",
-                Ó: "O",
-                Ô: "O",
-                Õ: "O",
-                Ö: "O",
-                Ø: "O",
-                Ù: "U",
-                Ú: "U",
-                Û: "U",
-                Ü: "U",
-                Ý: "Y",
-                Þ: "o",
-                ß: "B",
-                à: "a",
-                á: "a",
-                â: "a",
-                ã: "a",
-                ä: "a",
-                å: "a",
-                æ: "a",
-                ç: "c",
-                è: "e",
-                é: "e",
-                ê: "e",
-                ë: "e",
-                ì: "i",
-                í: "i",
-                î: "i",
-                ï: "i",
-                ð: "d",
-                ñ: "n",
-                ò: "o",
-                ó: "o",
-                ô: "o",
-                õ: "o",
-                ö: "o",
-                ø: "o",
-                ù: "u",
-                ú: "u",
-                û: "u",
-                ü: "u",
-                ý: "y",
-                þ: "o",
-                ÿ: "y",
+                À: 'A',
+                Á: 'A',
+                Â: 'A',
+                Ã: 'A',
+                Ä: 'A',
+                Å: 'A',
+                Æ: 'A',
+                Ç: 'C',
+                È: 'E',
+                É: 'E',
+                Ê: 'E',
+                Ë: 'E',
+                Ì: 'I',
+                Í: 'I',
+                Î: 'I',
+                Ï: 'I',
+                Ð: 'D',
+                Ñ: 'N',
+                Ò: 'O',
+                Ó: 'O',
+                Ô: 'O',
+                Õ: 'O',
+                Ö: 'O',
+                Ø: 'O',
+                Ù: 'U',
+                Ú: 'U',
+                Û: 'U',
+                Ü: 'U',
+                Ý: 'Y',
+                Þ: 'o',
+                ß: 'B',
+                à: 'a',
+                á: 'a',
+                â: 'a',
+                ã: 'a',
+                ä: 'a',
+                å: 'a',
+                æ: 'a',
+                ç: 'c',
+                è: 'e',
+                é: 'e',
+                ê: 'e',
+                ë: 'e',
+                ì: 'i',
+                í: 'i',
+                î: 'i',
+                ï: 'i',
+                ð: 'd',
+                ñ: 'n',
+                ò: 'o',
+                ó: 'o',
+                ô: 'o',
+                õ: 'o',
+                ö: 'o',
+                ø: 'o',
+                ù: 'u',
+                ú: 'u',
+                û: 'u',
+                ü: 'u',
+                ý: 'y',
+                þ: 'o',
+                ÿ: 'y',
 
                 // Cyrillic
-                А: "A",
-                Б: "B",
-                В: "B",
-                Г: "F",
-                Д: "A",
-                Е: "E",
-                Ж: "K",
-                З: "3",
-                И: "N",
-                Й: "N",
-                К: "K",
-                Л: "N",
-                М: "M",
-                Н: "H",
-                О: "O",
-                П: "N",
-                Р: "P",
-                С: "C",
-                Т: "T",
-                У: "y",
-                Ф: "O",
-                Х: "X",
-                Ц: "U",
-                Ч: "h",
-                Ш: "W",
-                Щ: "W",
-                Ъ: "B",
-                Ы: "X",
-                Ь: "B",
-                Э: "3",
-                Ю: "X",
-                Я: "R",
-                а: "a",
-                б: "b",
-                в: "a",
-                г: "r",
-                д: "y",
-                е: "e",
-                ж: "m",
-                з: "e",
-                и: "n",
-                й: "n",
-                к: "n",
-                л: "n",
-                м: "m",
-                н: "n",
-                о: "o",
-                п: "n",
-                р: "p",
-                с: "c",
-                т: "o",
-                у: "y",
-                ф: "b",
-                х: "x",
-                ц: "n",
-                ч: "n",
-                ш: "w",
-                щ: "w",
-                ъ: "a",
-                ы: "m",
-                ь: "a",
-                э: "e",
-                ю: "m",
-                я: "r",
+                А: 'A',
+                Б: 'B',
+                В: 'B',
+                Г: 'F',
+                Д: 'A',
+                Е: 'E',
+                Ж: 'K',
+                З: '3',
+                И: 'N',
+                Й: 'N',
+                К: 'K',
+                Л: 'N',
+                М: 'M',
+                Н: 'H',
+                О: 'O',
+                П: 'N',
+                Р: 'P',
+                С: 'C',
+                Т: 'T',
+                У: 'y',
+                Ф: 'O',
+                Х: 'X',
+                Ц: 'U',
+                Ч: 'h',
+                Ш: 'W',
+                Щ: 'W',
+                Ъ: 'B',
+                Ы: 'X',
+                Ь: 'B',
+                Э: '3',
+                Ю: 'X',
+                Я: 'R',
+                а: 'a',
+                б: 'b',
+                в: 'a',
+                г: 'r',
+                д: 'y',
+                е: 'e',
+                ж: 'm',
+                з: 'e',
+                и: 'n',
+                й: 'n',
+                к: 'n',
+                л: 'n',
+                м: 'm',
+                н: 'n',
+                о: 'o',
+                п: 'n',
+                р: 'p',
+                с: 'c',
+                т: 'o',
+                у: 'y',
+                ф: 'b',
+                х: 'x',
+                ц: 'n',
+                ч: 'n',
+                ш: 'w',
+                щ: 'w',
+                ъ: 'a',
+                ы: 'm',
+                ь: 'a',
+                э: 'e',
+                ю: 'm',
+                я: 'r',
               };
 
               /**
@@ -8774,7 +9372,7 @@
                 if (character[0] in extraCharacterMap) {
                   ch = extraCharacterMap[character[0]].charCodeAt(0);
                 } else if (_unicodeRegexes.cjkRegex.test(character[0])) {
-                  ch = "M".charCodeAt(0);
+                  ch = 'M'.charCodeAt(0);
                 }
                 var metrics = _fontMetricsData2.default[style][ch];
                 if (metrics) {
@@ -8819,12 +9417,12 @@
                 getCharacterMetrics: getCharacterMetrics,
               };
             },
-            { "./fontMetricsData": 42, "./unicodeRegexes": 49 },
+            { './fontMetricsData': 42, './unicodeRegexes': 49 },
           ],
           42: [
             function (require, module, exports) {
               module.exports = {
-                "AMS-Regular": {
+                'AMS-Regular': {
                   65: [0, 0.68889, 0, 0],
                   66: [0, 0.68889, 0, 0],
                   67: [0, 0.68889, 0, 0],
@@ -9081,7 +9679,7 @@
                   57370: [0.13597, 0.63597, 0, 0],
                   57371: [0.13597, 0.63597, 0, 0],
                 },
-                "Caligraphic-Regular": {
+                'Caligraphic-Regular': {
                   48: [0, 0.43056, 0, 0],
                   49: [0, 0.43056, 0, 0],
                   50: [0, 0.43056, 0, 0],
@@ -9119,7 +9717,7 @@
                   89: [0.09722, 0.68333, 0.08222, 0.08334],
                   90: [0, 0.68333, 0.07944, 0.13889],
                 },
-                "Fraktur-Regular": {
+                'Fraktur-Regular': {
                   33: [0, 0.69141, 0, 0],
                   34: [0, 0.69141, 0, 0],
                   38: [0, 0.69141, 0, 0],
@@ -9212,7 +9810,7 @@
                   58118: [0, 0.62119, 0, 0],
                   58119: [0, 0.47534, 0, 0],
                 },
-                "Main-Bold": {
+                'Main-Bold': {
                   33: [0, 0.69444, 0, 0],
                   34: [0, 0.69444, 0, 0],
                   35: [0.19444, 0.69444, 0, 0],
@@ -9467,7 +10065,7 @@
                   10927: [0.19667, 0.69667, 0, 0],
                   10928: [0.19667, 0.69667, 0, 0],
                 },
-                "Main-Italic": {
+                'Main-Italic': {
                   33: [0, 0.69444, 0.12417, 0],
                   34: [0, 0.69444, 0.06961, 0],
                   35: [0.19444, 0.69444, 0.06616, 0],
@@ -9587,7 +10185,7 @@
                   8221: [0, 0.69444, 0.06961, 0],
                   8463: [0, 0.68889, 0, 0],
                 },
-                "Main-Regular": {
+                'Main-Regular': {
                   32: [0, 0, 0, 0],
                   33: [0, 0.69444, 0, 0],
                   34: [0, 0.69444, 0, 0],
@@ -9868,7 +10466,7 @@
                   10927: [0.13597, 0.63597, 0, 0],
                   10928: [0.13597, 0.63597, 0, 0],
                 },
-                "Math-BoldItalic": {
+                'Math-BoldItalic': {
                   47: [0.19444, 0.69444, 0, 0],
                   65: [0, 0.68611, 0, 0],
                   66: [0, 0.68611, 0.04835, 0],
@@ -9964,7 +10562,7 @@
                   1009: [0.19444, 0.44444, 0, 0],
                   1013: [0, 0.44444, 0, 0],
                 },
-                "Math-Italic": {
+                'Math-Italic': {
                   47: [0.19444, 0.69444, 0, 0],
                   65: [0, 0.68333, 0, 0.13889],
                   66: [0, 0.68333, 0.05017, 0.08334],
@@ -10060,7 +10658,7 @@
                   1009: [0.19444, 0.43056, 0, 0.08334],
                   1013: [0, 0.43056, 0, 0.05556],
                 },
-                "Math-Regular": {
+                'Math-Regular': {
                   65: [0, 0.68333, 0, 0.13889],
                   66: [0, 0.68333, 0.05017, 0.08334],
                   67: [0, 0.68333, 0.07153, 0.08334],
@@ -10155,7 +10753,7 @@
                   1009: [0.19444, 0.43056, 0, 0.08334],
                   1013: [0, 0.43056, 0, 0.05556],
                 },
-                "SansSerif-Regular": {
+                'SansSerif-Regular': {
                   33: [0, 0.69444, 0, 0],
                   34: [0, 0.69444, 0, 0],
                   35: [0.19444, 0.69444, 0, 0],
@@ -10274,7 +10872,7 @@
                   8220: [0, 0.69444, 0, 0],
                   8221: [0, 0.69444, 0, 0],
                 },
-                "Script-Regular": {
+                'Script-Regular': {
                   65: [0, 0.7, 0.22925, 0],
                   66: [0, 0.7, 0.04087, 0],
                   67: [0, 0.7, 0.1689, 0],
@@ -10302,7 +10900,7 @@
                   89: [0, 0.7, 0.2939, 0],
                   90: [0, 0.7, 0.24037, 0],
                 },
-                "Size1-Regular": {
+                'Size1-Regular': {
                   40: [0.35001, 0.85, 0, 0],
                   41: [0.35001, 0.85, 0, 0],
                   47: [0.35001, 0.85, 0, 0],
@@ -10347,7 +10945,7 @@
                   10756: [0.25001, 0.75, 0, 0],
                   10758: [0.25001, 0.75, 0, 0],
                 },
-                "Size2-Regular": {
+                'Size2-Regular': {
                   40: [0.65002, 1.15, 0, 0],
                   41: [0.65002, 1.15, 0, 0],
                   47: [0.65002, 1.15, 0, 0],
@@ -10384,7 +10982,7 @@
                   10756: [0.55001, 1.05, 0, 0],
                   10758: [0.55001, 1.05, 0, 0],
                 },
-                "Size3-Regular": {
+                'Size3-Regular': {
                   40: [0.95003, 1.45, 0, 0],
                   41: [0.95003, 1.45, 0, 0],
                   47: [0.95003, 1.45, 0, 0],
@@ -10405,7 +11003,7 @@
                   10216: [0.95003, 1.45, 0, 0],
                   10217: [0.95003, 1.45, 0, 0],
                 },
-                "Size4-Regular": {
+                'Size4-Regular': {
                   40: [1.25003, 1.75, 0, 0],
                   41: [1.25003, 1.75, 0, 0],
                   47: [1.25003, 1.75, 0, 0],
@@ -10452,7 +11050,7 @@
                   57682: [0, 0.12, 0, 0],
                   57683: [0, 0.12, 0, 0],
                 },
-                "Typewriter-Regular": {
+                'Typewriter-Regular': {
                   33: [0, 0.61111, 0, 0],
                   34: [0, 0.61111, 0, 0],
                   35: [0, 0.61111, 0, 0],
@@ -10580,15 +11178,15 @@
           ],
           43: [
             function (require, module, exports) {
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
-              var _ParseNode = require("./ParseNode");
+              var _ParseNode = require('./ParseNode');
 
               var _ParseNode2 = _interopRequireDefault(_ParseNode);
 
@@ -10674,10 +11272,10 @@
                */
 
               function defineFunction(names, props, handler) {
-                if (typeof names === "string") {
+                if (typeof names === 'string') {
                   names = [names];
                 }
-                if (typeof props === "number") {
+                if (typeof props === 'number') {
                   props = { numArgs: props };
                 }
                 // Set default values of functions
@@ -10699,7 +11297,7 @@
               // Since the corresponding buildHTML/buildMathML function expects a
               // list of elements, we normalize for different kinds of arguments
               var ordargument = function ordargument(arg) {
-                if (arg.type === "ordgroup") {
+                if (arg.type === 'ordgroup') {
                   return arg.value;
                 } else {
                   return [arg];
@@ -10708,7 +11306,7 @@
 
               // A normal square root
               defineFunction(
-                "\\sqrt",
+                '\\sqrt',
                 {
                   numArgs: 1,
                   numOptionalArgs: 1,
@@ -10717,7 +11315,7 @@
                   var index = args[0];
                   var body = args[1];
                   return {
-                    type: "sqrt",
+                    type: 'sqrt',
                     body: body,
                     index: index,
                   };
@@ -10726,27 +11324,35 @@
 
               // Non-mathy text, possibly in a font
               var textFunctionStyles = {
-                "\\text": undefined,
-                "\\textrm": "mathrm",
-                "\\textsf": "mathsf",
-                "\\texttt": "mathtt",
-                "\\textnormal": "mathrm",
-                "\\textbf": "mathbf",
-                "\\textit": "textit",
+                '\\text': undefined,
+                '\\textrm': 'mathrm',
+                '\\textsf': 'mathsf',
+                '\\texttt': 'mathtt',
+                '\\textnormal': 'mathrm',
+                '\\textbf': 'mathbf',
+                '\\textit': 'textit',
               };
 
               defineFunction(
-                ["\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal", "\\textbf", "\\textit"],
+                [
+                  '\\text',
+                  '\\textrm',
+                  '\\textsf',
+                  '\\texttt',
+                  '\\textnormal',
+                  '\\textbf',
+                  '\\textit',
+                ],
                 {
                   numArgs: 1,
-                  argTypes: ["text"],
+                  argTypes: ['text'],
                   greediness: 2,
                   allowedInText: true,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "text",
+                    type: 'text',
                     body: ordargument(body),
                     style: textFunctionStyles[context.funcName],
                   };
@@ -10755,18 +11361,18 @@
 
               // A two-argument custom color
               defineFunction(
-                "\\textcolor",
+                '\\textcolor',
                 {
                   numArgs: 2,
                   allowedInText: true,
                   greediness: 3,
-                  argTypes: ["color", "original"],
+                  argTypes: ['color', 'original'],
                 },
                 function (context, args) {
                   var color = args[0];
                   var body = args[1];
                   return {
-                    type: "color",
+                    type: 'color',
                     color: color.value,
                     value: ordargument(body),
                   };
@@ -10775,26 +11381,26 @@
 
               // \color is handled in Parser.js's parseImplicitGroup
               defineFunction(
-                "\\color",
+                '\\color',
                 {
                   numArgs: 1,
                   allowedInText: true,
                   greediness: 3,
-                  argTypes: ["color"],
+                  argTypes: ['color'],
                 },
                 null
               );
 
               // An overline
               defineFunction(
-                "\\overline",
+                '\\overline',
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "overline",
+                    type: 'overline',
                     body: body,
                   };
                 }
@@ -10802,14 +11408,14 @@
 
               // An underline
               defineFunction(
-                "\\underline",
+                '\\underline',
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "underline",
+                    type: 'underline',
                     body: body,
                   };
                 }
@@ -10817,18 +11423,18 @@
 
               // A box of the width and height
               defineFunction(
-                "\\rule",
+                '\\rule',
                 {
                   numArgs: 2,
                   numOptionalArgs: 1,
-                  argTypes: ["size", "size", "size"],
+                  argTypes: ['size', 'size', 'size'],
                 },
                 function (context, args) {
                   var shift = args[0];
                   var width = args[1];
                   var height = args[2];
                   return {
-                    type: "rule",
+                    type: 'rule',
                     shift: shift && shift.value,
                     width: width.value,
                     height: height.value,
@@ -10839,14 +11445,14 @@
               // TODO: In TeX, \mkern only accepts mu-units, and \kern does not accept
               // mu-units. In current KaTeX we relax this; both commands accept any unit.
               defineFunction(
-                ["\\kern", "\\mkern"],
+                ['\\kern', '\\mkern'],
                 {
                   numArgs: 1,
-                  argTypes: ["size"],
+                  argTypes: ['size'],
                 },
                 function (context, args) {
                   return {
-                    type: "kern",
+                    type: 'kern',
                     dimension: args[0].value,
                   };
                 }
@@ -10854,26 +11460,26 @@
 
               // A KaTeX logo
               defineFunction(
-                "\\KaTeX",
+                '\\KaTeX',
                 {
                   numArgs: 0,
                 },
                 function (context) {
                   return {
-                    type: "katex",
+                    type: 'katex',
                   };
                 }
               );
 
               defineFunction(
-                "\\phantom",
+                '\\phantom',
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "phantom",
+                    type: 'phantom',
                     value: ordargument(body),
                   };
                 }
@@ -10881,15 +11487,23 @@
 
               // Math class commands except \mathop
               defineFunction(
-                ["\\mathord", "\\mathbin", "\\mathrel", "\\mathopen", "\\mathclose", "\\mathpunct", "\\mathinner"],
+                [
+                  '\\mathord',
+                  '\\mathbin',
+                  '\\mathrel',
+                  '\\mathopen',
+                  '\\mathclose',
+                  '\\mathpunct',
+                  '\\mathinner',
+                ],
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "mclass",
-                    mclass: "m" + context.funcName.substr(5),
+                    type: 'mclass',
+                    mclass: 'm' + context.funcName.substr(5),
                     value: ordargument(body),
                   };
                 }
@@ -10897,7 +11511,7 @@
 
               // Build a relation by placing one symbol on top of another
               defineFunction(
-                "\\stackrel",
+                '\\stackrel',
                 {
                   numArgs: 2,
                 },
@@ -10906,9 +11520,9 @@
                   var bottom = args[1];
 
                   var bottomop = new _ParseNode2.default(
-                    "op",
+                    'op',
                     {
-                      type: "op",
+                      type: 'op',
                       limits: true,
                       alwaysHandleSupSub: true,
                       symbol: false,
@@ -10918,7 +11532,7 @@
                   );
 
                   var supsub = new _ParseNode2.default(
-                    "supsub",
+                    'supsub',
                     {
                       base: bottomop,
                       sup: top,
@@ -10928,8 +11542,8 @@
                   );
 
                   return {
-                    type: "mclass",
-                    mclass: "mrel",
+                    type: 'mclass',
+                    mclass: 'mrel',
                     value: [supsub],
                   };
                 }
@@ -10937,28 +11551,28 @@
 
               // \mod-type functions
               defineFunction(
-                "\\bmod",
+                '\\bmod',
                 {
                   numArgs: 0,
                 },
                 function (context, args) {
                   return {
-                    type: "mod",
-                    modType: "bmod",
+                    type: 'mod',
+                    modType: 'bmod',
                     value: null,
                   };
                 }
               );
 
               defineFunction(
-                ["\\pod", "\\pmod", "\\mod"],
+                ['\\pod', '\\pmod', '\\mod'],
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "mod",
+                    type: 'mod',
                     modType: context.funcName.substr(1),
                     value: ordargument(body),
                   };
@@ -10967,133 +11581,133 @@
 
               // Extra data needed for the delimiter handler down below
               var delimiterSizes = {
-                "\\bigl": { mclass: "mopen", size: 1 },
-                "\\Bigl": { mclass: "mopen", size: 2 },
-                "\\biggl": { mclass: "mopen", size: 3 },
-                "\\Biggl": { mclass: "mopen", size: 4 },
-                "\\bigr": { mclass: "mclose", size: 1 },
-                "\\Bigr": { mclass: "mclose", size: 2 },
-                "\\biggr": { mclass: "mclose", size: 3 },
-                "\\Biggr": { mclass: "mclose", size: 4 },
-                "\\bigm": { mclass: "mrel", size: 1 },
-                "\\Bigm": { mclass: "mrel", size: 2 },
-                "\\biggm": { mclass: "mrel", size: 3 },
-                "\\Biggm": { mclass: "mrel", size: 4 },
-                "\\big": { mclass: "mord", size: 1 },
-                "\\Big": { mclass: "mord", size: 2 },
-                "\\bigg": { mclass: "mord", size: 3 },
-                "\\Bigg": { mclass: "mord", size: 4 },
+                '\\bigl': { mclass: 'mopen', size: 1 },
+                '\\Bigl': { mclass: 'mopen', size: 2 },
+                '\\biggl': { mclass: 'mopen', size: 3 },
+                '\\Biggl': { mclass: 'mopen', size: 4 },
+                '\\bigr': { mclass: 'mclose', size: 1 },
+                '\\Bigr': { mclass: 'mclose', size: 2 },
+                '\\biggr': { mclass: 'mclose', size: 3 },
+                '\\Biggr': { mclass: 'mclose', size: 4 },
+                '\\bigm': { mclass: 'mrel', size: 1 },
+                '\\Bigm': { mclass: 'mrel', size: 2 },
+                '\\biggm': { mclass: 'mrel', size: 3 },
+                '\\Biggm': { mclass: 'mrel', size: 4 },
+                '\\big': { mclass: 'mord', size: 1 },
+                '\\Big': { mclass: 'mord', size: 2 },
+                '\\bigg': { mclass: 'mord', size: 3 },
+                '\\Bigg': { mclass: 'mord', size: 4 },
               };
 
               var delimiters = [
-                "(",
-                ")",
-                "[",
-                "\\lbrack",
-                "]",
-                "\\rbrack",
-                "\\{",
-                "\\lbrace",
-                "\\}",
-                "\\rbrace",
-                "\\lfloor",
-                "\\rfloor",
-                "\\lceil",
-                "\\rceil",
-                "<",
-                ">",
-                "\\langle",
-                "\\rangle",
-                "\\lt",
-                "\\gt",
-                "\\lvert",
-                "\\rvert",
-                "\\lVert",
-                "\\rVert",
-                "\\lgroup",
-                "\\rgroup",
-                "\\lmoustache",
-                "\\rmoustache",
-                "/",
-                "\\backslash",
-                "|",
-                "\\vert",
-                "\\|",
-                "\\Vert",
-                "\\uparrow",
-                "\\Uparrow",
-                "\\downarrow",
-                "\\Downarrow",
-                "\\updownarrow",
-                "\\Updownarrow",
-                ".",
+                '(',
+                ')',
+                '[',
+                '\\lbrack',
+                ']',
+                '\\rbrack',
+                '\\{',
+                '\\lbrace',
+                '\\}',
+                '\\rbrace',
+                '\\lfloor',
+                '\\rfloor',
+                '\\lceil',
+                '\\rceil',
+                '<',
+                '>',
+                '\\langle',
+                '\\rangle',
+                '\\lt',
+                '\\gt',
+                '\\lvert',
+                '\\rvert',
+                '\\lVert',
+                '\\rVert',
+                '\\lgroup',
+                '\\rgroup',
+                '\\lmoustache',
+                '\\rmoustache',
+                '/',
+                '\\backslash',
+                '|',
+                '\\vert',
+                '\\|',
+                '\\Vert',
+                '\\uparrow',
+                '\\Uparrow',
+                '\\downarrow',
+                '\\Downarrow',
+                '\\updownarrow',
+                '\\Updownarrow',
+                '.',
               ];
 
               var fontAliases = {
-                "\\Bbb": "\\mathbb",
-                "\\bold": "\\mathbf",
-                "\\frak": "\\mathfrak",
+                '\\Bbb': '\\mathbb',
+                '\\bold': '\\mathbf',
+                '\\frak': '\\mathfrak',
               };
 
               // Single-argument color functions
               defineFunction(
                 [
-                  "\\blue",
-                  "\\orange",
-                  "\\pink",
-                  "\\red",
-                  "\\green",
-                  "\\gray",
-                  "\\purple",
-                  "\\blueA",
-                  "\\blueB",
-                  "\\blueC",
-                  "\\blueD",
-                  "\\blueE",
-                  "\\tealA",
-                  "\\tealB",
-                  "\\tealC",
-                  "\\tealD",
-                  "\\tealE",
-                  "\\greenA",
-                  "\\greenB",
-                  "\\greenC",
-                  "\\greenD",
-                  "\\greenE",
-                  "\\goldA",
-                  "\\goldB",
-                  "\\goldC",
-                  "\\goldD",
-                  "\\goldE",
-                  "\\redA",
-                  "\\redB",
-                  "\\redC",
-                  "\\redD",
-                  "\\redE",
-                  "\\maroonA",
-                  "\\maroonB",
-                  "\\maroonC",
-                  "\\maroonD",
-                  "\\maroonE",
-                  "\\purpleA",
-                  "\\purpleB",
-                  "\\purpleC",
-                  "\\purpleD",
-                  "\\purpleE",
-                  "\\mintA",
-                  "\\mintB",
-                  "\\mintC",
-                  "\\grayA",
-                  "\\grayB",
-                  "\\grayC",
-                  "\\grayD",
-                  "\\grayE",
-                  "\\grayF",
-                  "\\grayG",
-                  "\\grayH",
-                  "\\grayI",
-                  "\\kaBlue",
-                  "\\kaGreen",
+                  '\\blue',
+                  '\\orange',
+                  '\\pink',
+                  '\\red',
+                  '\\green',
+                  '\\gray',
+                  '\\purple',
+                  '\\blueA',
+                  '\\blueB',
+                  '\\blueC',
+                  '\\blueD',
+                  '\\blueE',
+                  '\\tealA',
+                  '\\tealB',
+                  '\\tealC',
+                  '\\tealD',
+                  '\\tealE',
+                  '\\greenA',
+                  '\\greenB',
+                  '\\greenC',
+                  '\\greenD',
+                  '\\greenE',
+                  '\\goldA',
+                  '\\goldB',
+                  '\\goldC',
+                  '\\goldD',
+                  '\\goldE',
+                  '\\redA',
+                  '\\redB',
+                  '\\redC',
+                  '\\redD',
+                  '\\redE',
+                  '\\maroonA',
+                  '\\maroonB',
+                  '\\maroonC',
+                  '\\maroonD',
+                  '\\maroonE',
+                  '\\purpleA',
+                  '\\purpleB',
+                  '\\purpleC',
+                  '\\purpleD',
+                  '\\purpleE',
+                  '\\mintA',
+                  '\\mintB',
+                  '\\mintC',
+                  '\\grayA',
+                  '\\grayB',
+                  '\\grayC',
+                  '\\grayD',
+                  '\\grayE',
+                  '\\grayF',
+                  '\\grayG',
+                  '\\grayH',
+                  '\\grayI',
+                  '\\kaBlue',
+                  '\\kaGreen',
                 ],
                 {
                   numArgs: 1,
@@ -11103,8 +11717,8 @@
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "color",
-                    color: "katex-" + context.funcName.slice(1),
+                    type: 'color',
+                    color: 'katex-' + context.funcName.slice(1),
                     value: ordargument(body),
                   };
                 }
@@ -11117,45 +11731,45 @@
               // No limits, not symbols
               defineFunction(
                 [
-                  "\\arcsin",
-                  "\\arccos",
-                  "\\arctan",
-                  "\\arctg",
-                  "\\arcctg",
-                  "\\arg",
-                  "\\ch",
-                  "\\cos",
-                  "\\cosec",
-                  "\\cosh",
-                  "\\cot",
-                  "\\cotg",
-                  "\\coth",
-                  "\\csc",
-                  "\\ctg",
-                  "\\cth",
-                  "\\deg",
-                  "\\dim",
-                  "\\exp",
-                  "\\hom",
-                  "\\ker",
-                  "\\lg",
-                  "\\ln",
-                  "\\log",
-                  "\\sec",
-                  "\\sin",
-                  "\\sinh",
-                  "\\sh",
-                  "\\tan",
-                  "\\tanh",
-                  "\\tg",
-                  "\\th",
+                  '\\arcsin',
+                  '\\arccos',
+                  '\\arctan',
+                  '\\arctg',
+                  '\\arcctg',
+                  '\\arg',
+                  '\\ch',
+                  '\\cos',
+                  '\\cosec',
+                  '\\cosh',
+                  '\\cot',
+                  '\\cotg',
+                  '\\coth',
+                  '\\csc',
+                  '\\ctg',
+                  '\\cth',
+                  '\\deg',
+                  '\\dim',
+                  '\\exp',
+                  '\\hom',
+                  '\\ker',
+                  '\\lg',
+                  '\\ln',
+                  '\\log',
+                  '\\sec',
+                  '\\sin',
+                  '\\sinh',
+                  '\\sh',
+                  '\\tan',
+                  '\\tanh',
+                  '\\tg',
+                  '\\th',
                 ],
                 {
                   numArgs: 0,
                 },
                 function (context) {
                   return {
-                    type: "op",
+                    type: 'op',
                     limits: false,
                     symbol: false,
                     body: context.funcName,
@@ -11165,13 +11779,24 @@
 
               // Limits, not symbols
               defineFunction(
-                ["\\det", "\\gcd", "\\inf", "\\lim", "\\liminf", "\\limsup", "\\max", "\\min", "\\Pr", "\\sup"],
+                [
+                  '\\det',
+                  '\\gcd',
+                  '\\inf',
+                  '\\lim',
+                  '\\liminf',
+                  '\\limsup',
+                  '\\max',
+                  '\\min',
+                  '\\Pr',
+                  '\\sup',
+                ],
                 {
                   numArgs: 0,
                 },
                 function (context) {
                   return {
-                    type: "op",
+                    type: 'op',
                     limits: true,
                     symbol: false,
                     body: context.funcName,
@@ -11181,13 +11806,13 @@
 
               // No limits, symbols
               defineFunction(
-                ["\\int", "\\iint", "\\iiint", "\\oint"],
+                ['\\int', '\\iint', '\\iiint', '\\oint'],
                 {
                   numArgs: 0,
                 },
                 function (context) {
                   return {
-                    type: "op",
+                    type: 'op',
                     limits: false,
                     symbol: true,
                     body: context.funcName,
@@ -11198,27 +11823,27 @@
               // Limits, symbols
               defineFunction(
                 [
-                  "\\coprod",
-                  "\\bigvee",
-                  "\\bigwedge",
-                  "\\biguplus",
-                  "\\bigcap",
-                  "\\bigcup",
-                  "\\intop",
-                  "\\prod",
-                  "\\sum",
-                  "\\bigotimes",
-                  "\\bigoplus",
-                  "\\bigodot",
-                  "\\bigsqcup",
-                  "\\smallint",
+                  '\\coprod',
+                  '\\bigvee',
+                  '\\bigwedge',
+                  '\\biguplus',
+                  '\\bigcap',
+                  '\\bigcup',
+                  '\\intop',
+                  '\\prod',
+                  '\\sum',
+                  '\\bigotimes',
+                  '\\bigoplus',
+                  '\\bigodot',
+                  '\\bigsqcup',
+                  '\\smallint',
                 ],
                 {
                   numArgs: 0,
                 },
                 function (context) {
                   return {
-                    type: "op",
+                    type: 'op',
                     limits: true,
                     symbol: true,
                     body: context.funcName,
@@ -11228,14 +11853,14 @@
 
               // \mathop class command
               defineFunction(
-                "\\mathop",
+                '\\mathop',
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "op",
+                    type: 'op',
                     limits: false,
                     symbol: false,
                     value: ordargument(body),
@@ -11245,7 +11870,7 @@
 
               // Fractions
               defineFunction(
-                ["\\dfrac", "\\frac", "\\tfrac", "\\dbinom", "\\binom", "\\tbinom", "\\\\atopfrac"],
+                ['\\dfrac', '\\frac', '\\tfrac', '\\dbinom', '\\binom', '\\tbinom', '\\\\atopfrac'],
                 {
                   numArgs: 2,
                   greediness: 2,
@@ -11256,41 +11881,41 @@
                   var hasBarLine = void 0;
                   var leftDelim = null;
                   var rightDelim = null;
-                  var size = "auto";
+                  var size = 'auto';
 
                   switch (context.funcName) {
-                    case "\\dfrac":
-                    case "\\frac":
-                    case "\\tfrac":
+                    case '\\dfrac':
+                    case '\\frac':
+                    case '\\tfrac':
                       hasBarLine = true;
                       break;
-                    case "\\\\atopfrac":
+                    case '\\\\atopfrac':
                       hasBarLine = false;
                       break;
-                    case "\\dbinom":
-                    case "\\binom":
-                    case "\\tbinom":
+                    case '\\dbinom':
+                    case '\\binom':
+                    case '\\tbinom':
                       hasBarLine = false;
-                      leftDelim = "(";
-                      rightDelim = ")";
+                      leftDelim = '(';
+                      rightDelim = ')';
                       break;
                     default:
-                      throw new Error("Unrecognized genfrac command");
+                      throw new Error('Unrecognized genfrac command');
                   }
 
                   switch (context.funcName) {
-                    case "\\dfrac":
-                    case "\\dbinom":
-                      size = "display";
+                    case '\\dfrac':
+                    case '\\dbinom':
+                      size = 'display';
                       break;
-                    case "\\tfrac":
-                    case "\\tbinom":
-                      size = "text";
+                    case '\\tfrac':
+                    case '\\tbinom':
+                      size = 'text';
                       break;
                   }
 
                   return {
-                    type: "genfrac",
+                    type: 'genfrac',
                     numer: numer,
                     denom: denom,
                     hasBarLine: hasBarLine,
@@ -11303,7 +11928,7 @@
 
               // Left and right overlap functions
               defineFunction(
-                ["\\llap", "\\rlap"],
+                ['\\llap', '\\rlap'],
                 {
                   numArgs: 1,
                   allowedInText: true,
@@ -11322,28 +11947,31 @@
                 if (_utils2.default.contains(delimiters, delim.value)) {
                   return delim;
                 } else {
-                  throw new _ParseError2.default("Invalid delimiter: '" + delim.value + "' after '" + context.funcName + "'", delim);
+                  throw new _ParseError2.default(
+                    "Invalid delimiter: '" + delim.value + "' after '" + context.funcName + "'",
+                    delim
+                  );
                 }
               };
 
               defineFunction(
                 [
-                  "\\bigl",
-                  "\\Bigl",
-                  "\\biggl",
-                  "\\Biggl",
-                  "\\bigr",
-                  "\\Bigr",
-                  "\\biggr",
-                  "\\Biggr",
-                  "\\bigm",
-                  "\\Bigm",
-                  "\\biggm",
-                  "\\Biggm",
-                  "\\big",
-                  "\\Big",
-                  "\\bigg",
-                  "\\Bigg",
+                  '\\bigl',
+                  '\\Bigl',
+                  '\\biggl',
+                  '\\Biggl',
+                  '\\bigr',
+                  '\\Bigr',
+                  '\\biggr',
+                  '\\Biggr',
+                  '\\bigm',
+                  '\\Bigm',
+                  '\\biggm',
+                  '\\Biggm',
+                  '\\big',
+                  '\\Big',
+                  '\\bigg',
+                  '\\Bigg',
                 ],
                 {
                   numArgs: 1,
@@ -11352,7 +11980,7 @@
                   var delim = checkDelimiter(args[0], context);
 
                   return {
-                    type: "delimsizing",
+                    type: 'delimsizing',
                     size: delimiterSizes[context.funcName].size,
                     mclass: delimiterSizes[context.funcName].mclass,
                     value: delim.value,
@@ -11361,7 +11989,7 @@
               );
 
               defineFunction(
-                ["\\left", "\\right"],
+                ['\\left', '\\right'],
                 {
                   numArgs: 1,
                 },
@@ -11371,25 +11999,25 @@
                   // \left and \right are caught somewhere in Parser.js, which is
                   // why this data doesn't match what is in buildHTML.
                   return {
-                    type: "leftright",
+                    type: 'leftright',
                     value: delim.value,
                   };
                 }
               );
 
               defineFunction(
-                "\\middle",
+                '\\middle',
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var delim = checkDelimiter(args[0], context);
                   if (!context.parser.leftrightDepth) {
-                    throw new _ParseError2.default("\\middle without preceding \\left", delim);
+                    throw new _ParseError2.default('\\middle without preceding \\left', delim);
                   }
 
                   return {
-                    type: "middle",
+                    type: 'middle',
                     value: delim.value,
                   };
                 }
@@ -11397,37 +12025,52 @@
 
               // Sizing functions (handled in Parser.js explicitly, hence no handler)
               defineFunction(
-                ["\\tiny", "\\scriptsize", "\\footnotesize", "\\small", "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge"],
+                [
+                  '\\tiny',
+                  '\\scriptsize',
+                  '\\footnotesize',
+                  '\\small',
+                  '\\normalsize',
+                  '\\large',
+                  '\\Large',
+                  '\\LARGE',
+                  '\\huge',
+                  '\\Huge',
+                ],
                 0,
                 null
               );
 
               // Style changing functions (handled in Parser.js explicitly, hence no
               // handler)
-              defineFunction(["\\displaystyle", "\\textstyle", "\\scriptstyle", "\\scriptscriptstyle"], 0, null);
+              defineFunction(
+                ['\\displaystyle', '\\textstyle', '\\scriptstyle', '\\scriptscriptstyle'],
+                0,
+                null
+              );
 
               // Old font changing functions
-              defineFunction(["\\rm", "\\sf", "\\tt", "\\bf", "\\it"], 0, null);
+              defineFunction(['\\rm', '\\sf', '\\tt', '\\bf', '\\it'], 0, null);
 
               defineFunction(
                 [
                   // styles
-                  "\\mathrm",
-                  "\\mathit",
-                  "\\mathbf",
+                  '\\mathrm',
+                  '\\mathit',
+                  '\\mathbf',
 
                   // families
-                  "\\mathbb",
-                  "\\mathcal",
-                  "\\mathfrak",
-                  "\\mathscr",
-                  "\\mathsf",
-                  "\\mathtt",
+                  '\\mathbb',
+                  '\\mathcal',
+                  '\\mathfrak',
+                  '\\mathscr',
+                  '\\mathsf',
+                  '\\mathtt',
 
                   // aliases
-                  "\\Bbb",
-                  "\\bold",
-                  "\\frak",
+                  '\\Bbb',
+                  '\\bold',
+                  '\\frak',
                 ],
                 {
                   numArgs: 1,
@@ -11440,7 +12083,7 @@
                     func = fontAliases[func];
                   }
                   return {
-                    type: "font",
+                    type: 'font',
                     font: func.slice(1),
                     body: body,
                   };
@@ -11450,26 +12093,26 @@
               // Accents
               defineFunction(
                 [
-                  "\\acute",
-                  "\\grave",
-                  "\\ddot",
-                  "\\tilde",
-                  "\\bar",
-                  "\\breve",
-                  "\\check",
-                  "\\hat",
-                  "\\vec",
-                  "\\dot",
-                  "\\widehat",
-                  "\\widetilde",
-                  "\\overrightarrow",
-                  "\\overleftarrow",
-                  "\\Overrightarrow",
-                  "\\overleftrightarrow",
-                  "\\overgroup",
-                  "\\overlinesegment",
-                  "\\overleftharpoon",
-                  "\\overrightharpoon",
+                  '\\acute',
+                  '\\grave',
+                  '\\ddot',
+                  '\\tilde',
+                  '\\bar',
+                  '\\breve',
+                  '\\check',
+                  '\\hat',
+                  '\\vec',
+                  '\\dot',
+                  '\\widehat',
+                  '\\widetilde',
+                  '\\overrightarrow',
+                  '\\overleftarrow',
+                  '\\Overrightarrow',
+                  '\\overleftrightarrow',
+                  '\\overgroup',
+                  '\\overlinesegment',
+                  '\\overleftharpoon',
+                  '\\overrightharpoon',
                 ],
                 {
                   numArgs: 1,
@@ -11478,14 +12121,27 @@
                   var base = args[0];
 
                   var isStretchy = !_utils2.default.contains(
-                    ["\\acute", "\\grave", "\\ddot", "\\tilde", "\\bar", "\\breve", "\\check", "\\hat", "\\vec", "\\dot"],
+                    [
+                      '\\acute',
+                      '\\grave',
+                      '\\ddot',
+                      '\\tilde',
+                      '\\bar',
+                      '\\breve',
+                      '\\check',
+                      '\\hat',
+                      '\\vec',
+                      '\\dot',
+                    ],
                     context.funcName
                   );
 
-                  var isShifty = !isStretchy || _utils2.default.contains(["\\widehat", "\\widetilde"], context.funcName);
+                  var isShifty =
+                    !isStretchy ||
+                    _utils2.default.contains(['\\widehat', '\\widetilde'], context.funcName);
 
                   return {
-                    type: "accent",
+                    type: 'accent',
                     label: context.funcName,
                     isStretchy: isStretchy,
                     isShifty: isShifty,
@@ -11497,7 +12153,7 @@
 
               // Text-mode accents
               defineFunction(
-                ["\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"', "\\r", "\\H", "\\v"],
+                ["\\'", '\\`', '\\^', '\\~', '\\=', '\\u', '\\.', '\\"', '\\r', '\\H', '\\v'],
                 {
                   numArgs: 1,
                   allowedInText: true,
@@ -11507,7 +12163,7 @@
                   var base = args[0];
 
                   return {
-                    type: "accent",
+                    type: 'accent',
                     label: context.funcName,
                     isStretchy: false,
                     isShifty: true,
@@ -11519,14 +12175,14 @@
 
               // Horizontal stretchy braces
               defineFunction(
-                ["\\overbrace", "\\underbrace"],
+                ['\\overbrace', '\\underbrace'],
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var base = args[0];
                   return {
-                    type: "horizBrace",
+                    type: 'horizBrace',
                     label: context.funcName,
                     isOver: /^\\over/.test(context.funcName),
                     base: base,
@@ -11536,14 +12192,21 @@
 
               // Stretchy accents under the body
               defineFunction(
-                ["\\underleftarrow", "\\underrightarrow", "\\underleftrightarrow", "\\undergroup", "\\underlinesegment", "\\undertilde"],
+                [
+                  '\\underleftarrow',
+                  '\\underrightarrow',
+                  '\\underleftrightarrow',
+                  '\\undergroup',
+                  '\\underlinesegment',
+                  '\\undertilde',
+                ],
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "accentUnder",
+                    type: 'accentUnder',
                     label: context.funcName,
                     value: ordargument(body),
                     body: body,
@@ -11554,26 +12217,26 @@
               // Stretchy arrows with an optional argument
               defineFunction(
                 [
-                  "\\xleftarrow",
-                  "\\xrightarrow",
-                  "\\xLeftarrow",
-                  "\\xRightarrow",
-                  "\\xleftrightarrow",
-                  "\\xLeftrightarrow",
-                  "\\xhookleftarrow",
-                  "\\xhookrightarrow",
-                  "\\xmapsto",
-                  "\\xrightharpoondown",
-                  "\\xrightharpoonup",
-                  "\\xleftharpoondown",
-                  "\\xleftharpoonup",
-                  "\\xrightleftharpoons",
-                  "\\xleftrightharpoons",
-                  "\\xLongequal",
-                  "\\xtwoheadrightarrow",
-                  "\\xtwoheadleftarrow",
-                  "\\xLongequal",
-                  "\\xtofrom",
+                  '\\xleftarrow',
+                  '\\xrightarrow',
+                  '\\xLeftarrow',
+                  '\\xRightarrow',
+                  '\\xleftrightarrow',
+                  '\\xLeftrightarrow',
+                  '\\xhookleftarrow',
+                  '\\xhookrightarrow',
+                  '\\xmapsto',
+                  '\\xrightharpoondown',
+                  '\\xrightharpoonup',
+                  '\\xleftharpoondown',
+                  '\\xleftharpoonup',
+                  '\\xrightleftharpoons',
+                  '\\xleftrightharpoons',
+                  '\\xLongequal',
+                  '\\xtwoheadrightarrow',
+                  '\\xtwoheadleftarrow',
+                  '\\xLongequal',
+                  '\\xtofrom',
                 ],
                 {
                   numArgs: 1,
@@ -11583,7 +12246,7 @@
                   var below = args[0];
                   var body = args[1];
                   return {
-                    type: "xArrow", // x for extensible
+                    type: 'xArrow', // x for extensible
                     label: context.funcName,
                     body: body,
                     below: below,
@@ -11593,14 +12256,14 @@
 
               // enclose
               defineFunction(
-                ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\fbox"],
+                ['\\cancel', '\\bcancel', '\\xcancel', '\\sout', '\\fbox'],
                 {
                   numArgs: 1,
                 },
                 function (context, args) {
                   var body = args[0];
                   return {
-                    type: "enclose",
+                    type: 'enclose',
                     label: context.funcName,
                     body: body,
                   };
@@ -11609,7 +12272,7 @@
 
               // Infix generalized fractions
               defineFunction(
-                ["\\over", "\\choose", "\\atop"],
+                ['\\over', '\\choose', '\\atop'],
                 {
                   numArgs: 0,
                   infix: true,
@@ -11617,20 +12280,20 @@
                 function (context) {
                   var replaceWith = void 0;
                   switch (context.funcName) {
-                    case "\\over":
-                      replaceWith = "\\frac";
+                    case '\\over':
+                      replaceWith = '\\frac';
                       break;
-                    case "\\choose":
-                      replaceWith = "\\binom";
+                    case '\\choose':
+                      replaceWith = '\\binom';
                       break;
-                    case "\\atop":
-                      replaceWith = "\\\\atopfrac";
+                    case '\\atop':
+                      replaceWith = '\\\\atopfrac';
                       break;
                     default:
-                      throw new Error("Unrecognized infix genfrac command");
+                      throw new Error('Unrecognized infix genfrac command');
                   }
                   return {
-                    type: "infix",
+                    type: 'infix',
                     replaceWith: replaceWith,
                     token: context.token,
                   };
@@ -11639,16 +12302,16 @@
 
               // Row breaks for aligned data
               defineFunction(
-                ["\\\\", "\\cr"],
+                ['\\\\', '\\cr'],
                 {
                   numArgs: 0,
                   numOptionalArgs: 1,
-                  argTypes: ["size"],
+                  argTypes: ['size'],
                 },
                 function (context, args) {
                   var size = args[0];
                   return {
-                    type: "cr",
+                    type: 'cr',
                     size: size,
                   };
                 }
@@ -11656,22 +12319,22 @@
 
               // Environment delimiters
               defineFunction(
-                ["\\begin", "\\end"],
+                ['\\begin', '\\end'],
                 {
                   numArgs: 1,
-                  argTypes: ["text"],
+                  argTypes: ['text'],
                 },
                 function (context, args) {
                   var nameGroup = args[0];
-                  if (nameGroup.type !== "ordgroup") {
-                    throw new _ParseError2.default("Invalid environment name", nameGroup);
+                  if (nameGroup.type !== 'ordgroup') {
+                    throw new _ParseError2.default('Invalid environment name', nameGroup);
                   }
-                  var name = "";
+                  var name = '';
                   for (var i = 0; i < nameGroup.value.length; ++i) {
                     name += nameGroup.value[i].value;
                   }
                   return {
-                    type: "environment",
+                    type: 'environment',
                     name: name,
                     nameGroup: nameGroup,
                   };
@@ -11679,9 +12342,9 @@
               );
             },
             {
-              "./ParseError": 29,
-              "./ParseNode": 30,
-              "./utils": 51,
+              './ParseError': 29,
+              './ParseNode': 30,
+              './utils': 51,
             },
           ],
           44: [
@@ -11698,107 +12361,107 @@
 
               //////////////////////////////////////////////////////////////////////
               // basics
-              defineMacro("\\bgroup", "{");
-              defineMacro("\\egroup", "}");
-              defineMacro("\\begingroup", "{");
-              defineMacro("\\endgroup", "}");
+              defineMacro('\\bgroup', '{');
+              defineMacro('\\egroup', '}');
+              defineMacro('\\begingroup', '{');
+              defineMacro('\\endgroup', '}');
 
               // We don't distinguish between math and nonmath kerns.
               // (In TeX, the mu unit works only with \mkern.)
-              defineMacro("\\mkern", "\\kern");
+              defineMacro('\\mkern', '\\kern');
 
               //////////////////////////////////////////////////////////////////////
               // amsmath.sty
 
               // \def\overset#1#2{\binrel@{#2}\binrel@@{\mathop{\kern\z@#2}\limits^{#1}}}
-              defineMacro("\\overset", "\\mathop{#2}\\limits^{#1}");
-              defineMacro("\\underset", "\\mathop{#2}\\limits_{#1}");
+              defineMacro('\\overset', '\\mathop{#2}\\limits^{#1}');
+              defineMacro('\\underset', '\\mathop{#2}\\limits_{#1}');
 
               // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
-              defineMacro("\\boxed", "\\fbox{\\displaystyle{#1}}");
+              defineMacro('\\boxed', '\\fbox{\\displaystyle{#1}}');
 
               //TODO: When implementing \dots, should ideally add the \DOTSB indicator
               //      into the macro, to indicate these are binary operators.
               // \def\iff{\DOTSB\;\Longleftrightarrow\;}
               // \def\implies{\DOTSB\;\Longrightarrow\;}
               // \def\impliedby{\DOTSB\;\Longleftarrow\;}
-              defineMacro("\\iff", "\\;\\Longleftrightarrow\\;");
-              defineMacro("\\implies", "\\;\\Longrightarrow\\;");
-              defineMacro("\\impliedby", "\\;\\Longleftarrow\\;");
+              defineMacro('\\iff', '\\;\\Longleftrightarrow\\;');
+              defineMacro('\\implies', '\\;\\Longrightarrow\\;');
+              defineMacro('\\impliedby', '\\;\\Longleftarrow\\;');
 
               //////////////////////////////////////////////////////////////////////
               // mathtools.sty
 
               //\providecommand\ordinarycolon{:}
-              defineMacro("\\ordinarycolon", ":");
+              defineMacro('\\ordinarycolon', ':');
               //\def\vcentcolon{\mathrel{\mathop\ordinarycolon}}
               //TODO(edemaine): Not yet centered. Fix via \raisebox or #726
-              defineMacro("\\vcentcolon", "\\mathrel{\\mathop\\ordinarycolon}");
+              defineMacro('\\vcentcolon', '\\mathrel{\\mathop\\ordinarycolon}');
               // \providecommand*\dblcolon{\vcentcolon\mathrel{\mkern-.9mu}\vcentcolon}
-              defineMacro("\\dblcolon", "\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon");
+              defineMacro('\\dblcolon', '\\vcentcolon\\mathrel{\\mkern-.9mu}\\vcentcolon');
               // \providecommand*\coloneqq{\vcentcolon\mathrel{\mkern-1.2mu}=}
-              defineMacro("\\coloneqq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}=");
+              defineMacro('\\coloneqq', '\\vcentcolon\\mathrel{\\mkern-1.2mu}=');
               // \providecommand*\Coloneqq{\dblcolon\mathrel{\mkern-1.2mu}=}
-              defineMacro("\\Coloneqq", "\\dblcolon\\mathrel{\\mkern-1.2mu}=");
+              defineMacro('\\Coloneqq', '\\dblcolon\\mathrel{\\mkern-1.2mu}=');
               // \providecommand*\coloneq{\vcentcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-              defineMacro("\\coloneq", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+              defineMacro('\\coloneq', '\\vcentcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}');
               // \providecommand*\Coloneq{\dblcolon\mathrel{\mkern-1.2mu}\mathrel{-}}
-              defineMacro("\\Coloneq", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}");
+              defineMacro('\\Coloneq', '\\dblcolon\\mathrel{\\mkern-1.2mu}\\mathrel{-}');
               // \providecommand*\eqqcolon{=\mathrel{\mkern-1.2mu}\vcentcolon}
-              defineMacro("\\eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+              defineMacro('\\eqqcolon', '=\\mathrel{\\mkern-1.2mu}\\vcentcolon');
               // \providecommand*\Eqqcolon{=\mathrel{\mkern-1.2mu}\dblcolon}
-              defineMacro("\\Eqqcolon", "=\\mathrel{\\mkern-1.2mu}\\dblcolon");
+              defineMacro('\\Eqqcolon', '=\\mathrel{\\mkern-1.2mu}\\dblcolon');
               // \providecommand*\eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\vcentcolon}
-              defineMacro("\\eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon");
+              defineMacro('\\eqcolon', '\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\vcentcolon');
               // \providecommand*\Eqcolon{\mathrel{-}\mathrel{\mkern-1.2mu}\dblcolon}
-              defineMacro("\\Eqcolon", "\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon");
+              defineMacro('\\Eqcolon', '\\mathrel{-}\\mathrel{\\mkern-1.2mu}\\dblcolon');
               // \providecommand*\colonapprox{\vcentcolon\mathrel{\mkern-1.2mu}\approx}
-              defineMacro("\\colonapprox", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx");
+              defineMacro('\\colonapprox', '\\vcentcolon\\mathrel{\\mkern-1.2mu}\\approx');
               // \providecommand*\Colonapprox{\dblcolon\mathrel{\mkern-1.2mu}\approx}
-              defineMacro("\\Colonapprox", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx");
+              defineMacro('\\Colonapprox', '\\dblcolon\\mathrel{\\mkern-1.2mu}\\approx');
               // \providecommand*\colonsim{\vcentcolon\mathrel{\mkern-1.2mu}\sim}
-              defineMacro("\\colonsim", "\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim");
+              defineMacro('\\colonsim', '\\vcentcolon\\mathrel{\\mkern-1.2mu}\\sim');
               // \providecommand*\Colonsim{\dblcolon\mathrel{\mkern-1.2mu}\sim}
-              defineMacro("\\Colonsim", "\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim");
+              defineMacro('\\Colonsim', '\\dblcolon\\mathrel{\\mkern-1.2mu}\\sim');
 
               //////////////////////////////////////////////////////////////////////
               // colonequals.sty
 
               // Alternate names for mathtools's macros:
-              defineMacro("\\ratio", "\\vcentcolon");
-              defineMacro("\\coloncolon", "\\dblcolon");
-              defineMacro("\\colonequals", "\\coloneqq");
-              defineMacro("\\coloncolonequals", "\\Coloneqq");
-              defineMacro("\\equalscolon", "\\eqqcolon");
-              defineMacro("\\equalscoloncolon", "\\Eqqcolon");
-              defineMacro("\\colonminus", "\\coloneq");
-              defineMacro("\\coloncolonminus", "\\Coloneq");
-              defineMacro("\\minuscolon", "\\eqcolon");
-              defineMacro("\\minuscoloncolon", "\\Eqcolon");
+              defineMacro('\\ratio', '\\vcentcolon');
+              defineMacro('\\coloncolon', '\\dblcolon');
+              defineMacro('\\colonequals', '\\coloneqq');
+              defineMacro('\\coloncolonequals', '\\Coloneqq');
+              defineMacro('\\equalscolon', '\\eqqcolon');
+              defineMacro('\\equalscoloncolon', '\\Eqqcolon');
+              defineMacro('\\colonminus', '\\coloneq');
+              defineMacro('\\coloncolonminus', '\\Coloneq');
+              defineMacro('\\minuscolon', '\\eqcolon');
+              defineMacro('\\minuscoloncolon', '\\Eqcolon');
               // \colonapprox name is same in mathtools and colonequals.
-              defineMacro("\\coloncolonapprox", "\\Colonapprox");
+              defineMacro('\\coloncolonapprox', '\\Colonapprox');
               // \colonsim name is same in mathtools and colonequals.
-              defineMacro("\\coloncolonsim", "\\Colonsim");
+              defineMacro('\\coloncolonsim', '\\Colonsim');
 
               // Additional macros, implemented by analogy with mathtools definitions:
-              defineMacro("\\simcolon", "\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon");
-              defineMacro("\\simcoloncolon", "\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon");
-              defineMacro("\\approxcolon", "\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon");
-              defineMacro("\\approxcoloncolon", "\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon");
+              defineMacro('\\simcolon', '\\sim\\mathrel{\\mkern-1.2mu}\\vcentcolon');
+              defineMacro('\\simcoloncolon', '\\sim\\mathrel{\\mkern-1.2mu}\\dblcolon');
+              defineMacro('\\approxcolon', '\\approx\\mathrel{\\mkern-1.2mu}\\vcentcolon');
+              defineMacro('\\approxcoloncolon', '\\approx\\mathrel{\\mkern-1.2mu}\\dblcolon');
             },
             {},
           ],
           45: [
             function (require, module, exports) {
-              var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+              var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
               var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-              var _createClass2 = require("babel-runtime/helpers/createClass");
+              var _createClass2 = require('babel-runtime/helpers/createClass');
 
               var _createClass3 = _interopRequireDefault(_createClass2);
 
-              var _utils = require("./utils");
+              var _utils = require('./utils');
 
               var _utils2 = _interopRequireDefault(_utils);
 
@@ -11827,7 +12490,7 @@
 
                 (0, _createClass3.default)(MathNode, [
                   {
-                    key: "setAttribute",
+                    key: 'setAttribute',
                     value: function setAttribute(name, value) {
                       this.attributes[name] = value;
                     },
@@ -11837,9 +12500,12 @@
                      */
                   },
                   {
-                    key: "toNode",
+                    key: 'toNode',
                     value: function toNode() {
-                      var node = document.createElementNS("http://www.w3.org/1998/Math/MathML", this.type);
+                      var node = document.createElementNS(
+                        'http://www.w3.org/1998/Math/MathML',
+                        this.type
+                      );
 
                       for (var attr in this.attributes) {
                         if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
@@ -11859,26 +12525,26 @@
                      */
                   },
                   {
-                    key: "toMarkup",
+                    key: 'toMarkup',
                     value: function toMarkup() {
-                      var markup = "<" + this.type;
+                      var markup = '<' + this.type;
 
                       // Add the attributes
                       for (var attr in this.attributes) {
                         if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                          markup += " " + attr + '="';
+                          markup += ' ' + attr + '="';
                           markup += _utils2.default.escape(this.attributes[attr]);
                           markup += '"';
                         }
                       }
 
-                      markup += ">";
+                      markup += '>';
 
                       for (var i = 0; i < this.children.length; i++) {
                         markup += this.children[i].toMarkup();
                       }
 
-                      markup += "</" + this.type + ">";
+                      markup += '</' + this.type + '>';
 
                       return markup;
                     },
@@ -11913,7 +12579,7 @@
 
                 (0, _createClass3.default)(TextNode, [
                   {
-                    key: "toNode",
+                    key: 'toNode',
                     value: function toNode() {
                       return document.createTextNode(this.text);
                     },
@@ -11923,7 +12589,7 @@
                      */
                   },
                   {
-                    key: "toMarkup",
+                    key: 'toMarkup',
                     value: function toMarkup() {
                       return _utils2.default.escape(this.text);
                     },
@@ -11938,14 +12604,14 @@
               };
             },
             {
-              "./utils": 51,
-              "babel-runtime/helpers/classCallCheck": 4,
-              "babel-runtime/helpers/createClass": 5,
+              './utils': 51,
+              'babel-runtime/helpers/classCallCheck': 4,
+              'babel-runtime/helpers/createClass': 5,
             },
           ],
           46: [
             function (require, module, exports) {
-              var _Parser = require("./Parser");
+              var _Parser = require('./Parser');
 
               var _Parser2 = _interopRequireDefault(_Parser);
 
@@ -11957,8 +12623,8 @@
                * Parses an expression using a Parser, then returns the parsed result.
                */
               var parseTree = function parseTree(toParse, settings) {
-                if (!(typeof toParse === "string" || toParse instanceof String)) {
-                  throw new TypeError("KaTeX can only parse string typed expression");
+                if (!(typeof toParse === 'string' || toParse instanceof String)) {
+                  throw new TypeError('KaTeX can only parse string typed expression');
                 }
                 var parser = new _Parser2.default(toParse, settings);
 
@@ -11970,7 +12636,7 @@
 
               module.exports = parseTree;
             },
-            { "./Parser": 31 },
+            { './Parser': 31 },
           ],
           47: [
             function (require, module, exports) {
@@ -11980,49 +12646,51 @@
                * and other CSS trickery.
                */
 
-              var buildCommon = require("./buildCommon");
-              var mathMLTree = require("./mathMLTree");
-              var utils = require("./utils");
+              var buildCommon = require('./buildCommon');
+              var mathMLTree = require('./mathMLTree');
+              var utils = require('./utils');
 
               var stretchyCodePoint = {
-                widehat: "^",
-                widetilde: "~",
-                undertilde: "~",
-                overleftarrow: "\u2190",
-                underleftarrow: "\u2190",
-                xleftarrow: "\u2190",
-                overrightarrow: "\u2192",
-                underrightarrow: "\u2192",
-                xrightarrow: "\u2192",
-                underbrace: "\u23B5",
-                overbrace: "\u23DE",
-                overleftrightarrow: "\u2194",
-                underleftrightarrow: "\u2194",
-                xleftrightarrow: "\u2194",
-                Overrightarrow: "\u21D2",
-                xRightarrow: "\u21D2",
-                overleftharpoon: "\u21BC",
-                xleftharpoonup: "\u21BC",
-                overrightharpoon: "\u21C0",
-                xrightharpoonup: "\u21C0",
-                xLeftarrow: "\u21D0",
-                xLeftrightarrow: "\u21D4",
-                xhookleftarrow: "\u21A9",
-                xhookrightarrow: "\u21AA",
-                xmapsto: "\u21A6",
-                xrightharpoondown: "\u21C1",
-                xleftharpoondown: "\u21BD",
-                xrightleftharpoons: "\u21CC",
-                xleftrightharpoons: "\u21CB",
-                xtwoheadleftarrow: "\u219E",
-                xtwoheadrightarrow: "\u21A0",
-                xLongequal: "=",
-                xtofrom: "\u21C4",
+                widehat: '^',
+                widetilde: '~',
+                undertilde: '~',
+                overleftarrow: '\u2190',
+                underleftarrow: '\u2190',
+                xleftarrow: '\u2190',
+                overrightarrow: '\u2192',
+                underrightarrow: '\u2192',
+                xrightarrow: '\u2192',
+                underbrace: '\u23B5',
+                overbrace: '\u23DE',
+                overleftrightarrow: '\u2194',
+                underleftrightarrow: '\u2194',
+                xleftrightarrow: '\u2194',
+                Overrightarrow: '\u21D2',
+                xRightarrow: '\u21D2',
+                overleftharpoon: '\u21BC',
+                xleftharpoonup: '\u21BC',
+                overrightharpoon: '\u21C0',
+                xrightharpoonup: '\u21C0',
+                xLeftarrow: '\u21D0',
+                xLeftrightarrow: '\u21D4',
+                xhookleftarrow: '\u21A9',
+                xhookrightarrow: '\u21AA',
+                xmapsto: '\u21A6',
+                xrightharpoondown: '\u21C1',
+                xleftharpoondown: '\u21BD',
+                xrightleftharpoons: '\u21CC',
+                xleftrightharpoons: '\u21CB',
+                xtwoheadleftarrow: '\u219E',
+                xtwoheadrightarrow: '\u21A0',
+                xLongequal: '=',
+                xtofrom: '\u21C4',
               };
 
               var mathMLnode = function mathMLnode(label) {
-                var node = new mathMLTree.MathNode("mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
-                node.setAttribute("stretchy", "true");
+                var node = new mathMLTree.MathNode('mo', [
+                  new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)]),
+                ]);
+                node.setAttribute('stretchy', 'true');
                 return node;
               };
 
@@ -12036,40 +12704,40 @@
 
               var katexImagesData = {
                 // height, depth, imageName, minWidth
-                overleftarrow: [0.522, 0, "leftarrow", 0.5],
-                underleftarrow: [0.522, 0, "leftarrow", 0.5],
-                xleftarrow: [0.261, 0.261, "leftarrow", 0.783],
-                overrightarrow: [0.522, 0, "rightarrow", 0.5],
-                underrightarrow: [0.522, 0, "rightarrow", 0.5],
-                xrightarrow: [0.261, 0.261, "rightarrow", 0.783],
-                overbrace: [0.548, 0, "overbrace", 1.6],
-                underbrace: [0.548, 0, "underbrace", 1.6],
-                overleftrightarrow: [0.522, 0, "leftrightarrow", 0.5],
-                underleftrightarrow: [0.522, 0, "leftrightarrow", 0.5],
-                xleftrightarrow: [0.261, 0.261, "leftrightarrow", 0.783],
-                Overrightarrow: [0.56, 0, "doublerightarrow", 0.5],
-                xLeftarrow: [0.28, 0.28, "doubleleftarrow", 0.783],
-                xRightarrow: [0.28, 0.28, "doublerightarrow", 0.783],
-                xLeftrightarrow: [0.28, 0.28, "doubleleftrightarrow", 0.955],
-                overleftharpoon: [0.522, 0, "leftharpoon", 0.5],
-                overrightharpoon: [0.522, 0, "rightharpoon", 0.5],
-                xleftharpoonup: [0.261, 0.261, "leftharpoon", 0.783],
-                xrightharpoonup: [0.261, 0.261, "rightharpoon", 0.783],
-                xhookleftarrow: [0.261, 0.261, "hookleftarrow", 0.87],
-                xhookrightarrow: [0.261, 0.261, "hookrightarrow", 0.87],
-                overlinesegment: [0.414, 0, "linesegment", 0.5],
-                underlinesegment: [0.414, 0, "linesegment", 0.5],
-                xmapsto: [0.261, 0.261, "mapsto", 0.783],
-                xrightharpoondown: [0.261, 0.261, "rightharpoondown", 0.783],
-                xleftharpoondown: [0.261, 0.261, "leftharpoondown", 0.783],
-                xrightleftharpoons: [0.358, 0.358, "rightleftharpoons", 0.716],
-                xleftrightharpoons: [0.358, 0.358, "leftrightharpoons", 0.716],
-                overgroup: [0.342, 0, "overgroup", 0.87],
-                undergroup: [0.342, 0, "undergroup", 0.87],
-                xtwoheadleftarrow: [0.167, 0.167, "twoheadleftarrow", 0.86],
-                xtwoheadrightarrow: [0.167, 0.167, "twoheadrightarrow", 0.86],
-                xLongequal: [0.167, 0.167, "longequal", 0.5],
-                xtofrom: [0.264, 0.264, "tofrom", 0.86],
+                overleftarrow: [0.522, 0, 'leftarrow', 0.5],
+                underleftarrow: [0.522, 0, 'leftarrow', 0.5],
+                xleftarrow: [0.261, 0.261, 'leftarrow', 0.783],
+                overrightarrow: [0.522, 0, 'rightarrow', 0.5],
+                underrightarrow: [0.522, 0, 'rightarrow', 0.5],
+                xrightarrow: [0.261, 0.261, 'rightarrow', 0.783],
+                overbrace: [0.548, 0, 'overbrace', 1.6],
+                underbrace: [0.548, 0, 'underbrace', 1.6],
+                overleftrightarrow: [0.522, 0, 'leftrightarrow', 0.5],
+                underleftrightarrow: [0.522, 0, 'leftrightarrow', 0.5],
+                xleftrightarrow: [0.261, 0.261, 'leftrightarrow', 0.783],
+                Overrightarrow: [0.56, 0, 'doublerightarrow', 0.5],
+                xLeftarrow: [0.28, 0.28, 'doubleleftarrow', 0.783],
+                xRightarrow: [0.28, 0.28, 'doublerightarrow', 0.783],
+                xLeftrightarrow: [0.28, 0.28, 'doubleleftrightarrow', 0.955],
+                overleftharpoon: [0.522, 0, 'leftharpoon', 0.5],
+                overrightharpoon: [0.522, 0, 'rightharpoon', 0.5],
+                xleftharpoonup: [0.261, 0.261, 'leftharpoon', 0.783],
+                xrightharpoonup: [0.261, 0.261, 'rightharpoon', 0.783],
+                xhookleftarrow: [0.261, 0.261, 'hookleftarrow', 0.87],
+                xhookrightarrow: [0.261, 0.261, 'hookrightarrow', 0.87],
+                overlinesegment: [0.414, 0, 'linesegment', 0.5],
+                underlinesegment: [0.414, 0, 'linesegment', 0.5],
+                xmapsto: [0.261, 0.261, 'mapsto', 0.783],
+                xrightharpoondown: [0.261, 0.261, 'rightharpoondown', 0.783],
+                xleftharpoondown: [0.261, 0.261, 'leftharpoondown', 0.783],
+                xrightleftharpoons: [0.358, 0.358, 'rightleftharpoons', 0.716],
+                xleftrightharpoons: [0.358, 0.358, 'leftrightharpoons', 0.716],
+                overgroup: [0.342, 0, 'overgroup', 0.87],
+                undergroup: [0.342, 0, 'undergroup', 0.87],
+                xtwoheadleftarrow: [0.167, 0.167, 'twoheadleftarrow', 0.86],
+                xtwoheadrightarrow: [0.167, 0.167, 'twoheadrightarrow', 0.86],
+                xLongequal: [0.167, 0.167, 'longequal', 0.5],
+                xtofrom: [0.264, 0.264, 'tofrom', 0.86],
               };
 
               // Many of the KaTeX SVG images have been adapted from glyphs in KaTeX fonts.
@@ -12134,33 +12802,42 @@
                 cancel: "<line x1='0' y1='100%' x2='100%' y2='0' stroke-width='0.046em'/>",
 
                 // The doubleleftarrow geometry is from glyph U+21D0 in the font KaTeX Main
-                doubleleftarrow: "><svg viewBox='0 0 400000 549'\npreserveAspectRatio='xMinYMin slice'>" + svgPath["doubleleftarrow"] + "</svg>",
+                doubleleftarrow:
+                  "><svg viewBox='0 0 400000 549'\npreserveAspectRatio='xMinYMin slice'>" +
+                  svgPath['doubleleftarrow'] +
+                  '</svg>',
 
                 // doubleleftrightarrow is from glyph U+21D4 in font KaTeX Main
                 doubleleftrightarrow:
                   "><svg width='50.1%' viewBox='0 0 400000 549'\npreserveAspectRatio='xMinYMin slice'>" +
-                  svgPath["doubleleftarrow"] +
+                  svgPath['doubleleftarrow'] +
                   "</svg>\n<svg x='50%' width='50%' viewBox='0 0 400000 549' preserveAspectRatio='xMaxYMin\n slice'>" +
-                  svgPath["doublerightarrow"] +
-                  "</svg>",
+                  svgPath['doublerightarrow'] +
+                  '</svg>',
 
                 // doublerightarrow is from glyph U+21D2 in font KaTeX Main
-                doublerightarrow: "><svg viewBox='0 0 400000 549'\npreserveAspectRatio='xMaxYMin slice'>" + svgPath["doublerightarrow"] + "</svg>",
+                doublerightarrow:
+                  "><svg viewBox='0 0 400000 549'\npreserveAspectRatio='xMaxYMin slice'>" +
+                  svgPath['doublerightarrow'] +
+                  '</svg>',
 
                 // hookleftarrow is from glyph U+21A9 in font KaTeX Main
                 hookleftarrow:
                   "><svg width='50.1%' viewBox='0 0 400000 522'\npreserveAspectRatio='xMinYMin slice'>" +
-                  svgPath["leftarrow"] +
+                  svgPath['leftarrow'] +
                   "</svg>\n<svg x='50%' width='50%' viewBox='0 0 400000 522' preserveAspectRatio='xMaxYMin\n slice'><path d='M399859 241c-764 0 0 0 0 0 40-3.3 68.7\n -15.7 86-37 10-12 15-25.3 15-40 0-22.7-9.8-40.7-29.5-54-19.7-13.3-43.5-21-71.5\n -23-17.3-1.3-26-8-26-20 0-13.3 8.7-20 26-20 38 0 71 11.2 99 33.5 0 0 7 5.6 21\n 16.7 14 11.2 21 33.5 21 66.8s-14 61.2-42 83.5c-28 22.3-61 33.5-99 33.5L0 241z\n M0 281v-40h399859v40z'/></svg>",
 
                 // hookrightarrow is from glyph U+21AA in font KaTeX Main
                 hookrightarrow:
                   "><svg width='50.1%' viewBox='0 0 400000 522'\npreserveAspectRatio='xMinYMin slice'><path d='M400000 281\nH103s-33-11.2-61-33.5S0 197.3 0 164s14.2-61.2 42.5-83.5C70.8 58.2 104 47 142 47\nc16.7 0 25 6.7 25 20 0 12-8.7 18.7-26 20-40 3.3-68.7 15.7-86 37-10 12-15 25.3\n-15 40 0 22.7 9.8 40.7 29.5 54 19.7 13.3 43.5 21 71.5 23h399859zM103 281v-40\nh399897v40z'/></svg><svg x='50%' width='50%' viewBox='0 0 400000 522'\npreserveAspectRatio='xMaxYMin slice'>" +
-                  svgPath["rightarrow"] +
-                  "</svg>",
+                  svgPath['rightarrow'] +
+                  '</svg>',
 
                 // leftarrow is from glyph U+2190 in font KaTeX Main
-                leftarrow: "><svg viewBox='0 0 400000 522' preserveAspectRatio='xMinYMin\n slice'>" + svgPath["leftarrow"] + "</svg>",
+                leftarrow:
+                  "><svg viewBox='0 0 400000 522' preserveAspectRatio='xMinYMin\n slice'>" +
+                  svgPath['leftarrow'] +
+                  '</svg>',
 
                 // leftharpoon is from glyph U+21BD in font KaTeX Main
                 leftharpoon:
@@ -12173,10 +12850,10 @@
                 // leftrightarrow is from glyph U+2194 in font KaTeX Main
                 leftrightarrow:
                   "><svg width='50.1%' viewBox='0 0 400000 522'\npreserveAspectRatio='xMinYMin slice'>" +
-                  svgPath["leftarrow"] +
+                  svgPath['leftarrow'] +
                   "</svg>\n<svg x='50%' width='50%' viewBox='0 0 400000 522' preserveAspectRatio='xMaxYMin\n slice'>" +
-                  svgPath["rightarrow"] +
-                  "</svg>",
+                  svgPath['rightarrow'] +
+                  '</svg>',
 
                 // leftrightharpoons is from glyphs U+21BC/21B1 in font KaTeX Main
                 leftrightharpoons:
@@ -12185,13 +12862,14 @@
                 linesegment:
                   "><svg width='50.1%' viewBox='0 0 400000 414'\npreserveAspectRatio='xMinYMin slice'><path d='M40 187V40H0\nv334h40V227h399960v-40zm0 0V40H0v334h40V227h399960v-40z'/></svg><svg x='50%'\nwidth='50%' viewBox='0 0 400000 414' preserveAspectRatio='xMaxYMin slice'>\n<path d='M0 187v40h399960v147h40V40h-40v147zm0\n 0v40h399960v147h40V40h-40v147z'/></svg>",
 
-                longequal: " viewBox='0 0 100 334' preserveAspectRatio='none'>\n<path d='M0 50h100v40H0zm0 194h100v40H0z'/>",
+                longequal:
+                  " viewBox='0 0 100 334' preserveAspectRatio='none'>\n<path d='M0 50h100v40H0zm0 194h100v40H0z'/>",
 
                 // mapsto is from glyph U+21A6 in font KaTeX Main
                 mapsto:
                   "><svg width='50.1%' viewBox='0 0 400000 522'\npreserveAspectRatio='xMinYMin slice'><path d='M40 241c740\n 0 0 0 0 0v-75c0-40.7-.2-64.3-.5-71-.3-6.7-2.2-11.7-5.5-15-4-4-8.7-6-14-6-5.3 0\n-10 2-14 6C2.7 83.3.8 91.3.5 104 .2 116.7 0 169 0 261c0 114 .7 172.3 2 175 4 8\n 10 12 18 12 5.3 0 10-2 14-6 3.3-3.3 5.2-8.3 5.5-15 .3-6.7.5-30.3.5-71v-75\nh399960zm0 0v40h399960v-40z'/></svg><svg x='50%' width='50%' viewBox='0 0\n 400000 522' preserveAspectRatio='xMaxYMin slice'>" +
-                  svgPath["rightarrow"] +
-                  "</svg>",
+                  svgPath['rightarrow'] +
+                  '</svg>',
 
                 // overbrace is from glyphs U+23A9/23A8/23A7 in font KaTeX_Size4-Regular
                 overbrace:
@@ -12202,7 +12880,10 @@
                   "><svg width='50.1%' viewBox='0 0 400000 342'\npreserveAspectRatio='xMinYMin slice'><path d='M400000 80\nH435C64 80 168.3 229.4 21 260c-5.9 1.2-18 0-18 0-2 0-3-1-3-3v-38C76 61 257 0\n 435 0h399565z'/></svg><svg x='50%' width='50%' viewBox='0 0 400000 342'\npreserveAspectRatio='xMaxYMin slice'><path d='M0 80h399565\nc371 0 266.7 149.4 414 180 5.9 1.2 18 0 18 0 2 0 3-1 3-3v-38\nc-76-158-257-219-435-219H0z'/></svg>",
 
                 // rightarrow is from glyph U+2192 in font KaTeX Main
-                rightarrow: "><svg viewBox='0 0 400000 522' preserveAspectRatio='xMaxYMin\n slice'>" + svgPath["rightarrow"] + "</svg>",
+                rightarrow:
+                  "><svg viewBox='0 0 400000 522' preserveAspectRatio='xMaxYMin\n slice'>" +
+                  svgPath['rightarrow'] +
+                  '</svg>',
 
                 // rightharpoon is from glyph U+21C0 in font KaTeX Main
                 rightharpoon:
@@ -12273,24 +12954,24 @@
                 var label = group.value.label.substr(1);
                 var height = 0;
                 var depth = 0;
-                var imageName = "";
+                var imageName = '';
                 var minWidth = 0;
 
-                if (utils.contains(["widehat", "widetilde", "undertilde"], label)) {
+                if (utils.contains(['widehat', 'widetilde', 'undertilde'], label)) {
                   // There are four SVG images available for each function.
                   // Choose a taller image when there are more characters.
                   var numChars = group.value.value.length;
                   if (numChars > 5) {
                     height = 0.312;
-                    imageName = (label === "widehat" ? "widehat" : "tilde") + "4";
+                    imageName = (label === 'widehat' ? 'widehat' : 'tilde') + '4';
                   } else {
                     var imgIndex = [1, 1, 2, 2, 3, 3][numChars];
-                    if (label === "widehat") {
+                    if (label === 'widehat') {
                       height = [0, 0.24, 0.3, 0.3, 0.36, 0.36][numChars];
-                      imageName = "widehat" + imgIndex;
+                      imageName = 'widehat' + imgIndex;
                     } else {
                       height = [0, 0.26, 0.3, 0.3, 0.34, 0.34][numChars];
-                      imageName = "tilde" + imgIndex;
+                      imageName = 'tilde' + imgIndex;
                     }
                   }
                 } else {
@@ -12305,12 +12986,17 @@
                 span.height = height;
                 span.depth = depth;
                 var totalHeight = height + depth;
-                span.style.height = totalHeight + "em";
+                span.style.height = totalHeight + 'em';
                 if (minWidth > 0) {
-                  span.style.minWidth = minWidth + "em";
+                  span.style.minWidth = minWidth + 'em';
                 }
 
-                span.innerHTML = "<svg width='100%' height='" + totalHeight + "em'" + innerSVG[imageName] + "</svg>";
+                span.innerHTML =
+                  "<svg width='100%' height='" +
+                  totalHeight +
+                  "em'" +
+                  innerSVG[imageName] +
+                  '</svg>';
 
                 return span;
               };
@@ -12320,18 +13006,23 @@
                 var img = void 0;
                 var totalHeight = inner.height + inner.depth + 2 * pad;
 
-                if (label === "fbox") {
-                  img = buildCommon.makeSpan(["stretchy", label], [], options);
+                if (label === 'fbox') {
+                  img = buildCommon.makeSpan(['stretchy', label], [], options);
                   if (options.color) {
                     img.style.borderColor = options.getColor();
                   }
                 } else {
                   img = buildCommon.makeSpan([], [], options);
-                  img.innerHTML = "<svg width='100%' height='" + totalHeight + "em'>" + innerSVG[label] + "</svg>";
+                  img.innerHTML =
+                    "<svg width='100%' height='" +
+                    totalHeight +
+                    "em'>" +
+                    innerSVG[label] +
+                    '</svg>';
                 }
 
                 img.height = totalHeight;
-                img.style.height = totalHeight + "em";
+                img.style.height = totalHeight + 'em';
 
                 return img;
               };
@@ -12343,9 +13034,9 @@
               };
             },
             {
-              "./buildCommon": 34,
-              "./mathMLTree": 45,
-              "./utils": 51,
+              './buildCommon': 34,
+              './mathMLTree': 45,
+              './utils': 51,
             },
           ],
           48: [
@@ -12389,624 +13080,624 @@
               // This helps minify the code, and also spotting typos using jshint.
 
               // modes:
-              var math = "math";
-              var text = "text";
+              var math = 'math';
+              var text = 'text';
 
               // fonts:
-              var main = "main";
-              var ams = "ams";
+              var main = 'main';
+              var ams = 'ams';
 
               // groups:
-              var accent = "accent";
-              var bin = "bin";
-              var close = "close";
-              var inner = "inner";
-              var mathord = "mathord";
-              var op = "op";
-              var open = "open";
-              var punct = "punct";
-              var rel = "rel";
-              var spacing = "spacing";
-              var textord = "textord";
+              var accent = 'accent';
+              var bin = 'bin';
+              var close = 'close';
+              var inner = 'inner';
+              var mathord = 'mathord';
+              var op = 'op';
+              var open = 'open';
+              var punct = 'punct';
+              var rel = 'rel';
+              var spacing = 'spacing';
+              var textord = 'textord';
 
               // Now comes the symbol table
 
               // Relation Symbols
-              defineSymbol(math, main, rel, "\u2261", "\\equiv");
-              defineSymbol(math, main, rel, "\u227A", "\\prec");
-              defineSymbol(math, main, rel, "\u227B", "\\succ");
-              defineSymbol(math, main, rel, "\u223C", "\\sim");
-              defineSymbol(math, main, rel, "\u22A5", "\\perp");
-              defineSymbol(math, main, rel, "\u2AAF", "\\preceq");
-              defineSymbol(math, main, rel, "\u2AB0", "\\succeq");
-              defineSymbol(math, main, rel, "\u2243", "\\simeq");
-              defineSymbol(math, main, rel, "\u2223", "\\mid");
-              defineSymbol(math, main, rel, "\u226A", "\\ll");
-              defineSymbol(math, main, rel, "\u226B", "\\gg");
-              defineSymbol(math, main, rel, "\u224D", "\\asymp");
-              defineSymbol(math, main, rel, "\u2225", "\\parallel");
-              defineSymbol(math, main, rel, "\u22C8", "\\bowtie");
-              defineSymbol(math, main, rel, "\u2323", "\\smile");
-              defineSymbol(math, main, rel, "\u2291", "\\sqsubseteq");
-              defineSymbol(math, main, rel, "\u2292", "\\sqsupseteq");
-              defineSymbol(math, main, rel, "\u2250", "\\doteq");
-              defineSymbol(math, main, rel, "\u2322", "\\frown");
-              defineSymbol(math, main, rel, "\u220B", "\\ni");
-              defineSymbol(math, main, rel, "\u221D", "\\propto");
-              defineSymbol(math, main, rel, "\u22A2", "\\vdash");
-              defineSymbol(math, main, rel, "\u22A3", "\\dashv");
-              defineSymbol(math, main, rel, "\u220B", "\\owns");
+              defineSymbol(math, main, rel, '\u2261', '\\equiv');
+              defineSymbol(math, main, rel, '\u227A', '\\prec');
+              defineSymbol(math, main, rel, '\u227B', '\\succ');
+              defineSymbol(math, main, rel, '\u223C', '\\sim');
+              defineSymbol(math, main, rel, '\u22A5', '\\perp');
+              defineSymbol(math, main, rel, '\u2AAF', '\\preceq');
+              defineSymbol(math, main, rel, '\u2AB0', '\\succeq');
+              defineSymbol(math, main, rel, '\u2243', '\\simeq');
+              defineSymbol(math, main, rel, '\u2223', '\\mid');
+              defineSymbol(math, main, rel, '\u226A', '\\ll');
+              defineSymbol(math, main, rel, '\u226B', '\\gg');
+              defineSymbol(math, main, rel, '\u224D', '\\asymp');
+              defineSymbol(math, main, rel, '\u2225', '\\parallel');
+              defineSymbol(math, main, rel, '\u22C8', '\\bowtie');
+              defineSymbol(math, main, rel, '\u2323', '\\smile');
+              defineSymbol(math, main, rel, '\u2291', '\\sqsubseteq');
+              defineSymbol(math, main, rel, '\u2292', '\\sqsupseteq');
+              defineSymbol(math, main, rel, '\u2250', '\\doteq');
+              defineSymbol(math, main, rel, '\u2322', '\\frown');
+              defineSymbol(math, main, rel, '\u220B', '\\ni');
+              defineSymbol(math, main, rel, '\u221D', '\\propto');
+              defineSymbol(math, main, rel, '\u22A2', '\\vdash');
+              defineSymbol(math, main, rel, '\u22A3', '\\dashv');
+              defineSymbol(math, main, rel, '\u220B', '\\owns');
 
               // Punctuation
-              defineSymbol(math, main, punct, ".", "\\ldotp");
-              defineSymbol(math, main, punct, "\u22C5", "\\cdotp");
+              defineSymbol(math, main, punct, '.', '\\ldotp');
+              defineSymbol(math, main, punct, '\u22C5', '\\cdotp');
 
               // Misc Symbols
-              defineSymbol(math, main, textord, "#", "\\#");
-              defineSymbol(text, main, textord, "#", "\\#");
-              defineSymbol(math, main, textord, "&", "\\&");
-              defineSymbol(text, main, textord, "&", "\\&");
-              defineSymbol(math, main, textord, "\u2135", "\\aleph");
-              defineSymbol(math, main, textord, "\u2200", "\\forall");
-              defineSymbol(math, main, textord, "\u210F", "\\hbar");
-              defineSymbol(math, main, textord, "\u2203", "\\exists");
-              defineSymbol(math, main, textord, "\u2207", "\\nabla");
-              defineSymbol(math, main, textord, "\u266D", "\\flat");
-              defineSymbol(math, main, textord, "\u2113", "\\ell");
-              defineSymbol(math, main, textord, "\u266E", "\\natural");
-              defineSymbol(math, main, textord, "\u2663", "\\clubsuit");
-              defineSymbol(math, main, textord, "\u2118", "\\wp");
-              defineSymbol(math, main, textord, "\u266F", "\\sharp");
-              defineSymbol(math, main, textord, "\u2662", "\\diamondsuit");
-              defineSymbol(math, main, textord, "\u211C", "\\Re");
-              defineSymbol(math, main, textord, "\u2661", "\\heartsuit");
-              defineSymbol(math, main, textord, "\u2111", "\\Im");
-              defineSymbol(math, main, textord, "\u2660", "\\spadesuit");
+              defineSymbol(math, main, textord, '#', '\\#');
+              defineSymbol(text, main, textord, '#', '\\#');
+              defineSymbol(math, main, textord, '&', '\\&');
+              defineSymbol(text, main, textord, '&', '\\&');
+              defineSymbol(math, main, textord, '\u2135', '\\aleph');
+              defineSymbol(math, main, textord, '\u2200', '\\forall');
+              defineSymbol(math, main, textord, '\u210F', '\\hbar');
+              defineSymbol(math, main, textord, '\u2203', '\\exists');
+              defineSymbol(math, main, textord, '\u2207', '\\nabla');
+              defineSymbol(math, main, textord, '\u266D', '\\flat');
+              defineSymbol(math, main, textord, '\u2113', '\\ell');
+              defineSymbol(math, main, textord, '\u266E', '\\natural');
+              defineSymbol(math, main, textord, '\u2663', '\\clubsuit');
+              defineSymbol(math, main, textord, '\u2118', '\\wp');
+              defineSymbol(math, main, textord, '\u266F', '\\sharp');
+              defineSymbol(math, main, textord, '\u2662', '\\diamondsuit');
+              defineSymbol(math, main, textord, '\u211C', '\\Re');
+              defineSymbol(math, main, textord, '\u2661', '\\heartsuit');
+              defineSymbol(math, main, textord, '\u2111', '\\Im');
+              defineSymbol(math, main, textord, '\u2660', '\\spadesuit');
 
               // Math and Text
-              defineSymbol(math, main, textord, "\u2020", "\\dag");
-              defineSymbol(text, main, textord, "\u2020", "\\dag");
-              defineSymbol(text, main, textord, "\u2020", "\\textdagger");
-              defineSymbol(math, main, textord, "\u2021", "\\ddag");
-              defineSymbol(text, main, textord, "\u2021", "\\ddag");
-              defineSymbol(text, main, textord, "\u2020", "\\textdaggerdbl");
+              defineSymbol(math, main, textord, '\u2020', '\\dag');
+              defineSymbol(text, main, textord, '\u2020', '\\dag');
+              defineSymbol(text, main, textord, '\u2020', '\\textdagger');
+              defineSymbol(math, main, textord, '\u2021', '\\ddag');
+              defineSymbol(text, main, textord, '\u2021', '\\ddag');
+              defineSymbol(text, main, textord, '\u2020', '\\textdaggerdbl');
 
               // Large Delimiters
-              defineSymbol(math, main, close, "\u23B1", "\\rmoustache");
-              defineSymbol(math, main, open, "\u23B0", "\\lmoustache");
-              defineSymbol(math, main, close, "\u27EF", "\\rgroup");
-              defineSymbol(math, main, open, "\u27EE", "\\lgroup");
+              defineSymbol(math, main, close, '\u23B1', '\\rmoustache');
+              defineSymbol(math, main, open, '\u23B0', '\\lmoustache');
+              defineSymbol(math, main, close, '\u27EF', '\\rgroup');
+              defineSymbol(math, main, open, '\u27EE', '\\lgroup');
 
               // Binary Operators
-              defineSymbol(math, main, bin, "\u2213", "\\mp");
-              defineSymbol(math, main, bin, "\u2296", "\\ominus");
-              defineSymbol(math, main, bin, "\u228E", "\\uplus");
-              defineSymbol(math, main, bin, "\u2293", "\\sqcap");
-              defineSymbol(math, main, bin, "\u2217", "\\ast");
-              defineSymbol(math, main, bin, "\u2294", "\\sqcup");
-              defineSymbol(math, main, bin, "\u25EF", "\\bigcirc");
-              defineSymbol(math, main, bin, "\u2219", "\\bullet");
-              defineSymbol(math, main, bin, "\u2021", "\\ddagger");
-              defineSymbol(math, main, bin, "\u2240", "\\wr");
-              defineSymbol(math, main, bin, "\u2A3F", "\\amalg");
+              defineSymbol(math, main, bin, '\u2213', '\\mp');
+              defineSymbol(math, main, bin, '\u2296', '\\ominus');
+              defineSymbol(math, main, bin, '\u228E', '\\uplus');
+              defineSymbol(math, main, bin, '\u2293', '\\sqcap');
+              defineSymbol(math, main, bin, '\u2217', '\\ast');
+              defineSymbol(math, main, bin, '\u2294', '\\sqcup');
+              defineSymbol(math, main, bin, '\u25EF', '\\bigcirc');
+              defineSymbol(math, main, bin, '\u2219', '\\bullet');
+              defineSymbol(math, main, bin, '\u2021', '\\ddagger');
+              defineSymbol(math, main, bin, '\u2240', '\\wr');
+              defineSymbol(math, main, bin, '\u2A3F', '\\amalg');
 
               // Arrow Symbols
-              defineSymbol(math, main, rel, "\u27F5", "\\longleftarrow");
-              defineSymbol(math, main, rel, "\u21D0", "\\Leftarrow");
-              defineSymbol(math, main, rel, "\u27F8", "\\Longleftarrow");
-              defineSymbol(math, main, rel, "\u27F6", "\\longrightarrow");
-              defineSymbol(math, main, rel, "\u21D2", "\\Rightarrow");
-              defineSymbol(math, main, rel, "\u27F9", "\\Longrightarrow");
-              defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow");
-              defineSymbol(math, main, rel, "\u27F7", "\\longleftrightarrow");
-              defineSymbol(math, main, rel, "\u21D4", "\\Leftrightarrow");
-              defineSymbol(math, main, rel, "\u27FA", "\\Longleftrightarrow");
-              defineSymbol(math, main, rel, "\u21A6", "\\mapsto");
-              defineSymbol(math, main, rel, "\u27FC", "\\longmapsto");
-              defineSymbol(math, main, rel, "\u2197", "\\nearrow");
-              defineSymbol(math, main, rel, "\u21A9", "\\hookleftarrow");
-              defineSymbol(math, main, rel, "\u21AA", "\\hookrightarrow");
-              defineSymbol(math, main, rel, "\u2198", "\\searrow");
-              defineSymbol(math, main, rel, "\u21BC", "\\leftharpoonup");
-              defineSymbol(math, main, rel, "\u21C0", "\\rightharpoonup");
-              defineSymbol(math, main, rel, "\u2199", "\\swarrow");
-              defineSymbol(math, main, rel, "\u21BD", "\\leftharpoondown");
-              defineSymbol(math, main, rel, "\u21C1", "\\rightharpoondown");
-              defineSymbol(math, main, rel, "\u2196", "\\nwarrow");
-              defineSymbol(math, main, rel, "\u21CC", "\\rightleftharpoons");
+              defineSymbol(math, main, rel, '\u27F5', '\\longleftarrow');
+              defineSymbol(math, main, rel, '\u21D0', '\\Leftarrow');
+              defineSymbol(math, main, rel, '\u27F8', '\\Longleftarrow');
+              defineSymbol(math, main, rel, '\u27F6', '\\longrightarrow');
+              defineSymbol(math, main, rel, '\u21D2', '\\Rightarrow');
+              defineSymbol(math, main, rel, '\u27F9', '\\Longrightarrow');
+              defineSymbol(math, main, rel, '\u2194', '\\leftrightarrow');
+              defineSymbol(math, main, rel, '\u27F7', '\\longleftrightarrow');
+              defineSymbol(math, main, rel, '\u21D4', '\\Leftrightarrow');
+              defineSymbol(math, main, rel, '\u27FA', '\\Longleftrightarrow');
+              defineSymbol(math, main, rel, '\u21A6', '\\mapsto');
+              defineSymbol(math, main, rel, '\u27FC', '\\longmapsto');
+              defineSymbol(math, main, rel, '\u2197', '\\nearrow');
+              defineSymbol(math, main, rel, '\u21A9', '\\hookleftarrow');
+              defineSymbol(math, main, rel, '\u21AA', '\\hookrightarrow');
+              defineSymbol(math, main, rel, '\u2198', '\\searrow');
+              defineSymbol(math, main, rel, '\u21BC', '\\leftharpoonup');
+              defineSymbol(math, main, rel, '\u21C0', '\\rightharpoonup');
+              defineSymbol(math, main, rel, '\u2199', '\\swarrow');
+              defineSymbol(math, main, rel, '\u21BD', '\\leftharpoondown');
+              defineSymbol(math, main, rel, '\u21C1', '\\rightharpoondown');
+              defineSymbol(math, main, rel, '\u2196', '\\nwarrow');
+              defineSymbol(math, main, rel, '\u21CC', '\\rightleftharpoons');
 
               // AMS Negated Binary Relations
-              defineSymbol(math, ams, rel, "\u226E", "\\nless");
-              defineSymbol(math, ams, rel, "\uE010", "\\nleqslant");
-              defineSymbol(math, ams, rel, "\uE011", "\\nleqq");
-              defineSymbol(math, ams, rel, "\u2A87", "\\lneq");
-              defineSymbol(math, ams, rel, "\u2268", "\\lneqq");
-              defineSymbol(math, ams, rel, "\uE00C", "\\lvertneqq");
-              defineSymbol(math, ams, rel, "\u22E6", "\\lnsim");
-              defineSymbol(math, ams, rel, "\u2A89", "\\lnapprox");
-              defineSymbol(math, ams, rel, "\u2280", "\\nprec");
-              defineSymbol(math, ams, rel, "\u22E0", "\\npreceq");
-              defineSymbol(math, ams, rel, "\u22E8", "\\precnsim");
-              defineSymbol(math, ams, rel, "\u2AB9", "\\precnapprox");
-              defineSymbol(math, ams, rel, "\u2241", "\\nsim");
-              defineSymbol(math, ams, rel, "\uE006", "\\nshortmid");
-              defineSymbol(math, ams, rel, "\u2224", "\\nmid");
-              defineSymbol(math, ams, rel, "\u22AC", "\\nvdash");
-              defineSymbol(math, ams, rel, "\u22AD", "\\nvDash");
-              defineSymbol(math, ams, rel, "\u22EA", "\\ntriangleleft");
-              defineSymbol(math, ams, rel, "\u22EC", "\\ntrianglelefteq");
-              defineSymbol(math, ams, rel, "\u228A", "\\subsetneq");
-              defineSymbol(math, ams, rel, "\uE01A", "\\varsubsetneq");
-              defineSymbol(math, ams, rel, "\u2ACB", "\\subsetneqq");
-              defineSymbol(math, ams, rel, "\uE017", "\\varsubsetneqq");
-              defineSymbol(math, ams, rel, "\u226F", "\\ngtr");
-              defineSymbol(math, ams, rel, "\uE00F", "\\ngeqslant");
-              defineSymbol(math, ams, rel, "\uE00E", "\\ngeqq");
-              defineSymbol(math, ams, rel, "\u2A88", "\\gneq");
-              defineSymbol(math, ams, rel, "\u2269", "\\gneqq");
-              defineSymbol(math, ams, rel, "\uE00D", "\\gvertneqq");
-              defineSymbol(math, ams, rel, "\u22E7", "\\gnsim");
-              defineSymbol(math, ams, rel, "\u2A8A", "\\gnapprox");
-              defineSymbol(math, ams, rel, "\u2281", "\\nsucc");
-              defineSymbol(math, ams, rel, "\u22E1", "\\nsucceq");
-              defineSymbol(math, ams, rel, "\u22E9", "\\succnsim");
-              defineSymbol(math, ams, rel, "\u2ABA", "\\succnapprox");
-              defineSymbol(math, ams, rel, "\u2246", "\\ncong");
-              defineSymbol(math, ams, rel, "\uE007", "\\nshortparallel");
-              defineSymbol(math, ams, rel, "\u2226", "\\nparallel");
-              defineSymbol(math, ams, rel, "\u22AF", "\\nVDash");
-              defineSymbol(math, ams, rel, "\u22EB", "\\ntriangleright");
-              defineSymbol(math, ams, rel, "\u22ED", "\\ntrianglerighteq");
-              defineSymbol(math, ams, rel, "\uE018", "\\nsupseteqq");
-              defineSymbol(math, ams, rel, "\u228B", "\\supsetneq");
-              defineSymbol(math, ams, rel, "\uE01B", "\\varsupsetneq");
-              defineSymbol(math, ams, rel, "\u2ACC", "\\supsetneqq");
-              defineSymbol(math, ams, rel, "\uE019", "\\varsupsetneqq");
-              defineSymbol(math, ams, rel, "\u22AE", "\\nVdash");
-              defineSymbol(math, ams, rel, "\u2AB5", "\\precneqq");
-              defineSymbol(math, ams, rel, "\u2AB6", "\\succneqq");
-              defineSymbol(math, ams, rel, "\uE016", "\\nsubseteqq");
-              defineSymbol(math, ams, bin, "\u22B4", "\\unlhd");
-              defineSymbol(math, ams, bin, "\u22B5", "\\unrhd");
+              defineSymbol(math, ams, rel, '\u226E', '\\nless');
+              defineSymbol(math, ams, rel, '\uE010', '\\nleqslant');
+              defineSymbol(math, ams, rel, '\uE011', '\\nleqq');
+              defineSymbol(math, ams, rel, '\u2A87', '\\lneq');
+              defineSymbol(math, ams, rel, '\u2268', '\\lneqq');
+              defineSymbol(math, ams, rel, '\uE00C', '\\lvertneqq');
+              defineSymbol(math, ams, rel, '\u22E6', '\\lnsim');
+              defineSymbol(math, ams, rel, '\u2A89', '\\lnapprox');
+              defineSymbol(math, ams, rel, '\u2280', '\\nprec');
+              defineSymbol(math, ams, rel, '\u22E0', '\\npreceq');
+              defineSymbol(math, ams, rel, '\u22E8', '\\precnsim');
+              defineSymbol(math, ams, rel, '\u2AB9', '\\precnapprox');
+              defineSymbol(math, ams, rel, '\u2241', '\\nsim');
+              defineSymbol(math, ams, rel, '\uE006', '\\nshortmid');
+              defineSymbol(math, ams, rel, '\u2224', '\\nmid');
+              defineSymbol(math, ams, rel, '\u22AC', '\\nvdash');
+              defineSymbol(math, ams, rel, '\u22AD', '\\nvDash');
+              defineSymbol(math, ams, rel, '\u22EA', '\\ntriangleleft');
+              defineSymbol(math, ams, rel, '\u22EC', '\\ntrianglelefteq');
+              defineSymbol(math, ams, rel, '\u228A', '\\subsetneq');
+              defineSymbol(math, ams, rel, '\uE01A', '\\varsubsetneq');
+              defineSymbol(math, ams, rel, '\u2ACB', '\\subsetneqq');
+              defineSymbol(math, ams, rel, '\uE017', '\\varsubsetneqq');
+              defineSymbol(math, ams, rel, '\u226F', '\\ngtr');
+              defineSymbol(math, ams, rel, '\uE00F', '\\ngeqslant');
+              defineSymbol(math, ams, rel, '\uE00E', '\\ngeqq');
+              defineSymbol(math, ams, rel, '\u2A88', '\\gneq');
+              defineSymbol(math, ams, rel, '\u2269', '\\gneqq');
+              defineSymbol(math, ams, rel, '\uE00D', '\\gvertneqq');
+              defineSymbol(math, ams, rel, '\u22E7', '\\gnsim');
+              defineSymbol(math, ams, rel, '\u2A8A', '\\gnapprox');
+              defineSymbol(math, ams, rel, '\u2281', '\\nsucc');
+              defineSymbol(math, ams, rel, '\u22E1', '\\nsucceq');
+              defineSymbol(math, ams, rel, '\u22E9', '\\succnsim');
+              defineSymbol(math, ams, rel, '\u2ABA', '\\succnapprox');
+              defineSymbol(math, ams, rel, '\u2246', '\\ncong');
+              defineSymbol(math, ams, rel, '\uE007', '\\nshortparallel');
+              defineSymbol(math, ams, rel, '\u2226', '\\nparallel');
+              defineSymbol(math, ams, rel, '\u22AF', '\\nVDash');
+              defineSymbol(math, ams, rel, '\u22EB', '\\ntriangleright');
+              defineSymbol(math, ams, rel, '\u22ED', '\\ntrianglerighteq');
+              defineSymbol(math, ams, rel, '\uE018', '\\nsupseteqq');
+              defineSymbol(math, ams, rel, '\u228B', '\\supsetneq');
+              defineSymbol(math, ams, rel, '\uE01B', '\\varsupsetneq');
+              defineSymbol(math, ams, rel, '\u2ACC', '\\supsetneqq');
+              defineSymbol(math, ams, rel, '\uE019', '\\varsupsetneqq');
+              defineSymbol(math, ams, rel, '\u22AE', '\\nVdash');
+              defineSymbol(math, ams, rel, '\u2AB5', '\\precneqq');
+              defineSymbol(math, ams, rel, '\u2AB6', '\\succneqq');
+              defineSymbol(math, ams, rel, '\uE016', '\\nsubseteqq');
+              defineSymbol(math, ams, bin, '\u22B4', '\\unlhd');
+              defineSymbol(math, ams, bin, '\u22B5', '\\unrhd');
 
               // AMS Negated Arrows
-              defineSymbol(math, ams, rel, "\u219A", "\\nleftarrow");
-              defineSymbol(math, ams, rel, "\u219B", "\\nrightarrow");
-              defineSymbol(math, ams, rel, "\u21CD", "\\nLeftarrow");
-              defineSymbol(math, ams, rel, "\u21CF", "\\nRightarrow");
-              defineSymbol(math, ams, rel, "\u21AE", "\\nleftrightarrow");
-              defineSymbol(math, ams, rel, "\u21CE", "\\nLeftrightarrow");
+              defineSymbol(math, ams, rel, '\u219A', '\\nleftarrow');
+              defineSymbol(math, ams, rel, '\u219B', '\\nrightarrow');
+              defineSymbol(math, ams, rel, '\u21CD', '\\nLeftarrow');
+              defineSymbol(math, ams, rel, '\u21CF', '\\nRightarrow');
+              defineSymbol(math, ams, rel, '\u21AE', '\\nleftrightarrow');
+              defineSymbol(math, ams, rel, '\u21CE', '\\nLeftrightarrow');
 
               // AMS Misc
-              defineSymbol(math, ams, rel, "\u25B3", "\\vartriangle");
-              defineSymbol(math, ams, textord, "\u210F", "\\hslash");
-              defineSymbol(math, ams, textord, "\u25BD", "\\triangledown");
-              defineSymbol(math, ams, textord, "\u25CA", "\\lozenge");
-              defineSymbol(math, ams, textord, "\u24C8", "\\circledS");
-              defineSymbol(math, ams, textord, "\xAE", "\\circledR");
-              defineSymbol(text, ams, textord, "\xAE", "\\circledR");
-              defineSymbol(math, ams, textord, "\u2221", "\\measuredangle");
-              defineSymbol(math, ams, textord, "\u2204", "\\nexists");
-              defineSymbol(math, ams, textord, "\u2127", "\\mho");
-              defineSymbol(math, ams, textord, "\u2132", "\\Finv");
-              defineSymbol(math, ams, textord, "\u2141", "\\Game");
-              defineSymbol(math, ams, textord, "k", "\\Bbbk");
-              defineSymbol(math, ams, textord, "\u2035", "\\backprime");
-              defineSymbol(math, ams, textord, "\u25B2", "\\blacktriangle");
-              defineSymbol(math, ams, textord, "\u25BC", "\\blacktriangledown");
-              defineSymbol(math, ams, textord, "\u25A0", "\\blacksquare");
-              defineSymbol(math, ams, textord, "\u29EB", "\\blacklozenge");
-              defineSymbol(math, ams, textord, "\u2605", "\\bigstar");
-              defineSymbol(math, ams, textord, "\u2222", "\\sphericalangle");
-              defineSymbol(math, ams, textord, "\u2201", "\\complement");
-              defineSymbol(math, ams, textord, "\xF0", "\\eth");
-              defineSymbol(math, ams, textord, "\u2571", "\\diagup");
-              defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
-              defineSymbol(math, ams, textord, "\u25A1", "\\square");
-              defineSymbol(math, ams, textord, "\u25A1", "\\Box");
-              defineSymbol(math, ams, textord, "\u25CA", "\\Diamond");
-              defineSymbol(math, ams, textord, "\xA5", "\\yen");
-              defineSymbol(math, ams, textord, "\u2713", "\\checkmark");
-              defineSymbol(text, ams, textord, "\u2713", "\\checkmark");
+              defineSymbol(math, ams, rel, '\u25B3', '\\vartriangle');
+              defineSymbol(math, ams, textord, '\u210F', '\\hslash');
+              defineSymbol(math, ams, textord, '\u25BD', '\\triangledown');
+              defineSymbol(math, ams, textord, '\u25CA', '\\lozenge');
+              defineSymbol(math, ams, textord, '\u24C8', '\\circledS');
+              defineSymbol(math, ams, textord, '\xAE', '\\circledR');
+              defineSymbol(text, ams, textord, '\xAE', '\\circledR');
+              defineSymbol(math, ams, textord, '\u2221', '\\measuredangle');
+              defineSymbol(math, ams, textord, '\u2204', '\\nexists');
+              defineSymbol(math, ams, textord, '\u2127', '\\mho');
+              defineSymbol(math, ams, textord, '\u2132', '\\Finv');
+              defineSymbol(math, ams, textord, '\u2141', '\\Game');
+              defineSymbol(math, ams, textord, 'k', '\\Bbbk');
+              defineSymbol(math, ams, textord, '\u2035', '\\backprime');
+              defineSymbol(math, ams, textord, '\u25B2', '\\blacktriangle');
+              defineSymbol(math, ams, textord, '\u25BC', '\\blacktriangledown');
+              defineSymbol(math, ams, textord, '\u25A0', '\\blacksquare');
+              defineSymbol(math, ams, textord, '\u29EB', '\\blacklozenge');
+              defineSymbol(math, ams, textord, '\u2605', '\\bigstar');
+              defineSymbol(math, ams, textord, '\u2222', '\\sphericalangle');
+              defineSymbol(math, ams, textord, '\u2201', '\\complement');
+              defineSymbol(math, ams, textord, '\xF0', '\\eth');
+              defineSymbol(math, ams, textord, '\u2571', '\\diagup');
+              defineSymbol(math, ams, textord, '\u2572', '\\diagdown');
+              defineSymbol(math, ams, textord, '\u25A1', '\\square');
+              defineSymbol(math, ams, textord, '\u25A1', '\\Box');
+              defineSymbol(math, ams, textord, '\u25CA', '\\Diamond');
+              defineSymbol(math, ams, textord, '\xA5', '\\yen');
+              defineSymbol(math, ams, textord, '\u2713', '\\checkmark');
+              defineSymbol(text, ams, textord, '\u2713', '\\checkmark');
 
               // AMS Hebrew
-              defineSymbol(math, ams, textord, "\u2136", "\\beth");
-              defineSymbol(math, ams, textord, "\u2138", "\\daleth");
-              defineSymbol(math, ams, textord, "\u2137", "\\gimel");
+              defineSymbol(math, ams, textord, '\u2136', '\\beth');
+              defineSymbol(math, ams, textord, '\u2138', '\\daleth');
+              defineSymbol(math, ams, textord, '\u2137', '\\gimel');
 
               // AMS Greek
-              defineSymbol(math, ams, textord, "\u03DD", "\\digamma");
-              defineSymbol(math, ams, textord, "\u03F0", "\\varkappa");
+              defineSymbol(math, ams, textord, '\u03DD', '\\digamma');
+              defineSymbol(math, ams, textord, '\u03F0', '\\varkappa');
 
               // AMS Delimiters
-              defineSymbol(math, ams, open, "\u250C", "\\ulcorner");
-              defineSymbol(math, ams, close, "\u2510", "\\urcorner");
-              defineSymbol(math, ams, open, "\u2514", "\\llcorner");
-              defineSymbol(math, ams, close, "\u2518", "\\lrcorner");
+              defineSymbol(math, ams, open, '\u250C', '\\ulcorner');
+              defineSymbol(math, ams, close, '\u2510', '\\urcorner');
+              defineSymbol(math, ams, open, '\u2514', '\\llcorner');
+              defineSymbol(math, ams, close, '\u2518', '\\lrcorner');
 
               // AMS Binary Relations
-              defineSymbol(math, ams, rel, "\u2266", "\\leqq");
-              defineSymbol(math, ams, rel, "\u2A7D", "\\leqslant");
-              defineSymbol(math, ams, rel, "\u2A95", "\\eqslantless");
-              defineSymbol(math, ams, rel, "\u2272", "\\lesssim");
-              defineSymbol(math, ams, rel, "\u2A85", "\\lessapprox");
-              defineSymbol(math, ams, rel, "\u224A", "\\approxeq");
-              defineSymbol(math, ams, bin, "\u22D6", "\\lessdot");
-              defineSymbol(math, ams, rel, "\u22D8", "\\lll");
-              defineSymbol(math, ams, rel, "\u2276", "\\lessgtr");
-              defineSymbol(math, ams, rel, "\u22DA", "\\lesseqgtr");
-              defineSymbol(math, ams, rel, "\u2A8B", "\\lesseqqgtr");
-              defineSymbol(math, ams, rel, "\u2251", "\\doteqdot");
-              defineSymbol(math, ams, rel, "\u2253", "\\risingdotseq");
-              defineSymbol(math, ams, rel, "\u2252", "\\fallingdotseq");
-              defineSymbol(math, ams, rel, "\u223D", "\\backsim");
-              defineSymbol(math, ams, rel, "\u22CD", "\\backsimeq");
-              defineSymbol(math, ams, rel, "\u2AC5", "\\subseteqq");
-              defineSymbol(math, ams, rel, "\u22D0", "\\Subset");
-              defineSymbol(math, ams, rel, "\u228F", "\\sqsubset");
-              defineSymbol(math, ams, rel, "\u227C", "\\preccurlyeq");
-              defineSymbol(math, ams, rel, "\u22DE", "\\curlyeqprec");
-              defineSymbol(math, ams, rel, "\u227E", "\\precsim");
-              defineSymbol(math, ams, rel, "\u2AB7", "\\precapprox");
-              defineSymbol(math, ams, rel, "\u22B2", "\\vartriangleleft");
-              defineSymbol(math, ams, rel, "\u22B4", "\\trianglelefteq");
-              defineSymbol(math, ams, rel, "\u22A8", "\\vDash");
-              defineSymbol(math, ams, rel, "\u22AA", "\\Vvdash");
-              defineSymbol(math, ams, rel, "\u2323", "\\smallsmile");
-              defineSymbol(math, ams, rel, "\u2322", "\\smallfrown");
-              defineSymbol(math, ams, rel, "\u224F", "\\bumpeq");
-              defineSymbol(math, ams, rel, "\u224E", "\\Bumpeq");
-              defineSymbol(math, ams, rel, "\u2267", "\\geqq");
-              defineSymbol(math, ams, rel, "\u2A7E", "\\geqslant");
-              defineSymbol(math, ams, rel, "\u2A96", "\\eqslantgtr");
-              defineSymbol(math, ams, rel, "\u2273", "\\gtrsim");
-              defineSymbol(math, ams, rel, "\u2A86", "\\gtrapprox");
-              defineSymbol(math, ams, bin, "\u22D7", "\\gtrdot");
-              defineSymbol(math, ams, rel, "\u22D9", "\\ggg");
-              defineSymbol(math, ams, rel, "\u2277", "\\gtrless");
-              defineSymbol(math, ams, rel, "\u22DB", "\\gtreqless");
-              defineSymbol(math, ams, rel, "\u2A8C", "\\gtreqqless");
-              defineSymbol(math, ams, rel, "\u2256", "\\eqcirc");
-              defineSymbol(math, ams, rel, "\u2257", "\\circeq");
-              defineSymbol(math, ams, rel, "\u225C", "\\triangleq");
-              defineSymbol(math, ams, rel, "\u223C", "\\thicksim");
-              defineSymbol(math, ams, rel, "\u2248", "\\thickapprox");
-              defineSymbol(math, ams, rel, "\u2AC6", "\\supseteqq");
-              defineSymbol(math, ams, rel, "\u22D1", "\\Supset");
-              defineSymbol(math, ams, rel, "\u2290", "\\sqsupset");
-              defineSymbol(math, ams, rel, "\u227D", "\\succcurlyeq");
-              defineSymbol(math, ams, rel, "\u22DF", "\\curlyeqsucc");
-              defineSymbol(math, ams, rel, "\u227F", "\\succsim");
-              defineSymbol(math, ams, rel, "\u2AB8", "\\succapprox");
-              defineSymbol(math, ams, rel, "\u22B3", "\\vartriangleright");
-              defineSymbol(math, ams, rel, "\u22B5", "\\trianglerighteq");
-              defineSymbol(math, ams, rel, "\u22A9", "\\Vdash");
-              defineSymbol(math, ams, rel, "\u2223", "\\shortmid");
-              defineSymbol(math, ams, rel, "\u2225", "\\shortparallel");
-              defineSymbol(math, ams, rel, "\u226C", "\\between");
-              defineSymbol(math, ams, rel, "\u22D4", "\\pitchfork");
-              defineSymbol(math, ams, rel, "\u221D", "\\varpropto");
-              defineSymbol(math, ams, rel, "\u25C0", "\\blacktriangleleft");
-              defineSymbol(math, ams, rel, "\u2234", "\\therefore");
-              defineSymbol(math, ams, rel, "\u220D", "\\backepsilon");
-              defineSymbol(math, ams, rel, "\u25B6", "\\blacktriangleright");
-              defineSymbol(math, ams, rel, "\u2235", "\\because");
-              defineSymbol(math, ams, rel, "\u22D8", "\\llless");
-              defineSymbol(math, ams, rel, "\u22D9", "\\gggtr");
-              defineSymbol(math, ams, bin, "\u22B2", "\\lhd");
-              defineSymbol(math, ams, bin, "\u22B3", "\\rhd");
-              defineSymbol(math, ams, rel, "\u2242", "\\eqsim");
-              defineSymbol(math, main, rel, "\u22C8", "\\Join");
-              defineSymbol(math, ams, rel, "\u2251", "\\Doteq");
+              defineSymbol(math, ams, rel, '\u2266', '\\leqq');
+              defineSymbol(math, ams, rel, '\u2A7D', '\\leqslant');
+              defineSymbol(math, ams, rel, '\u2A95', '\\eqslantless');
+              defineSymbol(math, ams, rel, '\u2272', '\\lesssim');
+              defineSymbol(math, ams, rel, '\u2A85', '\\lessapprox');
+              defineSymbol(math, ams, rel, '\u224A', '\\approxeq');
+              defineSymbol(math, ams, bin, '\u22D6', '\\lessdot');
+              defineSymbol(math, ams, rel, '\u22D8', '\\lll');
+              defineSymbol(math, ams, rel, '\u2276', '\\lessgtr');
+              defineSymbol(math, ams, rel, '\u22DA', '\\lesseqgtr');
+              defineSymbol(math, ams, rel, '\u2A8B', '\\lesseqqgtr');
+              defineSymbol(math, ams, rel, '\u2251', '\\doteqdot');
+              defineSymbol(math, ams, rel, '\u2253', '\\risingdotseq');
+              defineSymbol(math, ams, rel, '\u2252', '\\fallingdotseq');
+              defineSymbol(math, ams, rel, '\u223D', '\\backsim');
+              defineSymbol(math, ams, rel, '\u22CD', '\\backsimeq');
+              defineSymbol(math, ams, rel, '\u2AC5', '\\subseteqq');
+              defineSymbol(math, ams, rel, '\u22D0', '\\Subset');
+              defineSymbol(math, ams, rel, '\u228F', '\\sqsubset');
+              defineSymbol(math, ams, rel, '\u227C', '\\preccurlyeq');
+              defineSymbol(math, ams, rel, '\u22DE', '\\curlyeqprec');
+              defineSymbol(math, ams, rel, '\u227E', '\\precsim');
+              defineSymbol(math, ams, rel, '\u2AB7', '\\precapprox');
+              defineSymbol(math, ams, rel, '\u22B2', '\\vartriangleleft');
+              defineSymbol(math, ams, rel, '\u22B4', '\\trianglelefteq');
+              defineSymbol(math, ams, rel, '\u22A8', '\\vDash');
+              defineSymbol(math, ams, rel, '\u22AA', '\\Vvdash');
+              defineSymbol(math, ams, rel, '\u2323', '\\smallsmile');
+              defineSymbol(math, ams, rel, '\u2322', '\\smallfrown');
+              defineSymbol(math, ams, rel, '\u224F', '\\bumpeq');
+              defineSymbol(math, ams, rel, '\u224E', '\\Bumpeq');
+              defineSymbol(math, ams, rel, '\u2267', '\\geqq');
+              defineSymbol(math, ams, rel, '\u2A7E', '\\geqslant');
+              defineSymbol(math, ams, rel, '\u2A96', '\\eqslantgtr');
+              defineSymbol(math, ams, rel, '\u2273', '\\gtrsim');
+              defineSymbol(math, ams, rel, '\u2A86', '\\gtrapprox');
+              defineSymbol(math, ams, bin, '\u22D7', '\\gtrdot');
+              defineSymbol(math, ams, rel, '\u22D9', '\\ggg');
+              defineSymbol(math, ams, rel, '\u2277', '\\gtrless');
+              defineSymbol(math, ams, rel, '\u22DB', '\\gtreqless');
+              defineSymbol(math, ams, rel, '\u2A8C', '\\gtreqqless');
+              defineSymbol(math, ams, rel, '\u2256', '\\eqcirc');
+              defineSymbol(math, ams, rel, '\u2257', '\\circeq');
+              defineSymbol(math, ams, rel, '\u225C', '\\triangleq');
+              defineSymbol(math, ams, rel, '\u223C', '\\thicksim');
+              defineSymbol(math, ams, rel, '\u2248', '\\thickapprox');
+              defineSymbol(math, ams, rel, '\u2AC6', '\\supseteqq');
+              defineSymbol(math, ams, rel, '\u22D1', '\\Supset');
+              defineSymbol(math, ams, rel, '\u2290', '\\sqsupset');
+              defineSymbol(math, ams, rel, '\u227D', '\\succcurlyeq');
+              defineSymbol(math, ams, rel, '\u22DF', '\\curlyeqsucc');
+              defineSymbol(math, ams, rel, '\u227F', '\\succsim');
+              defineSymbol(math, ams, rel, '\u2AB8', '\\succapprox');
+              defineSymbol(math, ams, rel, '\u22B3', '\\vartriangleright');
+              defineSymbol(math, ams, rel, '\u22B5', '\\trianglerighteq');
+              defineSymbol(math, ams, rel, '\u22A9', '\\Vdash');
+              defineSymbol(math, ams, rel, '\u2223', '\\shortmid');
+              defineSymbol(math, ams, rel, '\u2225', '\\shortparallel');
+              defineSymbol(math, ams, rel, '\u226C', '\\between');
+              defineSymbol(math, ams, rel, '\u22D4', '\\pitchfork');
+              defineSymbol(math, ams, rel, '\u221D', '\\varpropto');
+              defineSymbol(math, ams, rel, '\u25C0', '\\blacktriangleleft');
+              defineSymbol(math, ams, rel, '\u2234', '\\therefore');
+              defineSymbol(math, ams, rel, '\u220D', '\\backepsilon');
+              defineSymbol(math, ams, rel, '\u25B6', '\\blacktriangleright');
+              defineSymbol(math, ams, rel, '\u2235', '\\because');
+              defineSymbol(math, ams, rel, '\u22D8', '\\llless');
+              defineSymbol(math, ams, rel, '\u22D9', '\\gggtr');
+              defineSymbol(math, ams, bin, '\u22B2', '\\lhd');
+              defineSymbol(math, ams, bin, '\u22B3', '\\rhd');
+              defineSymbol(math, ams, rel, '\u2242', '\\eqsim');
+              defineSymbol(math, main, rel, '\u22C8', '\\Join');
+              defineSymbol(math, ams, rel, '\u2251', '\\Doteq');
 
               // AMS Binary Operators
-              defineSymbol(math, ams, bin, "\u2214", "\\dotplus");
-              defineSymbol(math, ams, bin, "\u2216", "\\smallsetminus");
-              defineSymbol(math, ams, bin, "\u22D2", "\\Cap");
-              defineSymbol(math, ams, bin, "\u22D3", "\\Cup");
-              defineSymbol(math, ams, bin, "\u2A5E", "\\doublebarwedge");
-              defineSymbol(math, ams, bin, "\u229F", "\\boxminus");
-              defineSymbol(math, ams, bin, "\u229E", "\\boxplus");
-              defineSymbol(math, ams, bin, "\u22C7", "\\divideontimes");
-              defineSymbol(math, ams, bin, "\u22C9", "\\ltimes");
-              defineSymbol(math, ams, bin, "\u22CA", "\\rtimes");
-              defineSymbol(math, ams, bin, "\u22CB", "\\leftthreetimes");
-              defineSymbol(math, ams, bin, "\u22CC", "\\rightthreetimes");
-              defineSymbol(math, ams, bin, "\u22CF", "\\curlywedge");
-              defineSymbol(math, ams, bin, "\u22CE", "\\curlyvee");
-              defineSymbol(math, ams, bin, "\u229D", "\\circleddash");
-              defineSymbol(math, ams, bin, "\u229B", "\\circledast");
-              defineSymbol(math, ams, bin, "\u22C5", "\\centerdot");
-              defineSymbol(math, ams, bin, "\u22BA", "\\intercal");
-              defineSymbol(math, ams, bin, "\u22D2", "\\doublecap");
-              defineSymbol(math, ams, bin, "\u22D3", "\\doublecup");
-              defineSymbol(math, ams, bin, "\u22A0", "\\boxtimes");
+              defineSymbol(math, ams, bin, '\u2214', '\\dotplus');
+              defineSymbol(math, ams, bin, '\u2216', '\\smallsetminus');
+              defineSymbol(math, ams, bin, '\u22D2', '\\Cap');
+              defineSymbol(math, ams, bin, '\u22D3', '\\Cup');
+              defineSymbol(math, ams, bin, '\u2A5E', '\\doublebarwedge');
+              defineSymbol(math, ams, bin, '\u229F', '\\boxminus');
+              defineSymbol(math, ams, bin, '\u229E', '\\boxplus');
+              defineSymbol(math, ams, bin, '\u22C7', '\\divideontimes');
+              defineSymbol(math, ams, bin, '\u22C9', '\\ltimes');
+              defineSymbol(math, ams, bin, '\u22CA', '\\rtimes');
+              defineSymbol(math, ams, bin, '\u22CB', '\\leftthreetimes');
+              defineSymbol(math, ams, bin, '\u22CC', '\\rightthreetimes');
+              defineSymbol(math, ams, bin, '\u22CF', '\\curlywedge');
+              defineSymbol(math, ams, bin, '\u22CE', '\\curlyvee');
+              defineSymbol(math, ams, bin, '\u229D', '\\circleddash');
+              defineSymbol(math, ams, bin, '\u229B', '\\circledast');
+              defineSymbol(math, ams, bin, '\u22C5', '\\centerdot');
+              defineSymbol(math, ams, bin, '\u22BA', '\\intercal');
+              defineSymbol(math, ams, bin, '\u22D2', '\\doublecap');
+              defineSymbol(math, ams, bin, '\u22D3', '\\doublecup');
+              defineSymbol(math, ams, bin, '\u22A0', '\\boxtimes');
 
               // AMS Arrows
-              defineSymbol(math, ams, rel, "\u21E2", "\\dashrightarrow");
-              defineSymbol(math, ams, rel, "\u21E0", "\\dashleftarrow");
-              defineSymbol(math, ams, rel, "\u21C7", "\\leftleftarrows");
-              defineSymbol(math, ams, rel, "\u21C6", "\\leftrightarrows");
-              defineSymbol(math, ams, rel, "\u21DA", "\\Lleftarrow");
-              defineSymbol(math, ams, rel, "\u219E", "\\twoheadleftarrow");
-              defineSymbol(math, ams, rel, "\u21A2", "\\leftarrowtail");
-              defineSymbol(math, ams, rel, "\u21AB", "\\looparrowleft");
-              defineSymbol(math, ams, rel, "\u21CB", "\\leftrightharpoons");
-              defineSymbol(math, ams, rel, "\u21B6", "\\curvearrowleft");
-              defineSymbol(math, ams, rel, "\u21BA", "\\circlearrowleft");
-              defineSymbol(math, ams, rel, "\u21B0", "\\Lsh");
-              defineSymbol(math, ams, rel, "\u21C8", "\\upuparrows");
-              defineSymbol(math, ams, rel, "\u21BF", "\\upharpoonleft");
-              defineSymbol(math, ams, rel, "\u21C3", "\\downharpoonleft");
-              defineSymbol(math, ams, rel, "\u22B8", "\\multimap");
-              defineSymbol(math, ams, rel, "\u21AD", "\\leftrightsquigarrow");
-              defineSymbol(math, ams, rel, "\u21C9", "\\rightrightarrows");
-              defineSymbol(math, ams, rel, "\u21C4", "\\rightleftarrows");
-              defineSymbol(math, ams, rel, "\u21A0", "\\twoheadrightarrow");
-              defineSymbol(math, ams, rel, "\u21A3", "\\rightarrowtail");
-              defineSymbol(math, ams, rel, "\u21AC", "\\looparrowright");
-              defineSymbol(math, ams, rel, "\u21B7", "\\curvearrowright");
-              defineSymbol(math, ams, rel, "\u21BB", "\\circlearrowright");
-              defineSymbol(math, ams, rel, "\u21B1", "\\Rsh");
-              defineSymbol(math, ams, rel, "\u21CA", "\\downdownarrows");
-              defineSymbol(math, ams, rel, "\u21BE", "\\upharpoonright");
-              defineSymbol(math, ams, rel, "\u21C2", "\\downharpoonright");
-              defineSymbol(math, ams, rel, "\u21DD", "\\rightsquigarrow");
-              defineSymbol(math, ams, rel, "\u21DD", "\\leadsto");
-              defineSymbol(math, ams, rel, "\u21DB", "\\Rrightarrow");
-              defineSymbol(math, ams, rel, "\u21BE", "\\restriction");
+              defineSymbol(math, ams, rel, '\u21E2', '\\dashrightarrow');
+              defineSymbol(math, ams, rel, '\u21E0', '\\dashleftarrow');
+              defineSymbol(math, ams, rel, '\u21C7', '\\leftleftarrows');
+              defineSymbol(math, ams, rel, '\u21C6', '\\leftrightarrows');
+              defineSymbol(math, ams, rel, '\u21DA', '\\Lleftarrow');
+              defineSymbol(math, ams, rel, '\u219E', '\\twoheadleftarrow');
+              defineSymbol(math, ams, rel, '\u21A2', '\\leftarrowtail');
+              defineSymbol(math, ams, rel, '\u21AB', '\\looparrowleft');
+              defineSymbol(math, ams, rel, '\u21CB', '\\leftrightharpoons');
+              defineSymbol(math, ams, rel, '\u21B6', '\\curvearrowleft');
+              defineSymbol(math, ams, rel, '\u21BA', '\\circlearrowleft');
+              defineSymbol(math, ams, rel, '\u21B0', '\\Lsh');
+              defineSymbol(math, ams, rel, '\u21C8', '\\upuparrows');
+              defineSymbol(math, ams, rel, '\u21BF', '\\upharpoonleft');
+              defineSymbol(math, ams, rel, '\u21C3', '\\downharpoonleft');
+              defineSymbol(math, ams, rel, '\u22B8', '\\multimap');
+              defineSymbol(math, ams, rel, '\u21AD', '\\leftrightsquigarrow');
+              defineSymbol(math, ams, rel, '\u21C9', '\\rightrightarrows');
+              defineSymbol(math, ams, rel, '\u21C4', '\\rightleftarrows');
+              defineSymbol(math, ams, rel, '\u21A0', '\\twoheadrightarrow');
+              defineSymbol(math, ams, rel, '\u21A3', '\\rightarrowtail');
+              defineSymbol(math, ams, rel, '\u21AC', '\\looparrowright');
+              defineSymbol(math, ams, rel, '\u21B7', '\\curvearrowright');
+              defineSymbol(math, ams, rel, '\u21BB', '\\circlearrowright');
+              defineSymbol(math, ams, rel, '\u21B1', '\\Rsh');
+              defineSymbol(math, ams, rel, '\u21CA', '\\downdownarrows');
+              defineSymbol(math, ams, rel, '\u21BE', '\\upharpoonright');
+              defineSymbol(math, ams, rel, '\u21C2', '\\downharpoonright');
+              defineSymbol(math, ams, rel, '\u21DD', '\\rightsquigarrow');
+              defineSymbol(math, ams, rel, '\u21DD', '\\leadsto');
+              defineSymbol(math, ams, rel, '\u21DB', '\\Rrightarrow');
+              defineSymbol(math, ams, rel, '\u21BE', '\\restriction');
 
-              defineSymbol(math, main, textord, "\u2018", "`");
-              defineSymbol(math, main, textord, "$", "\\$");
-              defineSymbol(text, main, textord, "$", "\\$");
-              defineSymbol(text, main, textord, "$", "\\textdollar");
-              defineSymbol(math, main, textord, "%", "\\%");
-              defineSymbol(text, main, textord, "%", "\\%");
-              defineSymbol(math, main, textord, "_", "\\_");
-              defineSymbol(text, main, textord, "_", "\\_");
-              defineSymbol(text, main, textord, "_", "\\textunderscore");
-              defineSymbol(math, main, textord, "\u2220", "\\angle");
-              defineSymbol(math, main, textord, "\u221E", "\\infty");
-              defineSymbol(math, main, textord, "\u2032", "\\prime");
-              defineSymbol(math, main, textord, "\u25B3", "\\triangle");
-              defineSymbol(math, main, textord, "\u0393", "\\Gamma", true);
-              defineSymbol(math, main, textord, "\u0394", "\\Delta", true);
-              defineSymbol(math, main, textord, "\u0398", "\\Theta", true);
-              defineSymbol(math, main, textord, "\u039B", "\\Lambda", true);
-              defineSymbol(math, main, textord, "\u039E", "\\Xi", true);
-              defineSymbol(math, main, textord, "\u03A0", "\\Pi", true);
-              defineSymbol(math, main, textord, "\u03A3", "\\Sigma", true);
-              defineSymbol(math, main, textord, "\u03A5", "\\Upsilon", true);
-              defineSymbol(math, main, textord, "\u03A6", "\\Phi", true);
-              defineSymbol(math, main, textord, "\u03A8", "\\Psi", true);
-              defineSymbol(math, main, textord, "\u03A9", "\\Omega", true);
-              defineSymbol(math, main, textord, "\xAC", "\\neg");
-              defineSymbol(math, main, textord, "\xAC", "\\lnot");
-              defineSymbol(math, main, textord, "\u22A4", "\\top");
-              defineSymbol(math, main, textord, "\u22A5", "\\bot");
-              defineSymbol(math, main, textord, "\u2205", "\\emptyset");
-              defineSymbol(math, ams, textord, "\u2205", "\\varnothing");
-              defineSymbol(math, main, mathord, "\u03B1", "\\alpha", true);
-              defineSymbol(math, main, mathord, "\u03B2", "\\beta", true);
-              defineSymbol(math, main, mathord, "\u03B3", "\\gamma", true);
-              defineSymbol(math, main, mathord, "\u03B4", "\\delta", true);
-              defineSymbol(math, main, mathord, "\u03F5", "\\epsilon", true);
-              defineSymbol(math, main, mathord, "\u03B6", "\\zeta", true);
-              defineSymbol(math, main, mathord, "\u03B7", "\\eta", true);
-              defineSymbol(math, main, mathord, "\u03B8", "\\theta", true);
-              defineSymbol(math, main, mathord, "\u03B9", "\\iota", true);
-              defineSymbol(math, main, mathord, "\u03BA", "\\kappa", true);
-              defineSymbol(math, main, mathord, "\u03BB", "\\lambda", true);
-              defineSymbol(math, main, mathord, "\u03BC", "\\mu", true);
-              defineSymbol(math, main, mathord, "\u03BD", "\\nu", true);
-              defineSymbol(math, main, mathord, "\u03BE", "\\xi", true);
-              defineSymbol(math, main, mathord, "\u03BF", "\\omicron", true);
-              defineSymbol(math, main, mathord, "\u03C0", "\\pi", true);
-              defineSymbol(math, main, mathord, "\u03C1", "\\rho", true);
-              defineSymbol(math, main, mathord, "\u03C3", "\\sigma", true);
-              defineSymbol(math, main, mathord, "\u03C4", "\\tau", true);
-              defineSymbol(math, main, mathord, "\u03C5", "\\upsilon", true);
-              defineSymbol(math, main, mathord, "\u03D5", "\\phi", true);
-              defineSymbol(math, main, mathord, "\u03C7", "\\chi", true);
-              defineSymbol(math, main, mathord, "\u03C8", "\\psi", true);
-              defineSymbol(math, main, mathord, "\u03C9", "\\omega", true);
-              defineSymbol(math, main, mathord, "\u03B5", "\\varepsilon", true);
-              defineSymbol(math, main, mathord, "\u03D1", "\\vartheta", true);
-              defineSymbol(math, main, mathord, "\u03D6", "\\varpi", true);
-              defineSymbol(math, main, mathord, "\u03F1", "\\varrho", true);
-              defineSymbol(math, main, mathord, "\u03C2", "\\varsigma", true);
-              defineSymbol(math, main, mathord, "\u03C6", "\\varphi", true);
-              defineSymbol(math, main, bin, "\u2217", "*");
-              defineSymbol(math, main, bin, "+", "+");
-              defineSymbol(math, main, bin, "\u2212", "-");
-              defineSymbol(math, main, bin, "\u22C5", "\\cdot");
-              defineSymbol(math, main, bin, "\u2218", "\\circ");
-              defineSymbol(math, main, bin, "\xF7", "\\div");
-              defineSymbol(math, main, bin, "\xB1", "\\pm");
-              defineSymbol(math, main, bin, "\xD7", "\\times");
-              defineSymbol(math, main, bin, "\u2229", "\\cap");
-              defineSymbol(math, main, bin, "\u222A", "\\cup");
-              defineSymbol(math, main, bin, "\u2216", "\\setminus");
-              defineSymbol(math, main, bin, "\u2227", "\\land");
-              defineSymbol(math, main, bin, "\u2228", "\\lor");
-              defineSymbol(math, main, bin, "\u2227", "\\wedge");
-              defineSymbol(math, main, bin, "\u2228", "\\vee");
-              defineSymbol(math, main, textord, "\u221A", "\\surd");
-              defineSymbol(math, main, open, "(", "(");
-              defineSymbol(math, main, open, "[", "[");
-              defineSymbol(math, main, open, "\u27E8", "\\langle");
-              defineSymbol(math, main, open, "\u2223", "\\lvert");
-              defineSymbol(math, main, open, "\u2225", "\\lVert");
-              defineSymbol(math, main, close, ")", ")");
-              defineSymbol(math, main, close, "]", "]");
-              defineSymbol(math, main, close, "?", "?");
-              defineSymbol(math, main, close, "!", "!");
-              defineSymbol(math, main, close, "\u27E9", "\\rangle");
-              defineSymbol(math, main, close, "\u2223", "\\rvert");
-              defineSymbol(math, main, close, "\u2225", "\\rVert");
-              defineSymbol(math, main, rel, "=", "=");
-              defineSymbol(math, main, rel, "<", "<");
-              defineSymbol(math, main, rel, ">", ">");
-              defineSymbol(math, main, rel, ":", ":");
-              defineSymbol(math, main, rel, "\u2248", "\\approx");
-              defineSymbol(math, main, rel, "\u2245", "\\cong");
-              defineSymbol(math, main, rel, "\u2265", "\\ge");
-              defineSymbol(math, main, rel, "\u2265", "\\geq");
-              defineSymbol(math, main, rel, "\u2190", "\\gets");
-              defineSymbol(math, main, rel, ">", "\\gt");
-              defineSymbol(math, main, rel, "\u2208", "\\in");
-              defineSymbol(math, main, rel, "\u2209", "\\notin");
-              defineSymbol(math, main, rel, "\u0338", "\\not");
-              defineSymbol(math, main, rel, "\u2282", "\\subset");
-              defineSymbol(math, main, rel, "\u2283", "\\supset");
-              defineSymbol(math, main, rel, "\u2286", "\\subseteq");
-              defineSymbol(math, main, rel, "\u2287", "\\supseteq");
-              defineSymbol(math, ams, rel, "\u2288", "\\nsubseteq");
-              defineSymbol(math, ams, rel, "\u2289", "\\nsupseteq");
-              defineSymbol(math, main, rel, "\u22A8", "\\models");
-              defineSymbol(math, main, rel, "\u2190", "\\leftarrow");
-              defineSymbol(math, main, rel, "\u2264", "\\le");
-              defineSymbol(math, main, rel, "\u2264", "\\leq");
-              defineSymbol(math, main, rel, "<", "\\lt");
-              defineSymbol(math, main, rel, "\u2260", "\\ne");
-              defineSymbol(math, main, rel, "\u2260", "\\neq");
-              defineSymbol(math, main, rel, "\u2192", "\\rightarrow");
-              defineSymbol(math, main, rel, "\u2192", "\\to");
-              defineSymbol(math, ams, rel, "\u2271", "\\ngeq");
-              defineSymbol(math, ams, rel, "\u2270", "\\nleq");
-              defineSymbol(math, main, spacing, null, "\\!");
-              defineSymbol(math, main, spacing, "\xA0", "\\ ");
-              defineSymbol(math, main, spacing, "\xA0", "~");
-              defineSymbol(math, main, spacing, null, "\\,");
-              defineSymbol(math, main, spacing, null, "\\:");
-              defineSymbol(math, main, spacing, null, "\\;");
-              defineSymbol(math, main, spacing, null, "\\enspace");
-              defineSymbol(math, main, spacing, null, "\\qquad");
-              defineSymbol(math, main, spacing, null, "\\quad");
-              defineSymbol(math, main, spacing, "\xA0", "\\space");
-              defineSymbol(math, main, punct, ",", ",");
-              defineSymbol(math, main, punct, ";", ";");
-              defineSymbol(math, main, punct, ":", "\\colon");
-              defineSymbol(math, ams, bin, "\u22BC", "\\barwedge");
-              defineSymbol(math, ams, bin, "\u22BB", "\\veebar");
-              defineSymbol(math, main, bin, "\u2299", "\\odot");
-              defineSymbol(math, main, bin, "\u2295", "\\oplus");
-              defineSymbol(math, main, bin, "\u2297", "\\otimes");
-              defineSymbol(math, main, textord, "\u2202", "\\partial");
-              defineSymbol(math, main, bin, "\u2298", "\\oslash");
-              defineSymbol(math, ams, bin, "\u229A", "\\circledcirc");
-              defineSymbol(math, ams, bin, "\u22A1", "\\boxdot");
-              defineSymbol(math, main, bin, "\u25B3", "\\bigtriangleup");
-              defineSymbol(math, main, bin, "\u25BD", "\\bigtriangledown");
-              defineSymbol(math, main, bin, "\u2020", "\\dagger");
-              defineSymbol(math, main, bin, "\u22C4", "\\diamond");
-              defineSymbol(math, main, bin, "\u22C6", "\\star");
-              defineSymbol(math, main, bin, "\u25C3", "\\triangleleft");
-              defineSymbol(math, main, bin, "\u25B9", "\\triangleright");
-              defineSymbol(math, main, open, "{", "\\{");
-              defineSymbol(text, main, textord, "{", "\\{");
-              defineSymbol(text, main, textord, "{", "\\textbraceleft");
-              defineSymbol(math, main, close, "}", "\\}");
-              defineSymbol(text, main, textord, "}", "\\}");
-              defineSymbol(text, main, textord, "}", "\\textbraceright");
-              defineSymbol(math, main, open, "{", "\\lbrace");
-              defineSymbol(math, main, close, "}", "\\rbrace");
-              defineSymbol(math, main, open, "[", "\\lbrack");
-              defineSymbol(math, main, close, "]", "\\rbrack");
-              defineSymbol(text, main, textord, "<", "\\textless"); // in T1 fontenc
-              defineSymbol(text, main, textord, ">", "\\textgreater"); // in T1 fontenc
-              defineSymbol(math, main, open, "\u230A", "\\lfloor");
-              defineSymbol(math, main, close, "\u230B", "\\rfloor");
-              defineSymbol(math, main, open, "\u2308", "\\lceil");
-              defineSymbol(math, main, close, "\u2309", "\\rceil");
-              defineSymbol(math, main, textord, "\\", "\\backslash");
-              defineSymbol(math, main, textord, "\u2223", "|");
-              defineSymbol(math, main, textord, "\u2223", "\\vert");
-              defineSymbol(text, main, textord, "|", "\\textbar"); // in T1 fontenc
-              defineSymbol(math, main, textord, "\u2225", "\\|");
-              defineSymbol(math, main, textord, "\u2225", "\\Vert");
-              defineSymbol(text, main, textord, "\u2225", "\\textbardbl");
-              defineSymbol(math, main, rel, "\u2191", "\\uparrow");
-              defineSymbol(math, main, rel, "\u21D1", "\\Uparrow");
-              defineSymbol(math, main, rel, "\u2193", "\\downarrow");
-              defineSymbol(math, main, rel, "\u21D3", "\\Downarrow");
-              defineSymbol(math, main, rel, "\u2195", "\\updownarrow");
-              defineSymbol(math, main, rel, "\u21D5", "\\Updownarrow");
-              defineSymbol(math, main, op, "\u2210", "\\coprod");
-              defineSymbol(math, main, op, "\u22C1", "\\bigvee");
-              defineSymbol(math, main, op, "\u22C0", "\\bigwedge");
-              defineSymbol(math, main, op, "\u2A04", "\\biguplus");
-              defineSymbol(math, main, op, "\u22C2", "\\bigcap");
-              defineSymbol(math, main, op, "\u22C3", "\\bigcup");
-              defineSymbol(math, main, op, "\u222B", "\\int");
-              defineSymbol(math, main, op, "\u222B", "\\intop");
-              defineSymbol(math, main, op, "\u222C", "\\iint");
-              defineSymbol(math, main, op, "\u222D", "\\iiint");
-              defineSymbol(math, main, op, "\u220F", "\\prod");
-              defineSymbol(math, main, op, "\u2211", "\\sum");
-              defineSymbol(math, main, op, "\u2A02", "\\bigotimes");
-              defineSymbol(math, main, op, "\u2A01", "\\bigoplus");
-              defineSymbol(math, main, op, "\u2A00", "\\bigodot");
-              defineSymbol(math, main, op, "\u222E", "\\oint");
-              defineSymbol(math, main, op, "\u2A06", "\\bigsqcup");
-              defineSymbol(math, main, op, "\u222B", "\\smallint");
-              defineSymbol(text, main, inner, "\u2026", "\\textellipsis");
-              defineSymbol(math, main, inner, "\u2026", "\\mathellipsis");
-              defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
-              defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
-              defineSymbol(math, main, inner, "\u22EF", "\\cdots", true);
-              defineSymbol(math, main, inner, "\u22F1", "\\ddots", true);
-              defineSymbol(math, main, textord, "\u22EE", "\\vdots", true);
-              defineSymbol(math, main, accent, "\xB4", "\\acute");
-              defineSymbol(math, main, accent, "`", "\\grave");
-              defineSymbol(math, main, accent, "\xA8", "\\ddot");
-              defineSymbol(math, main, accent, "~", "\\tilde");
-              defineSymbol(math, main, accent, "\xAF", "\\bar");
-              defineSymbol(math, main, accent, "\u02D8", "\\breve");
-              defineSymbol(math, main, accent, "\u02C7", "\\check");
-              defineSymbol(math, main, accent, "^", "\\hat");
-              defineSymbol(math, main, accent, "\u20D7", "\\vec");
-              defineSymbol(math, main, accent, "\u02D9", "\\dot");
-              defineSymbol(math, main, mathord, "\u0131", "\\imath");
-              defineSymbol(math, main, mathord, "\u0237", "\\jmath");
-              defineSymbol(text, main, accent, "\u02CA", "\\'"); // acute
-              defineSymbol(text, main, accent, "\u02CB", "\\`"); // grave
-              defineSymbol(text, main, accent, "\u02C6", "\\^"); // circumflex
-              defineSymbol(text, main, accent, "\u02DC", "\\~"); // tilde
-              defineSymbol(text, main, accent, "\u02C9", "\\="); // macron
-              defineSymbol(text, main, accent, "\u02D8", "\\u"); // breve
-              defineSymbol(text, main, accent, "\u02D9", "\\."); // dot above
-              defineSymbol(text, main, accent, "\u02DA", "\\r"); // ring above
-              defineSymbol(text, main, accent, "\u02C7", "\\v"); // caron
-              defineSymbol(text, main, accent, "\xA8", '\\"'); // diaresis
-              defineSymbol(text, main, accent, "\u030B", "\\H"); // double acute
+              defineSymbol(math, main, textord, '\u2018', '`');
+              defineSymbol(math, main, textord, '$', '\\$');
+              defineSymbol(text, main, textord, '$', '\\$');
+              defineSymbol(text, main, textord, '$', '\\textdollar');
+              defineSymbol(math, main, textord, '%', '\\%');
+              defineSymbol(text, main, textord, '%', '\\%');
+              defineSymbol(math, main, textord, '_', '\\_');
+              defineSymbol(text, main, textord, '_', '\\_');
+              defineSymbol(text, main, textord, '_', '\\textunderscore');
+              defineSymbol(math, main, textord, '\u2220', '\\angle');
+              defineSymbol(math, main, textord, '\u221E', '\\infty');
+              defineSymbol(math, main, textord, '\u2032', '\\prime');
+              defineSymbol(math, main, textord, '\u25B3', '\\triangle');
+              defineSymbol(math, main, textord, '\u0393', '\\Gamma', true);
+              defineSymbol(math, main, textord, '\u0394', '\\Delta', true);
+              defineSymbol(math, main, textord, '\u0398', '\\Theta', true);
+              defineSymbol(math, main, textord, '\u039B', '\\Lambda', true);
+              defineSymbol(math, main, textord, '\u039E', '\\Xi', true);
+              defineSymbol(math, main, textord, '\u03A0', '\\Pi', true);
+              defineSymbol(math, main, textord, '\u03A3', '\\Sigma', true);
+              defineSymbol(math, main, textord, '\u03A5', '\\Upsilon', true);
+              defineSymbol(math, main, textord, '\u03A6', '\\Phi', true);
+              defineSymbol(math, main, textord, '\u03A8', '\\Psi', true);
+              defineSymbol(math, main, textord, '\u03A9', '\\Omega', true);
+              defineSymbol(math, main, textord, '\xAC', '\\neg');
+              defineSymbol(math, main, textord, '\xAC', '\\lnot');
+              defineSymbol(math, main, textord, '\u22A4', '\\top');
+              defineSymbol(math, main, textord, '\u22A5', '\\bot');
+              defineSymbol(math, main, textord, '\u2205', '\\emptyset');
+              defineSymbol(math, ams, textord, '\u2205', '\\varnothing');
+              defineSymbol(math, main, mathord, '\u03B1', '\\alpha', true);
+              defineSymbol(math, main, mathord, '\u03B2', '\\beta', true);
+              defineSymbol(math, main, mathord, '\u03B3', '\\gamma', true);
+              defineSymbol(math, main, mathord, '\u03B4', '\\delta', true);
+              defineSymbol(math, main, mathord, '\u03F5', '\\epsilon', true);
+              defineSymbol(math, main, mathord, '\u03B6', '\\zeta', true);
+              defineSymbol(math, main, mathord, '\u03B7', '\\eta', true);
+              defineSymbol(math, main, mathord, '\u03B8', '\\theta', true);
+              defineSymbol(math, main, mathord, '\u03B9', '\\iota', true);
+              defineSymbol(math, main, mathord, '\u03BA', '\\kappa', true);
+              defineSymbol(math, main, mathord, '\u03BB', '\\lambda', true);
+              defineSymbol(math, main, mathord, '\u03BC', '\\mu', true);
+              defineSymbol(math, main, mathord, '\u03BD', '\\nu', true);
+              defineSymbol(math, main, mathord, '\u03BE', '\\xi', true);
+              defineSymbol(math, main, mathord, '\u03BF', '\\omicron', true);
+              defineSymbol(math, main, mathord, '\u03C0', '\\pi', true);
+              defineSymbol(math, main, mathord, '\u03C1', '\\rho', true);
+              defineSymbol(math, main, mathord, '\u03C3', '\\sigma', true);
+              defineSymbol(math, main, mathord, '\u03C4', '\\tau', true);
+              defineSymbol(math, main, mathord, '\u03C5', '\\upsilon', true);
+              defineSymbol(math, main, mathord, '\u03D5', '\\phi', true);
+              defineSymbol(math, main, mathord, '\u03C7', '\\chi', true);
+              defineSymbol(math, main, mathord, '\u03C8', '\\psi', true);
+              defineSymbol(math, main, mathord, '\u03C9', '\\omega', true);
+              defineSymbol(math, main, mathord, '\u03B5', '\\varepsilon', true);
+              defineSymbol(math, main, mathord, '\u03D1', '\\vartheta', true);
+              defineSymbol(math, main, mathord, '\u03D6', '\\varpi', true);
+              defineSymbol(math, main, mathord, '\u03F1', '\\varrho', true);
+              defineSymbol(math, main, mathord, '\u03C2', '\\varsigma', true);
+              defineSymbol(math, main, mathord, '\u03C6', '\\varphi', true);
+              defineSymbol(math, main, bin, '\u2217', '*');
+              defineSymbol(math, main, bin, '+', '+');
+              defineSymbol(math, main, bin, '\u2212', '-');
+              defineSymbol(math, main, bin, '\u22C5', '\\cdot');
+              defineSymbol(math, main, bin, '\u2218', '\\circ');
+              defineSymbol(math, main, bin, '\xF7', '\\div');
+              defineSymbol(math, main, bin, '\xB1', '\\pm');
+              defineSymbol(math, main, bin, '\xD7', '\\times');
+              defineSymbol(math, main, bin, '\u2229', '\\cap');
+              defineSymbol(math, main, bin, '\u222A', '\\cup');
+              defineSymbol(math, main, bin, '\u2216', '\\setminus');
+              defineSymbol(math, main, bin, '\u2227', '\\land');
+              defineSymbol(math, main, bin, '\u2228', '\\lor');
+              defineSymbol(math, main, bin, '\u2227', '\\wedge');
+              defineSymbol(math, main, bin, '\u2228', '\\vee');
+              defineSymbol(math, main, textord, '\u221A', '\\surd');
+              defineSymbol(math, main, open, '(', '(');
+              defineSymbol(math, main, open, '[', '[');
+              defineSymbol(math, main, open, '\u27E8', '\\langle');
+              defineSymbol(math, main, open, '\u2223', '\\lvert');
+              defineSymbol(math, main, open, '\u2225', '\\lVert');
+              defineSymbol(math, main, close, ')', ')');
+              defineSymbol(math, main, close, ']', ']');
+              defineSymbol(math, main, close, '?', '?');
+              defineSymbol(math, main, close, '!', '!');
+              defineSymbol(math, main, close, '\u27E9', '\\rangle');
+              defineSymbol(math, main, close, '\u2223', '\\rvert');
+              defineSymbol(math, main, close, '\u2225', '\\rVert');
+              defineSymbol(math, main, rel, '=', '=');
+              defineSymbol(math, main, rel, '<', '<');
+              defineSymbol(math, main, rel, '>', '>');
+              defineSymbol(math, main, rel, ':', ':');
+              defineSymbol(math, main, rel, '\u2248', '\\approx');
+              defineSymbol(math, main, rel, '\u2245', '\\cong');
+              defineSymbol(math, main, rel, '\u2265', '\\ge');
+              defineSymbol(math, main, rel, '\u2265', '\\geq');
+              defineSymbol(math, main, rel, '\u2190', '\\gets');
+              defineSymbol(math, main, rel, '>', '\\gt');
+              defineSymbol(math, main, rel, '\u2208', '\\in');
+              defineSymbol(math, main, rel, '\u2209', '\\notin');
+              defineSymbol(math, main, rel, '\u0338', '\\not');
+              defineSymbol(math, main, rel, '\u2282', '\\subset');
+              defineSymbol(math, main, rel, '\u2283', '\\supset');
+              defineSymbol(math, main, rel, '\u2286', '\\subseteq');
+              defineSymbol(math, main, rel, '\u2287', '\\supseteq');
+              defineSymbol(math, ams, rel, '\u2288', '\\nsubseteq');
+              defineSymbol(math, ams, rel, '\u2289', '\\nsupseteq');
+              defineSymbol(math, main, rel, '\u22A8', '\\models');
+              defineSymbol(math, main, rel, '\u2190', '\\leftarrow');
+              defineSymbol(math, main, rel, '\u2264', '\\le');
+              defineSymbol(math, main, rel, '\u2264', '\\leq');
+              defineSymbol(math, main, rel, '<', '\\lt');
+              defineSymbol(math, main, rel, '\u2260', '\\ne');
+              defineSymbol(math, main, rel, '\u2260', '\\neq');
+              defineSymbol(math, main, rel, '\u2192', '\\rightarrow');
+              defineSymbol(math, main, rel, '\u2192', '\\to');
+              defineSymbol(math, ams, rel, '\u2271', '\\ngeq');
+              defineSymbol(math, ams, rel, '\u2270', '\\nleq');
+              defineSymbol(math, main, spacing, null, '\\!');
+              defineSymbol(math, main, spacing, '\xA0', '\\ ');
+              defineSymbol(math, main, spacing, '\xA0', '~');
+              defineSymbol(math, main, spacing, null, '\\,');
+              defineSymbol(math, main, spacing, null, '\\:');
+              defineSymbol(math, main, spacing, null, '\\;');
+              defineSymbol(math, main, spacing, null, '\\enspace');
+              defineSymbol(math, main, spacing, null, '\\qquad');
+              defineSymbol(math, main, spacing, null, '\\quad');
+              defineSymbol(math, main, spacing, '\xA0', '\\space');
+              defineSymbol(math, main, punct, ',', ',');
+              defineSymbol(math, main, punct, ';', ';');
+              defineSymbol(math, main, punct, ':', '\\colon');
+              defineSymbol(math, ams, bin, '\u22BC', '\\barwedge');
+              defineSymbol(math, ams, bin, '\u22BB', '\\veebar');
+              defineSymbol(math, main, bin, '\u2299', '\\odot');
+              defineSymbol(math, main, bin, '\u2295', '\\oplus');
+              defineSymbol(math, main, bin, '\u2297', '\\otimes');
+              defineSymbol(math, main, textord, '\u2202', '\\partial');
+              defineSymbol(math, main, bin, '\u2298', '\\oslash');
+              defineSymbol(math, ams, bin, '\u229A', '\\circledcirc');
+              defineSymbol(math, ams, bin, '\u22A1', '\\boxdot');
+              defineSymbol(math, main, bin, '\u25B3', '\\bigtriangleup');
+              defineSymbol(math, main, bin, '\u25BD', '\\bigtriangledown');
+              defineSymbol(math, main, bin, '\u2020', '\\dagger');
+              defineSymbol(math, main, bin, '\u22C4', '\\diamond');
+              defineSymbol(math, main, bin, '\u22C6', '\\star');
+              defineSymbol(math, main, bin, '\u25C3', '\\triangleleft');
+              defineSymbol(math, main, bin, '\u25B9', '\\triangleright');
+              defineSymbol(math, main, open, '{', '\\{');
+              defineSymbol(text, main, textord, '{', '\\{');
+              defineSymbol(text, main, textord, '{', '\\textbraceleft');
+              defineSymbol(math, main, close, '}', '\\}');
+              defineSymbol(text, main, textord, '}', '\\}');
+              defineSymbol(text, main, textord, '}', '\\textbraceright');
+              defineSymbol(math, main, open, '{', '\\lbrace');
+              defineSymbol(math, main, close, '}', '\\rbrace');
+              defineSymbol(math, main, open, '[', '\\lbrack');
+              defineSymbol(math, main, close, ']', '\\rbrack');
+              defineSymbol(text, main, textord, '<', '\\textless'); // in T1 fontenc
+              defineSymbol(text, main, textord, '>', '\\textgreater'); // in T1 fontenc
+              defineSymbol(math, main, open, '\u230A', '\\lfloor');
+              defineSymbol(math, main, close, '\u230B', '\\rfloor');
+              defineSymbol(math, main, open, '\u2308', '\\lceil');
+              defineSymbol(math, main, close, '\u2309', '\\rceil');
+              defineSymbol(math, main, textord, '\\', '\\backslash');
+              defineSymbol(math, main, textord, '\u2223', '|');
+              defineSymbol(math, main, textord, '\u2223', '\\vert');
+              defineSymbol(text, main, textord, '|', '\\textbar'); // in T1 fontenc
+              defineSymbol(math, main, textord, '\u2225', '\\|');
+              defineSymbol(math, main, textord, '\u2225', '\\Vert');
+              defineSymbol(text, main, textord, '\u2225', '\\textbardbl');
+              defineSymbol(math, main, rel, '\u2191', '\\uparrow');
+              defineSymbol(math, main, rel, '\u21D1', '\\Uparrow');
+              defineSymbol(math, main, rel, '\u2193', '\\downarrow');
+              defineSymbol(math, main, rel, '\u21D3', '\\Downarrow');
+              defineSymbol(math, main, rel, '\u2195', '\\updownarrow');
+              defineSymbol(math, main, rel, '\u21D5', '\\Updownarrow');
+              defineSymbol(math, main, op, '\u2210', '\\coprod');
+              defineSymbol(math, main, op, '\u22C1', '\\bigvee');
+              defineSymbol(math, main, op, '\u22C0', '\\bigwedge');
+              defineSymbol(math, main, op, '\u2A04', '\\biguplus');
+              defineSymbol(math, main, op, '\u22C2', '\\bigcap');
+              defineSymbol(math, main, op, '\u22C3', '\\bigcup');
+              defineSymbol(math, main, op, '\u222B', '\\int');
+              defineSymbol(math, main, op, '\u222B', '\\intop');
+              defineSymbol(math, main, op, '\u222C', '\\iint');
+              defineSymbol(math, main, op, '\u222D', '\\iiint');
+              defineSymbol(math, main, op, '\u220F', '\\prod');
+              defineSymbol(math, main, op, '\u2211', '\\sum');
+              defineSymbol(math, main, op, '\u2A02', '\\bigotimes');
+              defineSymbol(math, main, op, '\u2A01', '\\bigoplus');
+              defineSymbol(math, main, op, '\u2A00', '\\bigodot');
+              defineSymbol(math, main, op, '\u222E', '\\oint');
+              defineSymbol(math, main, op, '\u2A06', '\\bigsqcup');
+              defineSymbol(math, main, op, '\u222B', '\\smallint');
+              defineSymbol(text, main, inner, '\u2026', '\\textellipsis');
+              defineSymbol(math, main, inner, '\u2026', '\\mathellipsis');
+              defineSymbol(text, main, inner, '\u2026', '\\ldots', true);
+              defineSymbol(math, main, inner, '\u2026', '\\ldots', true);
+              defineSymbol(math, main, inner, '\u22EF', '\\cdots', true);
+              defineSymbol(math, main, inner, '\u22F1', '\\ddots', true);
+              defineSymbol(math, main, textord, '\u22EE', '\\vdots', true);
+              defineSymbol(math, main, accent, '\xB4', '\\acute');
+              defineSymbol(math, main, accent, '`', '\\grave');
+              defineSymbol(math, main, accent, '\xA8', '\\ddot');
+              defineSymbol(math, main, accent, '~', '\\tilde');
+              defineSymbol(math, main, accent, '\xAF', '\\bar');
+              defineSymbol(math, main, accent, '\u02D8', '\\breve');
+              defineSymbol(math, main, accent, '\u02C7', '\\check');
+              defineSymbol(math, main, accent, '^', '\\hat');
+              defineSymbol(math, main, accent, '\u20D7', '\\vec');
+              defineSymbol(math, main, accent, '\u02D9', '\\dot');
+              defineSymbol(math, main, mathord, '\u0131', '\\imath');
+              defineSymbol(math, main, mathord, '\u0237', '\\jmath');
+              defineSymbol(text, main, accent, '\u02CA', "\\'"); // acute
+              defineSymbol(text, main, accent, '\u02CB', '\\`'); // grave
+              defineSymbol(text, main, accent, '\u02C6', '\\^'); // circumflex
+              defineSymbol(text, main, accent, '\u02DC', '\\~'); // tilde
+              defineSymbol(text, main, accent, '\u02C9', '\\='); // macron
+              defineSymbol(text, main, accent, '\u02D8', '\\u'); // breve
+              defineSymbol(text, main, accent, '\u02D9', '\\.'); // dot above
+              defineSymbol(text, main, accent, '\u02DA', '\\r'); // ring above
+              defineSymbol(text, main, accent, '\u02C7', '\\v'); // caron
+              defineSymbol(text, main, accent, '\xA8', '\\"'); // diaresis
+              defineSymbol(text, main, accent, '\u030B', '\\H'); // double acute
 
-              defineSymbol(text, main, textord, "\u2013", "--");
-              defineSymbol(text, main, textord, "\u2013", "\\textendash");
-              defineSymbol(text, main, textord, "\u2014", "---");
-              defineSymbol(text, main, textord, "\u2014", "\\textemdash");
-              defineSymbol(text, main, textord, "\u2018", "`");
-              defineSymbol(text, main, textord, "\u2018", "\\textquoteleft");
-              defineSymbol(text, main, textord, "\u2019", "'");
-              defineSymbol(text, main, textord, "\u2019", "\\textquoteright");
-              defineSymbol(text, main, textord, "\u201C", "``");
-              defineSymbol(text, main, textord, "\u201C", "\\textquotedblleft");
-              defineSymbol(text, main, textord, "\u201D", "''");
-              defineSymbol(text, main, textord, "\u201D", "\\textquotedblright");
-              defineSymbol(math, main, textord, "\xB0", "\\degree");
-              defineSymbol(text, main, textord, "\xB0", "\\degree");
+              defineSymbol(text, main, textord, '\u2013', '--');
+              defineSymbol(text, main, textord, '\u2013', '\\textendash');
+              defineSymbol(text, main, textord, '\u2014', '---');
+              defineSymbol(text, main, textord, '\u2014', '\\textemdash');
+              defineSymbol(text, main, textord, '\u2018', '`');
+              defineSymbol(text, main, textord, '\u2018', '\\textquoteleft');
+              defineSymbol(text, main, textord, '\u2019', "'");
+              defineSymbol(text, main, textord, '\u2019', '\\textquoteright');
+              defineSymbol(text, main, textord, '\u201C', '``');
+              defineSymbol(text, main, textord, '\u201C', '\\textquotedblleft');
+              defineSymbol(text, main, textord, '\u201D', "''");
+              defineSymbol(text, main, textord, '\u201D', '\\textquotedblright');
+              defineSymbol(math, main, textord, '\xB0', '\\degree');
+              defineSymbol(text, main, textord, '\xB0', '\\degree');
               // TODO: In LaTeX, \pounds can generate a different character in text and math
               // mode, but among our fonts, only Main-Italic defines this character "163".
-              defineSymbol(math, main, mathord, "\xA3", "\\pounds");
-              defineSymbol(math, main, mathord, "\xA3", "\\mathsterling");
-              defineSymbol(text, main, mathord, "\xA3", "\\pounds");
-              defineSymbol(text, main, mathord, "\xA3", "\\textsterling");
-              defineSymbol(math, ams, textord, "\u2720", "\\maltese");
-              defineSymbol(text, ams, textord, "\u2720", "\\maltese");
+              defineSymbol(math, main, mathord, '\xA3', '\\pounds');
+              defineSymbol(math, main, mathord, '\xA3', '\\mathsterling');
+              defineSymbol(text, main, mathord, '\xA3', '\\pounds');
+              defineSymbol(text, main, mathord, '\xA3', '\\textsterling');
+              defineSymbol(math, ams, textord, '\u2720', '\\maltese');
+              defineSymbol(text, ams, textord, '\u2720', '\\maltese');
 
-              defineSymbol(text, main, spacing, "\xA0", "\\ ");
-              defineSymbol(text, main, spacing, "\xA0", " ");
-              defineSymbol(text, main, spacing, "\xA0", "~");
+              defineSymbol(text, main, spacing, '\xA0', '\\ ');
+              defineSymbol(text, main, spacing, '\xA0', ' ');
+              defineSymbol(text, main, spacing, '\xA0', '~');
 
               // There are lots of symbols which are the same, so we add them in afterwards.
 
@@ -13025,7 +13716,7 @@
               }
 
               // All of these are textords in text mode, and mathords in math mode
-              var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+              var letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
               for (var _i2 = 0; _i2 < letters.length; _i2++) {
                 var _ch2 = letters.charAt(_i2);
                 defineSymbol(math, main, mathord, _ch2, _ch2);
@@ -13058,12 +13749,12 @@
               }
 
               // Unicode versions of existing characters
-              defineSymbol(text, main, textord, "\u2013", "–");
-              defineSymbol(text, main, textord, "\u2014", "—");
-              defineSymbol(text, main, textord, "\u2018", "‘");
-              defineSymbol(text, main, textord, "\u2019", "’");
-              defineSymbol(text, main, textord, "\u201C", "“");
-              defineSymbol(text, main, textord, "\u201D", "”");
+              defineSymbol(text, main, textord, '\u2013', '–');
+              defineSymbol(text, main, textord, '\u2014', '—');
+              defineSymbol(text, main, textord, '\u2018', '‘');
+              defineSymbol(text, main, textord, '\u2019', '’');
+              defineSymbol(text, main, textord, '\u201C', '“');
+              defineSymbol(text, main, textord, '\u201D', '”');
             },
             {},
           ],
@@ -13090,7 +13781,7 @@
           ],
           50: [
             function (require, module, exports) {
-              var _ParseError = require("./ParseError");
+              var _ParseError = require('./ParseError');
 
               var _ParseError2 = _interopRequireDefault(_ParseError);
 
@@ -13142,7 +13833,7 @@
                 if (unit.unit) {
                   unit = unit.unit;
                 }
-                return unit in ptPerUnit || unit in relativeUnit || unit === "ex";
+                return unit in ptPerUnit || unit in relativeUnit || unit === 'ex';
               };
 
               /*
@@ -13158,7 +13849,7 @@
                     ptPerUnit[sizeValue.unit] / // Convert unit to pt
                     options.fontMetrics().ptPerEm / // Convert pt to CSS em
                     options.sizeMultiplier; // Unscale to make absolute units
-                } else if (sizeValue.unit === "mu") {
+                } else if (sizeValue.unit === 'mu') {
                   // `mu` units scale with scriptstyle/scriptscriptstyle.
                   scale = options.fontMetrics().cssEmPerMu;
                 } else {
@@ -13178,9 +13869,9 @@
                   // cmr5=1.361133, cmsy5=1.472241. Consider $\scriptsize a\kern1emb$.
                   // TeX \showlists shows a kern of 1.13889 * fontsize;
                   // KaTeX shows a kern of 1.171 * fontsize.
-                  if (sizeValue.unit === "ex") {
+                  if (sizeValue.unit === 'ex') {
                     scale = unitOptions.fontMetrics().xHeight;
-                  } else if (sizeValue.unit === "em") {
+                  } else if (sizeValue.unit === 'em') {
                     scale = unitOptions.fontMetrics().quad;
                   } else {
                     throw new _ParseError2.default("Invalid unit: '" + sizeValue.unit + "'");
@@ -13197,7 +13888,7 @@
                 calculateSize: calculateSize,
               };
             },
-            { "./ParseError": 29 },
+            { './ParseError': 29 },
           ],
           51: [
             function (require, module, exports) {
@@ -13245,15 +13936,15 @@
 
               var uppercase = /([A-Z])/g;
               var hyphenate = function hyphenate(str) {
-                return str.replace(uppercase, "-$1").toLowerCase();
+                return str.replace(uppercase, '-$1').toLowerCase();
               };
 
               var ESCAPE_LOOKUP = {
-                "&": "&amp;",
-                ">": "&gt;",
-                "<": "&lt;",
-                '"': "&quot;",
-                "'": "&#x27;",
+                '&': '&amp;',
+                '>': '&gt;',
+                '<': '&lt;',
+                '"': '&quot;',
+                "'": '&#x27;',
               };
 
               var ESCAPE_REGEX = /[&><"']/g;
@@ -13269,7 +13960,7 @@
                * @return {string} An escaped string.
                */
               function escape(text) {
-                return ("" + text).replace(ESCAPE_REGEX, escaper);
+                return ('' + text).replace(ESCAPE_REGEX, escaper);
               }
 
               /**
@@ -13277,9 +13968,9 @@
                * browsers. Note that we don't define this if there is no document.
                */
               var setTextContent = void 0;
-              if (typeof document !== "undefined") {
-                var testNode = document.createElement("span");
-                if ("textContent" in testNode) {
+              if (typeof document !== 'undefined') {
+                var testNode = document.createElement('span');
+                if ('textContent' in testNode) {
                   setTextContent = function setTextContent(node, text) {
                     node.textContent = text;
                   };
@@ -13294,7 +13985,7 @@
                * A function to clear a node.
                */
               function clearNode(node) {
-                setTextContent(node, "");
+                setTextContent(node, '');
               }
 
               module.exports = {
@@ -13350,11 +14041,11 @@
 
       if (braceLevel <= 0 && text.slice(index, index + delimLength) === delimiter) {
         return index;
-      } else if (character === "\\") {
+      } else if (character === '\\') {
         index++;
-      } else if (character === "{") {
+      } else if (character === '{') {
         braceLevel++;
-      } else if (character === "}") {
+      } else if (character === '}') {
         braceLevel--;
       }
 
@@ -13368,7 +14059,7 @@
     const finalData = [];
 
     for (let i = 0; i < startData.length; i++) {
-      if (startData[i].type === "text") {
+      if (startData[i].type === 'text') {
         const text = startData[i].data;
 
         let lookingForLeft = true;
@@ -13379,7 +14070,7 @@
         if (nextIndex !== -1) {
           currIndex = nextIndex;
           finalData.push({
-            type: "text",
+            type: 'text',
             data: text.slice(0, currIndex),
           });
           lookingForLeft = false;
@@ -13394,7 +14085,7 @@
             }
 
             finalData.push({
-              type: "text",
+              type: 'text',
               data: text.slice(currIndex, nextIndex),
             });
 
@@ -13406,7 +14097,7 @@
             }
 
             finalData.push({
-              type: "math",
+              type: 'math',
               data: text.slice(currIndex + leftDelim.length, nextIndex),
               rawData: text.slice(currIndex, nextIndex + rightDelim.length),
               display: display,
@@ -13419,7 +14110,7 @@
         }
 
         finalData.push({
-          type: "text",
+          type: 'text',
           data: text.slice(currIndex),
         });
       } else {
@@ -13431,7 +14122,7 @@
   };
 
   const splitWithDelimiters = function (text, delimiters) {
-    let data = [{ type: "text", data: text }];
+    let data = [{ type: 'text', data: text }];
     for (let i = 0; i < delimiters.length; i++) {
       const delimiter = delimiters[i];
       data = splitAtDelimiters(data, delimiter.left, delimiter.right, delimiter.display || false);
@@ -13447,10 +14138,10 @@
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < data.length; i++) {
-      if (data[i].type === "text") {
+      if (data[i].type === 'text') {
         fragment.appendChild(document.createTextNode(data[i].data));
       } else {
-        const tag = document.createElement("d-math");
+        const tag = document.createElement('d-math');
         const math = data[i].data;
         // Override any display mode defined in the settings with that
         // defined by the text itself
@@ -13458,13 +14149,16 @@
         try {
           tag.textContent = math;
           if (optionsCopy.displayMode) {
-            tag.setAttribute("block", "");
+            tag.setAttribute('block', '');
           }
         } catch (e) {
           if (!(e instanceof katex.ParseError)) {
             throw e;
           }
-          optionsCopy.errorCallback("KaTeX auto-render: Failed to parse `" + data[i].data + "` with ", e);
+          optionsCopy.errorCallback(
+            'KaTeX auto-render: Failed to parse `' + data[i].data + '` with ',
+            e
+          );
           fragment.appendChild(document.createTextNode(data[i].rawData));
           continue;
         }
@@ -13488,7 +14182,8 @@
         }
       } else if (childNode.nodeType === 1) {
         // Element node
-        const shouldRender = optionsCopy.ignoredTags.indexOf(childNode.nodeName.toLowerCase()) === -1;
+        const shouldRender =
+          optionsCopy.ignoredTags.indexOf(childNode.nodeName.toLowerCase()) === -1;
 
         if (shouldRender) {
           renderElem(childNode, optionsCopy);
@@ -13500,14 +14195,14 @@
 
   const defaultAutoRenderOptions = {
     delimiters: [
-      { left: "$$", right: "$$", display: true },
-      { left: "\\[", right: "\\]", display: true },
-      { left: "\\(", right: "\\)", display: false },
+      { left: '$$', right: '$$', display: true },
+      { left: '\\[', right: '\\]', display: true },
+      { left: '\\(', right: '\\)', display: false },
       // LaTeX uses this, but it ruins the display of normal `$` in text:
       // {left: '$', right: '$', display: false},
     ],
 
-    ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "svg"],
+    ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'svg'],
 
     errorCallback: function (msg, err) {
       console.error(msg, err);
@@ -13516,7 +14211,7 @@
 
   const renderMathInElement = function (elem, options) {
     if (!elem) {
-      throw new Error("No element provided to render");
+      throw new Error('No element provided to render');
     }
 
     const optionsCopy = Object.assign({}, defaultAutoRenderOptions, options);
@@ -13530,10 +14225,10 @@
 
   function Mathematics(dom, data) {
     let needsCSS = false;
-    const body = dom.querySelector("body");
+    const body = dom.querySelector('body');
 
     if (!body) {
-      console.warn("No body tag found!");
+      console.warn('No body tag found!');
       return;
     }
 
@@ -13543,17 +14238,17 @@
     }
 
     // render d-math tags
-    const mathTags = body.querySelectorAll("d-math");
+    const mathTags = body.querySelectorAll('d-math');
     if (mathTags.length > 0) {
       needsCSS = true;
       console.warn(`Prerendering ${mathTags.length} math tags...`);
       for (const mathTag of mathTags) {
         const localOptions = {
-          displayMode: mathTag.hasAttribute("block"),
+          displayMode: mathTag.hasAttribute('block'),
         };
         const options = Object.assign(localOptions, data.katex);
         const html = katex$2.renderToString(mathTag.textContent, options);
-        const container = dom.createElement("span");
+        const container = dom.createElement('span');
         container.innerHTML = html;
         mathTag.parentElement.insertBefore(container, mathTag);
         mathTag.parentElement.removeChild(mathTag);
@@ -13561,13 +14256,14 @@
     }
 
     if (needsCSS) {
-      const katexCSSTag = '<link rel="stylesheet" href="https://distill.pub/third-party/katex/katex.min.css" crossorigin="anonymous">';
-      dom.head.insertAdjacentHTML("beforeend", katexCSSTag);
+      const katexCSSTag =
+        '<link rel="stylesheet" href="https://distill.pub/third-party/katex/katex.min.css" crossorigin="anonymous">';
+      dom.head.insertAdjacentHTML('beforeend', katexCSSTag);
     }
   }
 
   var favicon =
-    "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA99JREFUeNrsG4t1ozDMzQSM4A2ODUonKBucN2hugtIJ6E1AboLcBiQTkJsANiAb9OCd/OpzMWBJBl5TvaeXPiiyJetry0J8wW3D3QpjRh3GjneXDq+fSQA9s2mH9x3KDhN4foJfCb8N/Jrv+2fnDn8vLRQOplWHVYdvHZYdZsBcZP1vBmh/n8DzEmhUQDPaOuP9pFuY+JwJHwHnCLQE2tnWBGEyXozY9xCUgHMhhjE2I4heVWtgIkZ83wL6Qgxj1obfWBxymPwe+b00BCCRNPbwfb60yleAkkBHGT5AEehIYz7eJrFDMF9CvH4wwhcGHiHMneFvLDQwlwvMLQq58trRcYBWfYn0A0OgHWQUSu25mE+BnoYKnnEJoeIWAifzOv7vLWd2ZKRfWAIme3tOiUaQ3UnLkb0xj1FxRIeEGKaGIHOs9nEgLaaA9i0JRYo1Ic67wJW86KSKE/ZAM8KuVMk8ITVhmxUxJ3Cl2xlm9Vtkeju1+mpCQNxaEGNCY8bs9X2YqwNoQeGjBWut/ma0QAWy/TqAsHx9wSya3I5IRxOfTC+leG+kA/4vSeEcGBtNUN6byhu3+keEZCQJUNh8MAO7HL6H8pQLnsW/Hd4T4lv93TPjfM7A46iEEqbB5EDOvwYNW6tGNZzT/o+CZ6sqZ6wUtR/wf7mi/VL8iNciT6rHih48Y55b4nKCHJCCzb4y0nwFmin3ZEMIoLfZF8F7nncFmvnWBaBj7CGAYA/WGJsUwHdYqVDwAmNsUgAx4CGgAA7GOOxADYOFWOaIKifuVYzmOpREqA21Mo7aPsgiY1PhOMAmxtR+AUbYH3Id2wc0SAFIQTsn9IUGWR8k9jx3vtXSiAacFxTAGakBk9UudkNECd6jLe+6HrshshvIuC6IlLMRy7er+JpcKma24SlE4cFZSZJDGVVrsNvitQhQrDhW0jfiOLfFd47C42eHT56D/BK0To+58Ahj+cAT8HT1UWlfLZCCd/uKawzU0Rh2EyIX/Icqth3niG8ybNroezwe6khdCNxRN+l4XGdOLVLlOOt2hTRJlr1ETIuMAltVTMz70mJrkdGAaZLSmnBEqmAE32JCMmuTlCnRgsBENtOUpHhvvsYIL0ibnBkaC6QvKcR7738GKp0AKnim7xgUSNv1bpS8QwhBt8r+EP47v/oyRK/S34yJ9nT+AN0Tkm4OdB9E4BsmXM3SnMlRFUrtp6IDpV2eKzdYvF3etm3KhQksbOLChGkSmcBdmcEwvqkrMy5BzL00NZeu3qPYJOOuCc+5NjcWKXQxFvTa3NoXJ4d8in7fiAUuTt781dkvuHX4K8AA2Usy7yNKLy0AAAAASUVORK5CYII=\n";
+    'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA99JREFUeNrsG4t1ozDMzQSM4A2ODUonKBucN2hugtIJ6E1AboLcBiQTkJsANiAb9OCd/OpzMWBJBl5TvaeXPiiyJetry0J8wW3D3QpjRh3GjneXDq+fSQA9s2mH9x3KDhN4foJfCb8N/Jrv+2fnDn8vLRQOplWHVYdvHZYdZsBcZP1vBmh/n8DzEmhUQDPaOuP9pFuY+JwJHwHnCLQE2tnWBGEyXozY9xCUgHMhhjE2I4heVWtgIkZ83wL6Qgxj1obfWBxymPwe+b00BCCRNPbwfb60yleAkkBHGT5AEehIYz7eJrFDMF9CvH4wwhcGHiHMneFvLDQwlwvMLQq58trRcYBWfYn0A0OgHWQUSu25mE+BnoYKnnEJoeIWAifzOv7vLWd2ZKRfWAIme3tOiUaQ3UnLkb0xj1FxRIeEGKaGIHOs9nEgLaaA9i0JRYo1Ic67wJW86KSKE/ZAM8KuVMk8ITVhmxUxJ3Cl2xlm9Vtkeju1+mpCQNxaEGNCY8bs9X2YqwNoQeGjBWut/ma0QAWy/TqAsHx9wSya3I5IRxOfTC+leG+kA/4vSeEcGBtNUN6byhu3+keEZCQJUNh8MAO7HL6H8pQLnsW/Hd4T4lv93TPjfM7A46iEEqbB5EDOvwYNW6tGNZzT/o+CZ6sqZ6wUtR/wf7mi/VL8iNciT6rHih48Y55b4nKCHJCCzb4y0nwFmin3ZEMIoLfZF8F7nncFmvnWBaBj7CGAYA/WGJsUwHdYqVDwAmNsUgAx4CGgAA7GOOxADYOFWOaIKifuVYzmOpREqA21Mo7aPsgiY1PhOMAmxtR+AUbYH3Id2wc0SAFIQTsn9IUGWR8k9jx3vtXSiAacFxTAGakBk9UudkNECd6jLe+6HrshshvIuC6IlLMRy7er+JpcKma24SlE4cFZSZJDGVVrsNvitQhQrDhW0jfiOLfFd47C42eHT56D/BK0To+58Ahj+cAT8HT1UWlfLZCCd/uKawzU0Rh2EyIX/Icqth3niG8ybNroezwe6khdCNxRN+l4XGdOLVLlOOt2hTRJlr1ETIuMAltVTMz70mJrkdGAaZLSmnBEqmAE32JCMmuTlCnRgsBENtOUpHhvvsYIL0ibnBkaC6QvKcR7738GKp0AKnim7xgUSNv1bpS8QwhBt8r+EP47v/oyRK/S34yJ9nT+AN0Tkm4OdB9E4BsmXM3SnMlRFUrtp6IDpV2eKzdYvF3etm3KhQksbOLChGkSmcBdmcEwvqkrMy5BzL00NZeu3qPYJOOuCc+5NjcWKXQxFvTa3NoXJ4d8in7fiAUuTt781dkvuHX4K8AA2Usy7yNKLy0AAAAASUVORK5CYII=\n';
 
   /*!
    * escape-html
@@ -13600,7 +14296,7 @@
    */
 
   function escapeHtml(string) {
-    var str = "" + string;
+    var str = '' + string;
     var match = matchHtmlRegExp.exec(str);
 
     if (!match) {
@@ -13608,26 +14304,26 @@
     }
 
     var escape;
-    var html = "";
+    var html = '';
     var index = 0;
     var lastIndex = 0;
 
     for (index = match.index; index < str.length; index++) {
       switch (str.charCodeAt(index)) {
         case 34: // "
-          escape = "&quot;";
+          escape = '&quot;';
           break;
         case 38: // &
-          escape = "&amp;";
+          escape = '&amp;';
           break;
         case 39: // '
-          escape = "&#39;";
+          escape = '&#39;';
           break;
         case 60: // <
-          escape = "&lt;";
+          escape = '&lt;';
           break;
         case 62: // >
-          escape = "&gt;";
+          escape = '&gt;';
           break;
         default:
           continue;
@@ -13647,11 +14343,12 @@
   // Copyright 2018 The Distill Template Authors
 
   function Meta(dom, data) {
-    let head = dom.querySelector("head");
+    let head = dom.querySelector('head');
     let appendHead = (html) => appendHtml(head, html);
 
     function meta(name, content, force) {
-      if (content || force) appendHead(`    <meta name="${name}" content="${escapeHtml_1(content)}" >\n`);
+      if (content || force)
+        appendHead(`    <meta name="${name}" content="${escapeHtml_1(content)}" >\n`);
     }
 
     appendHead(`
@@ -13722,44 +14419,50 @@
       appendHead(`
       <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->\n`);
 
-      meta("citation_title", data.title);
-      meta("citation_fulltext_html_url", data.url);
-      meta("citation_volume", data.volume);
-      meta("citation_issue", data.issue);
-      meta("citation_firstpage", data.doiSuffix ? `e${data.doiSuffix}` : undefined);
-      meta("citation_doi", data.doi);
+      meta('citation_title', data.title);
+      meta('citation_fulltext_html_url', data.url);
+      meta('citation_volume', data.volume);
+      meta('citation_issue', data.issue);
+      meta('citation_firstpage', data.doiSuffix ? `e${data.doiSuffix}` : undefined);
+      meta('citation_doi', data.doi);
 
       let journal = data.journal || {};
-      meta("citation_journal_title", journal.full_title || journal.title);
-      meta("citation_journal_abbrev", journal.abbrev_title);
-      meta("citation_issn", journal.issn);
-      meta("citation_publisher", journal.publisher);
-      meta("citation_fulltext_world_readable", "", true);
+      meta('citation_journal_title', journal.full_title || journal.title);
+      meta('citation_journal_abbrev', journal.abbrev_title);
+      meta('citation_issn', journal.issn);
+      meta('citation_publisher', journal.publisher);
+      meta('citation_fulltext_world_readable', '', true);
 
       if (data.publishedDate) {
-        meta("citation_online_date", `${data.publishedYear}/${data.publishedMonthPadded}/${data.publishedDayPadded}`);
-        meta("citation_publication_date", `${data.publishedYear}/${data.publishedMonthPadded}/${data.publishedDayPadded}`);
+        meta(
+          'citation_online_date',
+          `${data.publishedYear}/${data.publishedMonthPadded}/${data.publishedDayPadded}`
+        );
+        meta(
+          'citation_publication_date',
+          `${data.publishedYear}/${data.publishedMonthPadded}/${data.publishedDayPadded}`
+        );
       }
 
       (data.authors || []).forEach((a) => {
-        meta("citation_author", `${a.lastName}, ${a.firstName}`);
-        meta("citation_author_institution", a.affiliation);
+        meta('citation_author', `${a.lastName}, ${a.firstName}`);
+        meta('citation_author_institution', a.affiliation);
       });
     } else {
-      console.warn("No DOI suffix in data; not adding citation meta tags!");
+      console.warn('No DOI suffix in data; not adding citation meta tags!');
     }
 
     if (data.citations) {
       data.citations.forEach((key) => {
         if (data.bibliography && data.bibliography.has(key)) {
           const entry = data.bibliography.get(key);
-          meta("citation_reference", citation_meta_content(entry));
+          meta('citation_reference', citation_meta_content(entry));
         } else {
-          console.warn("No bibliography data found for " + key);
+          console.warn('No bibliography data found for ' + key);
         }
       });
     } else {
-      console.warn("No citations found; not adding any references meta tags!");
+      console.warn('No citations found; not adding any references meta tags!');
     }
   }
 
@@ -13770,40 +14473,41 @@
   function citation_meta_content(ref) {
     var content = `citation_title=${ref.title};`;
 
-    if (ref.author && ref.author !== "") {
-      ref.author.split(" and ").forEach((name) => {
+    if (ref.author && ref.author !== '') {
+      ref.author.split(' and ').forEach((name) => {
         name = name.trim();
         let last, firsts;
-        if (name.indexOf(",") != -1) {
-          last = name.split(",")[0].trim();
-          firsts = name.split(",")[1].trim();
+        if (name.indexOf(',') != -1) {
+          last = name.split(',')[0].trim();
+          firsts = name.split(',')[1].trim();
         } else {
-          last = name.split(" ").slice(-1)[0].trim();
-          firsts = name.split(" ").slice(0, -1).join(" ");
+          last = name.split(' ').slice(-1)[0].trim();
+          firsts = name.split(' ').slice(0, -1).join(' ');
         }
         content += `citation_author=${firsts} ${last};`;
       });
     }
 
-    if ("year" in ref) {
+    if ('year' in ref) {
       content += `citation_publication_date=${ref.year};`;
     }
 
     // Special test for arxiv
     let arxiv_id_search = /https?:\/\/arxiv\.org\/pdf\/([0-9]*\.[0-9]*)\.pdf/.exec(ref.url);
-    arxiv_id_search = arxiv_id_search || /https?:\/\/arxiv\.org\/abs\/([0-9]*\.[0-9]*)/.exec(ref.url);
+    arxiv_id_search =
+      arxiv_id_search || /https?:\/\/arxiv\.org\/abs\/([0-9]*\.[0-9]*)/.exec(ref.url);
     arxiv_id_search = arxiv_id_search || /arXiv preprint arXiv:([0-9]*\.[0-9]*)/.exec(ref.journal);
     if (arxiv_id_search && arxiv_id_search[1]) {
       content += `citation_arxiv_id=${arxiv_id_search[1]};`;
       return content; // arXiv is not considered a journal, so we don't need journal/volume/issue
     }
-    if ("journal" in ref) {
+    if ('journal' in ref) {
       content += `citation_journal_title=${escapeHtml_1(ref.journal)};`;
     }
-    if ("volume" in ref) {
+    if ('volume' in ref) {
       content += `citation_volume=${escapeHtml_1(ref.volume)};`;
     }
-    if ("issue" in ref || "number" in ref) {
+    if ('issue' in ref || 'number' in ref) {
       content += `citation_number=${escapeHtml_1(ref.issue || ref.number)};`;
     }
     return content;
@@ -13835,15 +14539,15 @@
   const styles = base + layout + title + byline + article + math + print;
 
   function makeStyleTag(dom) {
-    const styleTagId = "distill-prerendered-styles";
+    const styleTagId = 'distill-prerendered-styles';
     const prerenderedTag = dom.getElementById(styleTagId);
     if (!prerenderedTag) {
-      const styleTag = dom.createElement("style");
+      const styleTag = dom.createElement('style');
       styleTag.id = styleTagId;
-      styleTag.type = "text/css";
+      styleTag.type = 'text/css';
       const cssTextTag = dom.createTextNode(styles);
       styleTag.appendChild(cssTextTag);
-      const firstScriptTag = dom.head.querySelector("script");
+      const firstScriptTag = dom.head.querySelector('script');
       dom.head.insertBefore(styleTag, firstScriptTag);
     }
   }
@@ -13879,35 +14583,35 @@
 
     for (const el of headings) {
       // should element be included in TOC?
-      const isInTitle = el.parentElement.tagName == "D-TITLE";
-      const isException = el.getAttribute("no-toc");
+      const isInTitle = el.parentElement.tagName == 'D-TITLE';
+      const isException = el.getAttribute('no-toc');
       if (isInTitle || isException) continue;
       // create TOC entry
       const title = el.textContent;
-      const link = "#" + el.getAttribute("id");
+      const link = '#' + el.getAttribute('id');
 
-      let newLine = "<li>" + '<a href="' + link + '">' + title + "</a>" + "</li>";
-      if (el.tagName == "H3") {
-        newLine = "<ul>" + newLine + "</ul>";
+      let newLine = '<li>' + '<a href="' + link + '">' + title + '</a>' + '</li>';
+      if (el.tagName == 'H3') {
+        newLine = '<ul>' + newLine + '</ul>';
       } else {
-        newLine += "<br>";
+        newLine += '<br>';
       }
       ToC += newLine;
     }
 
-    ToC += "</ul></nav>";
+    ToC += '</ul></nav>';
     element.innerHTML = ToC;
   }
 
   // Copyright 2018 The Distill Template Authors
 
   function TOC(dom) {
-    const article = dom.querySelector("d-article");
-    const toc = dom.querySelector("d-toc");
+    const article = dom.querySelector('d-article');
+    const toc = dom.querySelector('d-toc');
     if (toc) {
-      const headings = article.querySelectorAll("h2, h3");
+      const headings = article.querySelectorAll('h2, h3');
       renderTOC(toc, headings);
-      toc.setAttribute("prerendered", "true");
+      toc.setAttribute('prerendered', 'true');
     }
   }
 
@@ -13947,25 +14651,26 @@
   function acceptNode(node) {
     var parent = node.parentElement;
     var isMath =
-      parent && parent.getAttribute && parent.getAttribute("class")
-        ? parent.getAttribute("class").includes("katex") || parent.getAttribute("class").includes("MathJax")
+      parent && parent.getAttribute && parent.getAttribute('class')
+        ? parent.getAttribute('class').includes('katex') ||
+          parent.getAttribute('class').includes('MathJax')
         : false;
     return (
       parent &&
-      parent.nodeName !== "SCRIPT" &&
-      parent.nodeName !== "STYLE" &&
-      parent.nodeName !== "CODE" &&
-      parent.nodeName !== "PRE" &&
-      parent.nodeName !== "SPAN" &&
-      parent.nodeName !== "D-HEADER" &&
-      parent.nodeName !== "D-BYLINE" &&
-      parent.nodeName !== "D-MATH" &&
-      parent.nodeName !== "D-CODE" &&
-      parent.nodeName !== "D-BIBLIOGRAPHY" &&
-      parent.nodeName !== "D-FOOTER" &&
-      parent.nodeName !== "D-APPENDIX" &&
-      parent.nodeName !== "D-FRONTMATTER" &&
-      parent.nodeName !== "D-TOC" &&
+      parent.nodeName !== 'SCRIPT' &&
+      parent.nodeName !== 'STYLE' &&
+      parent.nodeName !== 'CODE' &&
+      parent.nodeName !== 'PRE' &&
+      parent.nodeName !== 'SPAN' &&
+      parent.nodeName !== 'D-HEADER' &&
+      parent.nodeName !== 'D-BYLINE' &&
+      parent.nodeName !== 'D-MATH' &&
+      parent.nodeName !== 'D-CODE' &&
+      parent.nodeName !== 'D-BIBLIOGRAPHY' &&
+      parent.nodeName !== 'D-FOOTER' &&
+      parent.nodeName !== 'D-APPENDIX' &&
+      parent.nodeName !== 'D-FRONTMATTER' &&
+      parent.nodeName !== 'D-TOC' &&
       parent.nodeType !== 8 && //comment nodes
       !isMath
     );
@@ -13982,36 +14687,39 @@
 
   function punctuation(text) {
     // Dashes
-    text = text.replace(/--/g, "\u2014");
-    text = text.replace(/\s*\u2014\s*/g, "\u2009\u2014\u2009"); //this has thin spaces
+    text = text.replace(/--/g, '\u2014');
+    text = text.replace(/\s*\u2014\s*/g, '\u2009\u2014\u2009'); //this has thin spaces
 
     // Elipses
-    text = text.replace(/\.\.\./g, "…");
+    text = text.replace(/\.\.\./g, '…');
 
     // Nbsp for punc with spaces
-    var NBSP = "\u00a0";
+    var NBSP = '\u00a0';
     var NBSP_PUNCTUATION_START = /([«¿¡]) /g;
     var NBSP_PUNCTUATION_END = / ([!?:;.,‽»])/g;
 
-    text = text.replace(NBSP_PUNCTUATION_START, "$1" + NBSP);
-    text = text.replace(NBSP_PUNCTUATION_END, NBSP + "$1");
+    text = text.replace(NBSP_PUNCTUATION_START, '$1' + NBSP);
+    text = text.replace(NBSP_PUNCTUATION_END, NBSP + '$1');
 
     return text;
   }
 
   function quotes(text) {
     text = text
-      .replace(/(\W|^)"([^\s!?:;.,‽»])/g, "$1\u201c$2") // beginning "
-      .replace(/(\u201c[^"]*)"([^"]*$|[^\u201c"]*\u201c)/g, "$1\u201d$2") // ending "
-      .replace(/([^0-9])"/g, "$1\u201d") // remaining " at end of word
-      .replace(/(\W|^)'(\S)/g, "$1\u2018$2") // beginning '
-      .replace(/([a-z])'([a-z])/gi, "$1\u2019$2") // conjunction's possession
-      .replace(/((\u2018[^']*)|[a-z])'([^0-9]|$)/gi, "$1\u2019$3") // ending '
-      .replace(/(\u2018)([0-9]{2}[^\u2019]*)(\u2018([^0-9]|$)|$|\u2019[a-z])/gi, "\u2019$2$3") // abbrev. years like '93
-      .replace(/(\B|^)\u2018(?=([^\u2019]*\u2019\b)*([^\u2019\u2018]*\W[\u2019\u2018]\b|[^\u2019\u2018]*$))/gi, "$1\u2019") // backwards apostrophe
-      .replace(/'''/g, "\u2034") // triple prime
-      .replace(/("|'')/g, "\u2033") // double prime
-      .replace(/'/g, "\u2032");
+      .replace(/(\W|^)"([^\s!?:;.,‽»])/g, '$1\u201c$2') // beginning "
+      .replace(/(\u201c[^"]*)"([^"]*$|[^\u201c"]*\u201c)/g, '$1\u201d$2') // ending "
+      .replace(/([^0-9])"/g, '$1\u201d') // remaining " at end of word
+      .replace(/(\W|^)'(\S)/g, '$1\u2018$2') // beginning '
+      .replace(/([a-z])'([a-z])/gi, '$1\u2019$2') // conjunction's possession
+      .replace(/((\u2018[^']*)|[a-z])'([^0-9]|$)/gi, '$1\u2019$3') // ending '
+      .replace(/(\u2018)([0-9]{2}[^\u2019]*)(\u2018([^0-9]|$)|$|\u2019[a-z])/gi, '\u2019$2$3') // abbrev. years like '93
+      .replace(
+        /(\B|^)\u2018(?=([^\u2019]*\u2019\b)*([^\u2019\u2018]*\W[\u2019\u2018]\b|[^\u2019\u2018]*$))/gi,
+        '$1\u2019'
+      ) // backwards apostrophe
+      .replace(/'''/g, '\u2034') // triple prime
+      .replace(/("|'')/g, '\u2033') // double prime
+      .replace(/'/g, '\u2032');
 
     // Allow escaped quotes
     text = text.replace(/\\“/, '"');
@@ -14075,16 +14783,19 @@ window.addEventListener('WebComponentsReady', function() {
     if (templateTag) {
       templateTag.parentNode.removeChild(templateTag);
     } else {
-      console.debug("FYI: Did not find template tag when trying to remove it. You may not have added it. Be aware that our polyfills will add it.");
+      console.debug(
+        'FYI: Did not find template tag when trying to remove it. You may not have added it. Be aware that our polyfills will add it.'
+      );
     }
 
     // add loader
-    const loaderTag = dom.createElement("script");
-    loaderTag.src = "https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-loader.js";
+    const loaderTag = dom.createElement('script');
+    loaderTag.src =
+      'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-loader.js';
     dom.head.insertBefore(loaderTag, dom.head.firstChild);
 
     // add loader event listener to add tempalrte back in
-    const addTag = dom.createElement("script");
+    const addTag = dom.createElement('script');
     addTag.innerHTML = addBackIn;
     dom.head.insertBefore(addTag, dom.head.firstChild);
 
@@ -14116,41 +14827,41 @@ d-citation-list .references .title {
 
   function renderCitationList(element, entries, dom = document) {
     if (entries.size > 0) {
-      element.style.display = "";
-      let list = element.querySelector(".references");
+      element.style.display = '';
+      let list = element.querySelector('.references');
       if (list) {
-        list.innerHTML = "";
+        list.innerHTML = '';
       } else {
-        const stylesTag = dom.createElement("style");
+        const stylesTag = dom.createElement('style');
         stylesTag.innerHTML = styles$1;
         element.appendChild(stylesTag);
 
-        const heading = dom.createElement("h3");
-        heading.id = "references";
-        heading.textContent = "References";
+        const heading = dom.createElement('h3');
+        heading.id = 'references';
+        heading.textContent = 'References';
         element.appendChild(heading);
 
-        list = dom.createElement("ol");
-        list.id = "references-list";
-        list.className = "references";
+        list = dom.createElement('ol');
+        list.id = 'references-list';
+        list.className = 'references';
         element.appendChild(list);
       }
 
       for (const [key, entry] of entries) {
-        const listItem = dom.createElement("li");
+        const listItem = dom.createElement('li');
         listItem.id = key;
         listItem.innerHTML = bibliography_cite(entry);
         list.appendChild(listItem);
       }
     } else {
-      element.style.display = "none";
+      element.style.display = 'none';
     }
   }
 
   // Copyright 2018 The Distill Template Authors
 
   function CitationList(dom, data) {
-    const citationListTag = dom.querySelector("d-citation-list");
+    const citationListTag = dom.querySelector('d-citation-list');
     if (citationListTag) {
       const entries = new Map(
         data.citations.map((citationKey) => {
@@ -14158,7 +14869,7 @@ d-citation-list .references .title {
         })
       );
       renderCitationList(citationListTag, entries, dom);
-      citationListTag.setAttribute("distill-prerendered", "true");
+      citationListTag.setAttribute('distill-prerendered', 'true');
     }
   }
 
@@ -14184,13 +14895,13 @@ d-citation-list .references .title {
   function render$1(dom) {
     const head = dom.head;
 
-    const metaIE = head.querySelector("meta[http-equiv]");
+    const metaIE = head.querySelector('meta[http-equiv]');
     head.insertBefore(metaIE, head.firstChild);
 
-    const metaViewport = head.querySelector("meta[name=viewport]");
+    const metaViewport = head.querySelector('meta[name=viewport]');
     head.insertBefore(metaViewport, head.firstChild);
 
-    const metaCharset = head.querySelector("meta[charset]");
+    const metaCharset = head.querySelector('meta[charset]');
     head.insertBefore(metaCharset, head.firstChild);
   }
 
@@ -14278,12 +14989,12 @@ distill-header .nav a {
   // Copyright 2018 The Distill Template Authors
 
   function DistillHeader(dom, data) {
-    const headerTag = dom.querySelector("distill-header");
+    const headerTag = dom.querySelector('distill-header');
     if (!headerTag) {
-      const header = dom.createElement("distill-header");
+      const header = dom.createElement('distill-header');
       header.innerHTML = headerTemplate;
-      header.setAttribute("distill-prerendered", "");
-      const body = dom.querySelector("body");
+      header.setAttribute('distill-prerendered', '');
+      const body = dom.querySelector('body');
       body.insertBefore(header, body.firstChild);
     }
   }
@@ -14321,7 +15032,7 @@ distill-header .nav a {
   function appendixTemplate(frontMatter) {
     let html = styles$2;
 
-    if (typeof frontMatter.githubUrl !== "undefined") {
+    if (typeof frontMatter.githubUrl !== 'undefined') {
       html += `
     <h3 id="updates-and-corrections">Updates and Corrections</h3>
     <p>`;
@@ -14329,19 +15040,19 @@ distill-header .nav a {
         html += `<a href="${frontMatter.githubCompareUpdatesUrl}">View all changes</a> to this article since it was first published.`;
       }
       html += `
-    If you see mistakes or want to suggest changes, please <a href="${frontMatter.githubUrl + "/issues/new"}">create an issue on GitHub</a>. </p>
+    If you see mistakes or want to suggest changes, please <a href="${frontMatter.githubUrl + '/issues/new'}">create an issue on GitHub</a>. </p>
     `;
     }
 
     const journal = frontMatter.journal;
-    if (typeof journal !== "undefined" && journal.title === "Distill") {
+    if (typeof journal !== 'undefined' && journal.title === 'Distill') {
       html += `
     <h3 id="reuse">Reuse</h3>
     <p>Diagrams and text are licensed under Creative Commons Attribution <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> with the <a class="github" href="${frontMatter.githubUrl}">source available on GitHub</a>, unless noted otherwise. The figures that have been reused from other sources don’t fall under this license and can be recognized by a note in their caption: “Figure from …”.</p>
     `;
     }
 
-    if (typeof frontMatter.publishedDate !== "undefined") {
+    if (typeof frontMatter.publishedDate !== 'undefined') {
       html += `
     <h3 id="citation">Citation</h3>
     <p>For attribution in academic contexts, please cite this work as</p>
@@ -14357,14 +15068,14 @@ distill-header .nav a {
   // Copyright 2018 The Distill Template Authors
 
   function DistillAppendix(dom, data) {
-    const appendixTag = dom.querySelector("d-appendix");
+    const appendixTag = dom.querySelector('d-appendix');
     if (!appendixTag) {
-      console.warn("No appendix tag found!");
+      console.warn('No appendix tag found!');
       return;
     }
-    const distillAppendixTag = appendixTag.querySelector("distill-appendix");
+    const distillAppendixTag = appendixTag.querySelector('distill-appendix');
     if (!distillAppendixTag) {
-      const distillAppendix = dom.createElement("distill-appendix");
+      const distillAppendix = dom.createElement('distill-appendix');
       appendixTag.appendChild(distillAppendix);
       distillAppendix.innerHTML = appendixTemplate(data);
     }
@@ -14446,11 +15157,11 @@ distill-header .nav a {
   // Copyright 2018 The Distill Template Authors
 
   function DistillFooter(dom) {
-    const footerTag = dom.querySelector("distill-footer");
+    const footerTag = dom.querySelector('distill-footer');
     if (!footerTag) {
-      const footer = dom.createElement("distill-footer");
+      const footer = dom.createElement('distill-footer');
       footer.innerHTML = footerTemplate;
-      const body = dom.querySelector("body");
+      const body = dom.querySelector('body');
       body.appendChild(footer);
     }
   }
@@ -14458,29 +15169,29 @@ distill-header .nav a {
   // Copyright 2018 The Distill Template Authors
 
   const extractors = new Map([
-    ["ExtractFrontmatter", ExtractFrontmatter],
-    ["ExtractBibliography", ExtractBibliography],
-    ["ExtractCitations", ExtractCitations],
+    ['ExtractFrontmatter', ExtractFrontmatter],
+    ['ExtractBibliography', ExtractBibliography],
+    ['ExtractCitations', ExtractCitations],
   ]);
 
   const transforms = new Map([
-    ["HTML", HTML],
-    ["makeStyleTag", makeStyleTag],
-    ["OptionalComponents", OptionalComponents],
-    ["TOC", TOC],
-    ["Byline", Byline],
-    ["Mathematics", Mathematics],
-    ["Meta", Meta],
-    ["Typeset", Typeset],
-    ["Polyfills", render],
-    ["CitationList", CitationList],
-    ["Reorder", render$1], // keep last
+    ['HTML', HTML],
+    ['makeStyleTag', makeStyleTag],
+    ['OptionalComponents', OptionalComponents],
+    ['TOC', TOC],
+    ['Byline', Byline],
+    ['Mathematics', Mathematics],
+    ['Meta', Meta],
+    ['Typeset', Typeset],
+    ['Polyfills', render],
+    ['CitationList', CitationList],
+    ['Reorder', render$1], // keep last
   ]);
 
   const distillTransforms = new Map([
-    ["DistillHeader", DistillHeader],
-    ["DistillAppendix", DistillAppendix],
-    ["DistillFooter", DistillFooter],
+    ['DistillHeader', DistillHeader],
+    ['DistillAppendix', DistillAppendix],
+    ['DistillFooter', DistillFooter],
   ]);
 
   /* Exported functions */
@@ -14494,16 +15205,16 @@ distill-header .nav a {
     }
     // first, we collect static data from the dom
     for (const [name, extract] of extractors.entries()) {
-      if (verbose) console.warn("Running extractor: " + name);
+      if (verbose) console.warn('Running extractor: ' + name);
       extract(dom, frontMatter, verbose);
     }
     // secondly we use it to transform parts of the dom
     for (const [name, transform] of transforms.entries()) {
-      if (verbose) console.warn("Running transform: " + name);
+      if (verbose) console.warn('Running transform: ' + name);
       // console.warn('Running transform: ', transform);
       transform(dom, frontMatter, verbose);
     }
-    dom.body.setAttribute("distill-prerendered", "");
+    dom.body.setAttribute('distill-prerendered', '');
     // the function calling us can now use the transformed dom and filled data object
     if (data instanceof FrontMatter);
     else {
@@ -14514,27 +15225,27 @@ distill-header .nav a {
   function distillify(dom, data, verbose = true) {
     // thirdly, we can use these additional transforms when publishing on the Distill website
     for (const [name, transform] of distillTransforms.entries()) {
-      if (verbose) console.warn("Running distillify: ", name);
+      if (verbose) console.warn('Running distillify: ', name);
       transform(dom, data, verbose);
     }
   }
 
   function usesTemplateV2(dom) {
-    const tags = dom.querySelectorAll("script");
+    const tags = dom.querySelectorAll('script');
     let usesV2 = undefined;
     for (const tag of tags) {
       const src = tag.src;
-      if (src.includes("template.v1.js")) {
+      if (src.includes('template.v1.js')) {
         usesV2 = false;
-      } else if (src.includes("template.v2.js")) {
+      } else if (src.includes('template.v2.js')) {
         usesV2 = true;
-      } else if (src.includes("template.")) {
-        throw new Error("Uses distill template, but unknown version?!");
+      } else if (src.includes('template.')) {
+        throw new Error('Uses distill template, but unknown version?!');
       }
     }
 
     if (usesV2 === undefined) {
-      throw new Error("Does not seem to use Distill template at all.");
+      throw new Error('Does not seem to use Distill template at all.');
     } else {
       return usesV2;
     }
@@ -14552,6 +15263,6 @@ distill-header .nav a {
   exports.testing = testing;
   exports.usesTemplateV2 = usesTemplateV2;
 
-  Object.defineProperty(exports, "__esModule", { value: true });
+  Object.defineProperty(exports, '__esModule', { value: true });
 });
 //# sourceMappingURL=transforms.v2.js.map
