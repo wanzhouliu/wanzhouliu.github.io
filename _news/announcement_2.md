@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Fomally joined [University of Pittsburgh](https://www.pitt.edu/) as a PhD student!
+Formally joined [University of Pittsburgh](https://www.pitt.edu/) as a PhD student!
