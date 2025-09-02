@@ -3,7 +3,7 @@
     "@shopify/prettier-plugin-liquid": "1.4.0",
     "prettier": "^3.4.2"
   },
-  "name": "wenzel-luis.github.io",
+  "name": "wanzhouliu.github.io",
   "version": "1.0.0",
   "description": "<div align=\"center\">",
   "main": "purgecss.config.js",
@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Wenzel-Luis/wenzel-luis.github.io.git"
+    "url": "git+https://github.com/wanzhouliu/wanzhouliu.github.io.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Wenzel-Luis/wenzel-luis.github.io/issues"
+    "url": "https://github.com/wanzhouliu/wanzhouliu.github.io/issues"
   },
-  "homepage": "https://github.com/Wenzel-Luis/wenzel-luis.github.io#readme"
+  "homepage": "https://github.com/wanzhouliu/wanzhouliu.github.io#readme"
 }
