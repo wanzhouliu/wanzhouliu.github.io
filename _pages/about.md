@@ -23,7 +23,10 @@ social: false # includes social icons at the bottom of the page
 
 Welcome to my website! I am currently a first-year CS PhD student at [Pitt](https://www.pitt.edu/), grateful to be advised by [Prof. Adriana Kovashka](https://people.cs.pitt.edu/~kovashka/). Previously, I was a MS student at [WashU](https://washu.edu/), where I luckily worked with [Prof. Nathan Jacobs](https://jacobsn.github.io/). I was also fortunate to collaborate with [Prof. Eshed Ohn-Bar](https://eshed1.github.io/) at [Boston University](https://www.bu.edu/). I received my BEng from [Qingdao University](https://www.qdu.edu.cn/).
 
-I am intrigued by cutting-edge computer vision techniques, including multimodal large language models, 3D spatiotemporal perception, computational photography, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research.
+<!-- I am intrigued by cutting-edge computer vision techniques, including multimodal large language models, 3D spatiotemporal perception, computational photography, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research. -->
+<!-- I like working on cutting-edge computer vision techniques, including multimodal large language models, 3D spatiotemporal perception, computational photography, and generative models. I pursue both theoretical and practical innovations, valuing simplicity, efficiency, and scalability in impactful research. -->
+
+I like working on cutting-edge computer vision techniques, including multimodal large language models, 3D spatiotemporal perception, computational photography, and generative models. In research, I enjoy bridging the gap between theory and practice, and am always looking for solutions that are simple, efficient, scalable.
 
 Deeply inspired by [Prof. Jeremy Howard](https://jeremy.fast.ai/), I have an ultimate dream to establish a nonprofit organization akin to [Fast.ai](https://en.wikipedia.org/wiki/Fast.ai), which actually launched my journey into machine learning. I believe this begins with a commitment to helping others and fostering collaboration. If you have any questions or ideas in mind, please feel free to reach out!
 
