@@ -448,6 +448,13 @@ ninja.data = [{
           window.open("https://www.linkedin.com/in/wanzhouliu", "_blank");
         },
       },{
+        id: 'social-scholar',
+        title: 'Google Scholar',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://scholar.google.com/citations?user=XJsk4OgAAAAJ", "_blank");
+        },
+      },{
         id: 'social-cv',
         title: 'Cv',
         section: 'Socials',
